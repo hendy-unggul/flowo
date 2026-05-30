@@ -429,8 +429,8 @@ footer{border-top:1px solid var(--border);padding:3rem max(1.5rem,calc(50vw - va
   <ul class="nav-links">
     <li><a href="#features">Features</a></li>
     <li><a href="#how">How it works</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
     <li><a href="#pricing">Pricing</a></li>
-    <li><a href="#" onclick="return false">Docs</a></li>
   </ul>
   <div class="nav-actions">
     <a href="#" class="btn-ghost" onclick="return false">Sign in</a>
@@ -640,6 +640,59 @@ footer{border-top:1px solid var(--border);padding:3rem max(1.5rem,calc(50vw - va
     </div>
   </div>
 </section>
+
+<!-- ─── PORTFOLIO ─── -->
+<section id="portfolio" class="sec" aria-label="Portfolio projects">
+  <div class="sec-inner">
+    <div class="sec-header reveal">
+      <p class="sec-tag">Portfolio</p>
+      <h2 class="sec-h2">Products I've shipped</h2>
+      <p class="sec-sub">Real projects built for real clients — from healthcare to logistics. Click any card to see the full interactive case study.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.25rem">
+
+      <!-- MediCore HMS -->
+      <a href="/medicore.html" style="text-decoration:none;display:block" class="reveal">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:border-color .25s,transform .25s var(--ease);cursor:pointer" onmouseover="this.style.borderColor='rgba(14,165,160,.45)';this.style.transform='translateY(-5px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)'">
+          <div style="aspect-ratio:16/8;background:linear-gradient(135deg,#071226,#0d2040,#071a30);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
+            <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(14,165,160,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(14,165,160,.04) 1px,transparent 1px);background-size:32px 32px"></div>
+            <div style="position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(14,165,160,.12),transparent 70%)"></div>
+            <div style="position:relative;z-index:1;text-align:center">
+              <div style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;color:#f0f4f8;letter-spacing:-.02em;line-height:1">Medi<span style="color:#0ea5a0">Core</span></div>
+              <div style="font-family:monospace;font-size:.65rem;color:#0ea5a0;letter-spacing:.2em;margin-top:6px;text-transform:uppercase">Hospital Management System</div>
+            </div>
+          </div>
+          <div style="padding:1.5rem">
+            <div style="font-size:.7rem;font-weight:500;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem">Healthcare · Web + Mobile</div>
+            <div style="font-family:var(--head);font-weight:700;font-size:1.1rem;letter-spacing:-.02em;color:var(--text);margin-bottom:.5rem">MediCore HMS 2.0</div>
+            <div style="font-size:.84rem;color:var(--text2);line-height:1.65;font-weight:300;margin-bottom:1.25rem">Sistem rekam medis digital terintegrasi untuk rumah sakit — 6 modul, React + Node.js, keamanan enterprise.</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem">
+              <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+                <span style="font-size:.72rem;font-weight:500;padding:.2rem .6rem;border-radius:5px;background:rgba(14,165,160,.08);color:#0ea5a0">React.js</span>
+                <span style="font-size:.72rem;font-weight:500;padding:.2rem .6rem;border-radius:5px;background:rgba(14,165,160,.08);color:#0ea5a0">Node.js</span>
+                <span style="font-size:.72rem;font-weight:500;padding:.2rem .6rem;border-radius:5px;background:rgba(14,165,160,.08);color:#0ea5a0">PostgreSQL</span>
+                <span style="font-size:.72rem;font-weight:500;padding:.2rem .6rem;border-radius:5px;background:rgba(200,169,81,.08);color:#c8a951">PWA</span>
+              </div>
+              <span style="font-size:.8rem;font-weight:500;color:#0ea5a0">Lihat Case Study →</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Placeholder card - more coming soon -->
+      <div class="reveal" style="transition-delay:.1s">
+        <div style="background:var(--surface);border:1px dashed var(--border);border-radius:20px;overflow:hidden;min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2.5rem;text-align:center">
+          <div style="width:48px;height:48px;border-radius:50%;border:1px dashed var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:1rem">+</div>
+          <div style="font-family:var(--head);font-weight:700;font-size:1rem;color:var(--text3);margin-bottom:.5rem">More projects coming</div>
+          <div style="font-size:.82rem;color:var(--text4);line-height:1.6">FinTech dashboard, EdTech mobile app,<br>and logistics platform — in progress.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider" style="margin:0 max(1.5rem,calc(50vw - var(--max)/2))"></div>
 
 <!-- ─── METRICS ─── -->
 <section id="metrics" class="sec" aria-label="Impact metrics">

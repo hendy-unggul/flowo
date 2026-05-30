@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="MediCore HMS — Sistem Rekam Medis Digital. Platform manajemen data pasien terpadu untuk rumah sakit modern. Dibangun oleh Hendy Unggul, Full Stack Engineer."/>
+<meta property="og:title" content="MediCore HMS — Sistem Rekam Medis Digital"/>
+<meta property="og:description" content="6 modul terintegrasi. Web + Mobile PWA. Implementasi 6 minggu. Dibangun oleh Hendy Unggul — Full Stack Engineer & Apps Developer."/>
+<meta property="og:type" content="website"/>
+<meta name="theme-color" content="#071226"/>
+<title>MediCore HMS — Sistem Rekam Medis Digital</title>
+<link rel="icon" type="image/svg+xml" href="/public/favicon.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#071226;--navy2:#0d1f3c;--navy3:#112348;
+  --teal:#0ea5a0;--teal2:#14c7c1;
+  --gold:#c8a951;--gold2:#e2c46a;
+  --white:#f0f4f8;--muted:#7a8fa6;
+  --border:rgba(14,165,160,0.18);
+  --v:#5B4FE8;--v2:#7B6FFF;--v3:#B8B4FF;
+  --font:'DM Sans',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'Playfair Display',serif;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+  --max:1100px;
+}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);background:var(--navy);color:var(--white);overflow-x:hidden}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(14,165,160,.3);border-radius:4px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes scanline{0%{top:-2px}100%{top:100%}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .75s var(--ease),transform .75s var(--ease)}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+/* ─── TOP NAV (minimal, product-branded) ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  background:rgba(7,18,38,.88);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 max(1.5rem,calc(50vw - var(--max)/2));
+  height:58px;
+}
+.nav-product{display:flex;align-items:center;gap:10px}
+.nav-product-name{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--white)}
+.nav-product-name em{font-style:normal;color:var(--teal)}
+.nav-tag{font-family:var(--mono);font-size:9.5px;color:var(--teal);border:1px solid rgba(14,165,160,.3);padding:3px 9px;border-radius:4px;letter-spacing:.1em}
+.nav-right{display:flex;align-items:center;gap:.75rem}
+.nav-wa{
+  display:flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:500;color:var(--white);
+  background:#1a8f4f;padding:7px 14px;border-radius:8px;
+  text-decoration:none;transition:background .2s,transform .2s;
+}
+.nav-wa:hover{background:#1da55c;transform:translateY(-1px)}
+.nav-explore{
+  display:flex;align-items:center;gap:6px;
+  font-size:12px;color:var(--muted);
+  text-decoration:none;transition:color .2s;
+  font-family:var(--mono);letter-spacing:.03em;
+}
+.nav-explore:hover{color:var(--teal)}
+.nav-dev-badge{
+  display:flex;align-items:center;gap:7px;
+  background:rgba(91,79,232,.08);border:1px solid rgba(91,79,232,.2);
+  border-radius:100px;padding:4px 12px 4px 4px;
+}
+.nav-av{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#0891b2);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:10px;font-weight:700;color:#fff}
+.nav-dev-name{font-size:11px;font-weight:500;color:var(--v3)}
+
+/* ─── COVER ─── */
+.cover{
+  min-height:100vh;
+  background:linear-gradient(135deg,#071226 0%,#0d2040 45%,#071a30 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;
+  padding:calc(58px + 5rem) max(1.5rem,calc(50vw - var(--max)/2)) 5rem;
+  position:relative;overflow:hidden;
+}
+.cover-grid{position:absolute;inset:0;opacity:.035;background-image:linear-gradient(var(--teal) 1px,transparent 1px),linear-gradient(90deg,var(--teal) 1px,transparent 1px);background-size:48px 48px}
+.cover-glow{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 35%,rgba(14,165,160,.1),transparent 65%);pointer-events:none}
+.scanline{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--teal),transparent);opacity:.2;animation:scanline 5s linear infinite}
+
+.c-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid rgba(14,165,160,.3);color:var(--teal);
+  padding:5px 16px;border-radius:100px;font-size:11px;
+  font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  margin-bottom:1.75rem;background:rgba(14,165,160,.05);
+  animation:fadeUp .7s .1s var(--ease) both;
+}
+.live-dot{width:6px;height:6px;background:var(--teal);border-radius:50%;animation:pulse 2s infinite}
+
+.cover h1{
+  font-family:var(--serif);font-weight:900;
+  font-size:clamp(2.8rem,7vw,5.5rem);
+  line-height:1.03;letter-spacing:-.02em;margin-bottom:.75rem;
+  animation:fadeUp .7s .2s var(--ease) both;
+}
+.cover h1 em{font-style:normal;color:var(--teal)}
+
+.cover-sub{
+  font-size:clamp(1rem,2vw,1.15rem);color:var(--muted);
+  max-width:560px;line-height:1.7;margin-bottom:2.25rem;
+  font-weight:300;
+  animation:fadeUp .7s .3s var(--ease) both;
+}
+
+.cover-pills{
+  display:flex;gap:.65rem;justify-content:center;flex-wrap:wrap;
+  margin-bottom:2.75rem;
+  animation:fadeUp .7s .4s var(--ease) both;
+}
+.pill{font-size:11px;font-weight:500;padding:.3rem .9rem;border-radius:100px;border:1px solid;font-family:var(--mono);letter-spacing:.04em}
+.pt{background:rgba(14,165,160,.07);border-color:rgba(14,165,160,.22);color:var(--teal)}
+.pg{background:rgba(200,169,81,.07);border-color:rgba(200,169,81,.22);color:var(--gold)}
+.pm{background:rgba(122,143,166,.05);border-color:rgba(122,143,166,.18);color:var(--muted)}
+
+.cover-ctas{
+  display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;
+  animation:fadeUp .7s .5s var(--ease) both;
+}
+.btn-wa{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.92rem;font-weight:600;color:#fff;
+  background:#1a8f4f;padding:.85rem 2rem;border-radius:100px;
+  text-decoration:none;
+  box-shadow:0 0 30px rgba(26,143,79,.35);
+  transition:transform .2s var(--ease),box-shadow .2s;
+}
+.btn-wa:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(26,143,79,.55)}
+.btn-outline{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.92rem;font-weight:400;color:var(--muted);
+  padding:.85rem 2rem;border-radius:100px;
+  border:1px solid rgba(14,165,160,.25);text-decoration:none;
+  transition:color .2s,border-color .2s;
+}
+.btn-outline:hover{color:var(--white);border-color:rgba(14,165,160,.5)}
+
+.cover-scroll{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:11px;letter-spacing:.1em;animation:float 2.5s ease-in-out infinite;font-family:var(--mono)}
+
+/* ─── SECTIONS ─── */
+.sec{padding:5.5rem max(1.5rem,calc(50vw - var(--max)/2))}
+.sec-inner{max-width:var(--max);margin:0 auto}
+hr.dv{border:none;border-top:1px solid var(--border);margin:0}
+.sec-label{font-family:var(--mono);font-size:10.5px;color:var(--teal);letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border);max-width:80px}
+h2.sh{font-family:var(--serif);font-size:clamp(1.7rem,4vw,2.8rem);font-weight:700;line-height:1.1;margin-bottom:14px}
+h2.sh em{font-style:normal;color:var(--teal)}
+.ssub{color:var(--muted);font-size:.95rem;line-height:1.75;max-width:580px;font-weight:300}
+
+/* ─── PROBLEM ─── */
+.prob-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:2.75rem}
+.prob-card{background:var(--navy2);border:1px solid var(--border);border-radius:16px;padding:22px;position:relative;overflow:hidden;transition:transform .3s var(--ease),border-color .3s}
+.prob-card:hover{transform:translateY(-4px);border-color:rgba(14,165,160,.4)}
+.prob-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--teal),transparent)}
+.prob-ic{font-size:24px;margin-bottom:12px}
+.prob-card h3{font-size:14px;font-weight:600;margin-bottom:6px}
+.prob-card p{font-size:12.5px;color:var(--muted);line-height:1.6}
+
+/* ─── MODULES ─── */
+.mod-wrap{background:var(--navy2);border:1px solid var(--border);border-radius:20px;padding:2.25rem;margin-top:2.5rem}
+.mod-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:14px;margin-top:1.75rem}
+.mod-card{background:var(--navy);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center;transition:all .3s var(--ease);cursor:default}
+.mod-card:hover{border-color:rgba(200,169,81,.4);transform:scale(1.03)}
+.mod-ic{font-size:26px;margin-bottom:9px}
+.mod-card h4{font-size:13px;font-weight:600;margin-bottom:5px}
+.mod-card p{font-size:11.5px;color:var(--muted);line-height:1.5}
+
+/* ─── MOCKUP TABS ─── */
+.mock-wrap{margin-top:2.75rem}
+.mock-hd{display:flex;align-items:center;gap:10px;margin-bottom:0;flex-wrap:wrap}
+.mock-lbl{font-family:var(--mono);font-size:10.5px;color:var(--teal);letter-spacing:.1em;flex:1}
+.tab-row{display:flex;gap:3px;flex-wrap:wrap}
+.mtab{padding:6px 15px;border-radius:8px 8px 0 0;font-size:11.5px;cursor:pointer;font-family:var(--mono);letter-spacing:.04em;border:1px solid transparent;transition:all .2s;user-select:none}
+.mtab.on{background:var(--navy2);color:var(--teal);border-color:var(--border);border-bottom-color:var(--navy2)}
+.mtab:not(.on){background:#071830;color:var(--muted)}
+.mtab:not(.on):hover{color:var(--white)}
+.mscreen{background:#0a1628;border:1px solid var(--border);border-radius:0 14px 14px 14px;padding:22px;min-height:360px;display:none}
+.mscreen.on{display:block}
+
+/* Dashboard */
+.dstats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.dst{background:#071226;border:1px solid var(--border);border-radius:10px;padding:14px}
+.dn{font-family:var(--mono);font-size:24px;font-weight:600;line-height:1}
+.dl{font-size:10.5px;color:var(--muted);margin-top:3px}
+.cteal{color:var(--teal)}.cred{color:#f87171}.cgreen{color:#4ade80}.cgold{color:var(--gold)}
+.dtwo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dpan{background:#071226;border:1px solid var(--border);border-radius:10px;padding:14px}
+.dpt{font-size:9.5px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;font-family:var(--mono)}
+.drow{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(14,165,160,.05);font-size:12.5px}
+.drow:last-child{border-bottom:none}
+.bs{padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600}
+.binap{background:rgba(248,113,113,.1);color:#f87171}
+.bjalan{background:rgba(74,222,128,.1);color:#4ade80}
+.captrack{background:#071226;border-radius:6px;height:7px;overflow:hidden;margin-top:5px}
+.capfill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--teal),var(--teal2));width:0;transition:width 1.2s var(--ease)}
+
+/* Pasien */
+.msearch{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.minp{background:#071226;border:1px solid var(--border);border-radius:7px;padding:7px 12px;font-size:12px;color:var(--muted);font-family:var(--mono);flex:1;min-width:150px}
+.mbtn{background:linear-gradient(135deg,var(--teal),#0891b2);color:#fff;border:none;border-radius:7px;padding:7px 14px;font-size:11.5px;font-weight:600;cursor:default;white-space:nowrap}
+.ptab{width:100%;border-collapse:collapse;font-size:12px}
+.ptab th{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;padding:6px 10px;border-bottom:1px solid var(--border);text-align:left;font-family:var(--mono)}
+.ptab td{padding:8px 10px;border-bottom:1px solid rgba(14,165,160,.04)}
+.ptab tr:hover td{background:rgba(14,165,160,.03)}
+.pid{color:var(--teal);font-family:var(--mono);font-size:10px}
+
+/* Rekam Medis */
+.rmcard{background:#071226;border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px}
+.rmhd{display:flex;justify-content:space-between;margin-bottom:9px;flex-wrap:wrap;gap:5px}
+.rmid{font-family:var(--mono);font-size:10px;color:var(--teal)}
+.rmdate{font-size:11px;color:var(--muted)}
+.rmdiag{font-size:14px;font-weight:600;margin-bottom:3px}
+.rmdoc{font-size:11.5px;color:var(--muted);margin-bottom:8px}
+.rmvit{display:flex;gap:8px;flex-wrap:wrap}
+.rv{background:rgba(14,165,160,.07);border-radius:5px;padding:3px 8px;font-size:11px;color:var(--muted)}
+
+/* Analitik */
+.angrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ancard{background:#071226;border:1px solid var(--border);border-radius:10px;padding:16px}
+.antitle{font-size:9.5px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono);margin-bottom:12px}
+.barrow{display:flex;align-items:center;gap:9px;margin-bottom:7px;font-size:11.5px}
+.barlbl{color:var(--muted);width:75px;flex-shrink:0;font-size:11px}
+.bartrack{flex:1;background:#071226;border:1px solid var(--border);border-radius:3px;height:7px;overflow:hidden}
+.barfill{height:100%;border-radius:3px}
+.barval{color:var(--white);font-family:var(--mono);font-size:10px;width:22px;text-align:right;flex-shrink:0}
+.tnum{font-family:var(--mono);font-size:26px;font-weight:600;color:var(--teal);line-height:1;margin-bottom:3px}
+.tsub{font-size:11px;color:var(--muted)}
+.tbadge{display:inline-block;font-size:9.5px;padding:2px 7px;border-radius:3px;background:rgba(74,222,128,.1);color:#4ade80;font-family:var(--mono);margin-top:5px}
+
+/* ─── FLOW ─── */
+.flow-steps{display:flex;align-items:flex-start;gap:0;justify-content:center;flex-wrap:wrap;margin-top:2.5rem}
+.fstep{text-align:center;flex:1;min-width:115px;position:relative;padding:0 .4rem}
+.fstep::after{content:'→';position:absolute;top:16px;right:-10px;color:var(--teal);font-size:16px;opacity:.4}
+.fstep:last-child::after{display:none}
+.fnum{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#0891b2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:600;margin:0 auto 11px;color:#fff;box-shadow:0 0 16px rgba(14,165,160,.3)}
+.fstep h4{font-size:12.5px;font-weight:600;margin-bottom:4px}
+.fstep p{font-size:11.5px;color:var(--muted);line-height:1.55;padding:0 4px}
+
+/* ─── SPECS ─── */
+.specs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:13px;margin-top:2.5rem}
+.scard{border:1px solid var(--border);border-radius:14px;padding:20px;background:linear-gradient(135deg,var(--navy2),var(--navy3));transition:border-color .3s}
+.scard:hover{border-color:rgba(200,169,81,.35)}
+.sic{font-size:22px;margin-bottom:11px}
+.scard h4{font-size:11.5px;font-weight:600;color:var(--gold);margin-bottom:9px;text-transform:uppercase;letter-spacing:.08em}
+.sul{list-style:none}
+.sul li{font-size:12.5px;color:var(--muted);padding:3px 0;display:flex;align-items:center;gap:7px}
+.sul li::before{content:'▸';color:var(--teal);font-size:9px;flex-shrink:0}
+
+/* ─── ROI ─── */
+.roi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:16px;margin-top:2.5rem}
+.rcard{background:var(--navy2);border:1px solid var(--border);border-radius:14px;padding:24px;text-align:center;position:relative;overflow:hidden}
+.rcard::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.rnum{font-family:var(--serif);font-size:36px;color:var(--gold);font-weight:700;line-height:1}
+.rlbl{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5}
+
+/* ─── TIMELINE ─── */
+.tl{margin-top:2.5rem;position:relative}
+.tl::before{content:'';position:absolute;left:18px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--teal),transparent)}
+.tli{display:flex;gap:20px;margin-bottom:26px}
+.tldot{width:36px;height:36px;border-radius:50%;background:var(--navy2);border:1.5px solid var(--teal);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10.5px;color:var(--teal);flex-shrink:0}
+.tlb{padding-top:6px}
+.tlb h4{font-size:14px;font-weight:600;margin-bottom:3px}
+.tlb p{font-size:12.5px;color:var(--muted)}
+.tltag{display:inline-block;font-size:10px;background:rgba(14,165,160,.08);color:var(--teal);border-radius:3px;padding:2px 7px;margin-right:4px;margin-top:5px;font-family:var(--mono)}
+
+/* ─── CLOSING CTA ─── */
+.closing{
+  background:linear-gradient(135deg,#071226,#0d2040);
+  padding:5.5rem max(1.5rem,calc(50vw - var(--max)/2));
+  text-align:center;position:relative;overflow:hidden;
+}
+.closing-glow{position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(200,169,81,.07),transparent 70%);pointer-events:none}
+.closing h2{font-family:var(--serif);font-size:clamp(1.8rem,4.5vw,3.2rem);font-weight:900;margin-bottom:12px;position:relative;z-index:1}
+.csub{font-size:.97rem;color:var(--muted);max-width:480px;margin:0 auto 2.5rem;line-height:1.7;font-weight:300;position:relative;z-index:1}
+.cta-group{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+.btn-cta-wa{display:inline-flex;align-items:center;gap:.5rem;background:#1a8f4f;color:#fff;font-weight:700;font-size:14.5px;padding:14px 32px;border-radius:100px;text-decoration:none;box-shadow:0 4px 24px rgba(26,143,79,.3);transition:transform .2s var(--ease),box-shadow .2s}
+.btn-cta-wa:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(26,143,79,.45)}
+.btn-cta-mail{display:inline-flex;align-items:center;gap:.5rem;background:transparent;color:var(--white);font-weight:500;font-size:14px;padding:14px 28px;border-radius:100px;text-decoration:none;border:1px solid rgba(200,169,81,.35);transition:border-color .2s,background .2s}
+.btn-cta-mail:hover{border-color:var(--gold);background:rgba(200,169,81,.06)}
+.closing-chips{display:flex;gap:1.25rem;justify-content:center;flex-wrap:wrap;margin-top:2rem;position:relative;z-index:1}
+.cchip{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.cchip::before{content:'✦';color:var(--gold);font-size:9px}
+
+/* ─── DEVELOPER STRIP ─── */
+.dev-strip{
+  background:var(--navy2);border-top:1px solid var(--border);
+  padding:1.75rem max(1.5rem,calc(50vw - var(--max)/2));
+  display:flex;align-items:center;gap:2rem;flex-wrap:wrap;
+  justify-content:space-between;
+}
+.dev-strip-left{display:flex;align-items:center;gap:14px}
+.dav{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#0891b2);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:18px;font-weight:700;color:#fff;flex-shrink:0}
+.dname{font-size:15px;font-weight:600;color:var(--white)}
+.drole{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:.1em;margin-top:3px}
+.dev-strip-links{display:flex;gap:1rem;flex-wrap:wrap;align-items:center}
+.dlink{
+  display:flex;align-items:center;gap:6px;
+  font-size:12px;color:var(--muted);text-decoration:none;
+  padding:6px 14px;border:1px solid var(--border);border-radius:100px;
+  transition:color .2s,border-color .2s;font-family:var(--mono);
+}
+.dlink:hover{color:var(--teal);border-color:rgba(14,165,160,.35)}
+.dlink.flowo{background:rgba(91,79,232,.07);border-color:rgba(91,79,232,.2);color:var(--v3)}
+.dlink.flowo:hover{background:rgba(91,79,232,.12);color:#fff}
+.flowo-mark{display:grid;grid-template-columns:8px 8px;gap:1.5px}
+.flowo-mark span{border-radius:2px;display:block;height:8px}
+
+/* ─── FOOTER ─── */
+footer{background:#040b16;border-top:1px solid var(--border);padding:16px max(1.5rem,calc(50vw - var(--max)/2));display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.ftbrand{font-family:var(--serif);font-size:16px;color:var(--white)}
+.ftbrand em{font-style:normal;color:var(--teal)}
+.ftcopy{font-size:11px;color:var(--muted)}
+
+/* ─── FLOATING SHARE ─── */
+.share-strip{position:fixed;bottom:22px;right:22px;z-index:150;display:flex;flex-direction:column;gap:9px;align-items:flex-end}
+.sbtn{display:flex;align-items:center;gap:7px;background:var(--navy2);border:1px solid var(--border);border-radius:100px;padding:8px 15px;font-size:11.5px;color:var(--muted);cursor:pointer;transition:all .2s;font-family:var(--mono);letter-spacing:.04em;text-decoration:none}
+.sbtn:hover{border-color:rgba(14,165,160,.35);color:var(--teal)}
+.sbtn.wa{background:#1a8f4f;border-color:transparent;color:#fff;font-weight:600}
+.sbtn.wa:hover{background:#1da55c;transform:translateY(-1px)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:720px){
+  .sec{padding:4rem 1.25rem}
+  .dstats{grid-template-columns:1fr 1fr}
+  .dtwo,.angrid{grid-template-columns:1fr}
+  .flow-steps{gap:.75rem}
+  .fstep::after{display:none}
+  nav .nav-explore{display:none}
+  .share-strip{bottom:14px;right:14px}
+  .cover{padding-bottom:3rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <div class="nav-product">
+    <div class="nav-product-name">Medi<em>Core</em> HMS</div>
+    <div class="nav-tag">v2.0</div>
+  </div>
+  <div class="nav-right">
+    <a href="https://wa.me/6208877775559?text=Halo%20Hendy%2C%20saya%20tertarik%20dengan%20MediCore%20HMS" class="nav-wa" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Hubungi via WA
+    </a>
+    <a href="/" class="nav-explore">← Lihat portfolio lainnya</a>
+    <div class="nav-dev-badge">
+      <div class="nav-av">H</div>
+      <div class="nav-dev-name">Hendy Unggul</div>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── COVER ─── -->
+<div class="cover">
+  <div class="cover-grid"></div>
+  <div class="cover-glow"></div>
+  <div class="scanline"></div>
+
+  <div class="c-eyebrow"><div class="live-dot"></div>Proposal Resmi · Healthcare · 2026</div>
+
+  <h1>Sistem Rekam Medis<br/><em>Digital</em></h1>
+  <p class="cover-sub">Platform manajemen data pasien terpadu untuk rumah sakit modern — efisien, aman, dan terintegrasi penuh dalam satu ekosistem digital.</p>
+
+  <div class="cover-pills">
+    <span class="pill pt">Web + Mobile PWA</span>
+    <span class="pill pg">6 Modul Utama</span>
+    <span class="pill pm">100 Pasien Kapasitas</span>
+    <span class="pill pt">React + Node.js</span>
+    <span class="pill pg">PostgreSQL + Redis</span>
+    <span class="pill pm">Implementasi 6 Minggu</span>
+  </div>
+
+  <div class="cover-ctas">
+    <a href="https://wa.me/6208877775559?text=Halo%20Hendy%2C%20saya%20tertarik%20dengan%20MediCore%20HMS%2C%20boleh%20minta%20demo%3F" class="btn-wa" target="_blank" rel="noopener">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Minta Demo Gratis
+    </a>
+    <a href="mailto:unggul@outlook.com?subject=Inquiry%20MediCore%20HMS&body=Halo%20Hendy%2C%20saya%20tertarik%20dengan%20sistem%20MediCore%20HMS." class="btn-outline">
+      ✉ unggul@outlook.com
+    </a>
+  </div>
+  <div class="cover-scroll">▼ &nbsp; scroll untuk melihat detail</div>
+</div>
+
+<hr class="dv"/>
+
+<!-- ─── MASALAH ─── -->
+<section class="sec">
+<div class="sec-inner">
+  <div class="sec-label reveal">01 — Latar Belakang</div>
+  <h2 class="sh reveal">Tantangan Rekam Medis <em>Konvensional</em></h2>
+  <p class="ssub reveal">Sistem berbasis kertas menciptakan inefisiensi yang berdampak langsung pada keselamatan pasien dan produktivitas tenaga medis.</p>
+  <div class="prob-grid">
+    <div class="prob-card reveal"><div class="prob-ic">📁</div><h3>Arsip Fisik Tidak Terstruktur</h3><p>Map rekam medis mudah hilang, rusak, atau sulit ditemukan saat dibutuhkan dalam kondisi darurat.</p></div>
+    <div class="prob-card reveal" style="transition-delay:.06s"><div class="prob-ic">⏱️</div><h3>Waktu Pencarian Data Lama</h3><p>Rata-rata 15–20 menit dihabiskan hanya untuk mencari rekam medis pasien lama dari rak arsip.</p></div>
+    <div class="prob-card reveal" style="transition-delay:.12s"><div class="prob-ic">⚠️</div><h3>Risiko Kesalahan Medis</h3><p>Informasi alergi dan riwayat penyakit yang tidak tersampaikan meningkatkan risiko medical error.</p></div>
+    <div class="prob-card reveal" style="transition-delay:.18s"><div class="prob-ic">🔒</div><h3>Keamanan Data Lemah</h3><p>Data pasien dalam format fisik rentan terhadap akses tidak sah dan sulit dilindungi secara ketat.</p></div>
+    <div class="prob-card reveal" style="transition-delay:.24s"><div class="prob-ic">📊</div><h3>Minim Analitik</h3><p>Tidak ada laporan agregat otomatis untuk mendukung keputusan manajemen secara real-time.</p></div>
+    <div class="prob-card reveal" style="transition-delay:.3s"><div class="prob-ic">🔄</div><h3>Koordinasi Antar Tim Sulit</h3><p>Dokter, suster, dan administrasi tidak dapat mengakses data yang sama secara bersamaan.</p></div>
+  </div>
+</div>
+</section>
+
+<hr class="dv"/>
+
+<!-- ─── SOLUSI ─── -->
+<section class="sec" style="background:var(--navy2)">
+<div class="sec-inner">
+  <div class="sec-label reveal">02 — Solusi</div>
+  <h2 class="sh reveal">MediCore HMS — <em>Hospital Management System</em></h2>
+  <p class="ssub reveal">Platform rekam medis digital terintegrasi yang menghubungkan seluruh ekosistem data pasien dalam satu sistem terpadu, aman, dan mudah digunakan.</p>
+  <div class="mod-wrap reveal">
+    <div class="sec-label" style="margin-bottom:0">6 Modul Terintegrasi</div>
+    <div class="mod-grid">
+      <div class="mod-card"><div class="mod-ic">👤</div><h4>Registrasi Pasien</h4><p>Pendaftaran digital lengkap dengan validasi NIK dan status rawat</p></div>
+      <div class="mod-card"><div class="mod-ic">📋</div><h4>Rekam Medis</h4><p>Input diagnosis, tanda vital, resep, dan catatan dokter digital</p></div>
+      <div class="mod-card"><div class="mod-ic">📎</div><h4>Dokumen & Lampiran</h4><p>Upload hasil lab, rontgen, scan KTP, dan formulir consent</p></div>
+      <div class="mod-card"><div class="mod-ic">📊</div><h4>Dashboard Analitik</h4><p>Statistik real-time kapasitas, distribusi pasien, tren diagnosa</p></div>
+      <div class="mod-card"><div class="mod-ic">🔐</div><h4>Kontrol Akses</h4><p>Login berbasis peran: dokter, suster, admin, manajemen</p></div>
+      <div class="mod-card"><div class="mod-ic">🖨️</div><h4>Laporan & Ekspor</h4><p>Cetak rekam medis, kartu QR pasien, laporan bulanan otomatis</p></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="dv"/>
+
+<!-- ─── INTERACTIVE MOCKUP ─── -->
+<section class="sec">
+<div class="sec-inner">
+  <div class="sec-label reveal">03 — Demo Sistem</div>
+  <h2 class="sh reveal">Jelajahi Antarmuka <em>Secara Langsung</em></h2>
+  <p class="ssub reveal">Klik setiap tab untuk melihat tampilan nyata sistem — Dashboard, Data Pasien, Rekam Medis, dan Analitik.</p>
+
+  <div class="mock-wrap reveal">
+    <div class="mock-hd">
+      <div class="mock-lbl">LIVE INTERFACE PREVIEW · MEDICORE HMS 2.0</div>
+      <div class="tab-row">
+        <div class="mtab on" onclick="showTab('dash',this)">Dashboard</div>
+        <div class="mtab" onclick="showTab('pasien',this)">Data Pasien</div>
+        <div class="mtab" onclick="showTab('rm',this)">Rekam Medis</div>
+        <div class="mtab" onclick="showTab('analitik',this)">Analitik</div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="mscreen on" id="tab-dash">
+      <div class="dstats">
+        <div class="dst"><div class="dn cteal">37</div><div class="dl">Total Pasien Aktif</div></div>
+        <div class="dst"><div class="dn cred">12</div><div class="dl">Rawat Inap</div></div>
+        <div class="dst"><div class="dn cgreen">25</div><div class="dl">Rawat Jalan</div></div>
+        <div class="dst"><div class="dn cgold">148</div><div class="dl">Total Rekam Medis</div></div>
+      </div>
+      <div class="dtwo">
+        <div class="dpan">
+          <div class="dpt">Pasien Terbaru</div>
+          <div class="drow"><div><div style="font-size:13px;font-weight:500">Budi Santoso</div><div style="font-size:10.5px;color:var(--muted)">P001 · 41 th · ⚠ Alergi Penisilin</div></div><span class="bs bjalan">Jalan</span></div>
+          <div class="drow"><div><div style="font-size:13px;font-weight:500">Siti Rahayu</div><div style="font-size:10.5px;color:var(--muted)">P002 · 33 th</div></div><span class="bs binap">Inap</span></div>
+          <div class="drow"><div><div style="font-size:13px;font-weight:500">Ahmad Fauzi</div><div style="font-size:10.5px;color:var(--muted)">P003 · 47 th · ⚠ Alergi Aspirin</div></div><span class="bs bjalan">Jalan</span></div>
+          <div class="drow"><div><div style="font-size:13px;font-weight:500">Dewi Lestari</div><div style="font-size:10.5px;color:var(--muted)">P004 · 29 th</div></div><span class="bs binap">Inap</span></div>
+        </div>
+        <div class="dpan">
+          <div class="dpt">Kapasitas Tempat Tidur</div>
+          <div style="font-size:12.5px;color:var(--muted);margin-bottom:9px">12 dari 30 tempat tidur terisi</div>
+          <div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--muted);margin-bottom:4px"><span>0%</span><span>40%</span><span>100%</span></div>
+          <div class="captrack"><div class="capfill" id="capfill"></div></div>
+          <div style="margin-top:11px;font-size:12px;color:var(--muted)">📊 Kapasitas keseluruhan: 37%</div>
+          <div style="margin-top:5px;font-size:12px;color:#4ade80">✓ Status Normal — slot masih tersedia</div>
+          <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(14,165,160,.06)">
+            <div style="font-size:9.5px;color:var(--muted);font-family:var(--mono);letter-spacing:.08em;margin-bottom:8px">RINGKASAN HARI INI</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <div style="font-size:11.5px;color:#4ade80">✓ 5 pasien masuk</div>
+              <div style="font-size:11.5px;color:var(--teal)">↑ 3 pulang</div>
+              <div style="font-size:11.5px;color:#fbbf24">⚠ 2 jadwal kontrol</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASIEN -->
+    <div class="mscreen" id="tab-pasien">
+      <div class="msearch">
+        <div class="minp">🔍 &nbsp;Cari nama, ID pasien, atau NIK...</div>
+        <select style="background:#071226;border:1px solid var(--border);border-radius:7px;padding:7px 11px;font-size:11.5px;color:var(--muted);font-family:var(--mono)"><option>Semua Status</option><option>Rawat Inap</option><option>Rawat Jalan</option></select>
+        <div class="mbtn">+ Daftarkan Pasien</div>
+      </div>
+      <table class="ptab">
+        <thead><tr><th>ID</th><th>Nama Pasien</th><th>Umur</th><th>Gol. Darah</th><th>Alergi</th><th>Status</th><th>Aksi</th></tr></thead>
+        <tbody>
+          <tr><td class="pid">P001</td><td>Budi Santoso</td><td style="color:var(--muted)">41 th</td><td style="color:var(--muted)">A+</td><td style="color:#fbbf24;font-size:11px">⚠ Penisilin</td><td><span class="bs bjalan">Rawat Jalan</span></td><td><span style="color:var(--teal);font-size:11px;cursor:pointer">Detail →</span></td></tr>
+          <tr><td class="pid">P002</td><td>Siti Rahayu</td><td style="color:var(--muted)">33 th</td><td style="color:var(--muted)">O+</td><td style="color:var(--muted);font-size:11px">—</td><td><span class="bs binap">Rawat Inap</span></td><td><span style="color:var(--teal);font-size:11px;cursor:pointer">Detail →</span></td></tr>
+          <tr><td class="pid">P003</td><td>Ahmad Fauzi</td><td style="color:var(--muted)">47 th</td><td style="color:var(--muted)">B−</td><td style="color:#fbbf24;font-size:11px">⚠ Aspirin</td><td><span class="bs bjalan">Rawat Jalan</span></td><td><span style="color:var(--teal);font-size:11px;cursor:pointer">Detail →</span></td></tr>
+          <tr><td class="pid">P004</td><td>Dewi Lestari</td><td style="color:var(--muted)">29 th</td><td style="color:var(--muted)">AB+</td><td style="color:var(--muted);font-size:11px">—</td><td><span class="bs binap">Rawat Inap</span></td><td><span style="color:var(--teal);font-size:11px;cursor:pointer">Detail →</span></td></tr>
+          <tr><td class="pid">P005</td><td>Rudi Hermawan</td><td style="color:var(--muted)">55 th</td><td style="color:var(--muted)">O−</td><td style="color:#fbbf24;font-size:11px">⚠ Sulfa</td><td><span class="bs bjalan">Rawat Jalan</span></td><td><span style="color:var(--teal);font-size:11px;cursor:pointer">Detail →</span></td></tr>
+          <tr><td class="pid">P006</td><td>Rina Kusuma</td><td style="color:var(--muted)">38 th</td><td style="color:var(--muted)">A−</td><td style="color:var(--muted);font-size:11px">—</td><td><span class="bs bjalan">Rawat Jalan</span></td><td><span style="color:var(--teal);font-size:11px;cursor:pointer">Detail →</span></td></tr>
+        </tbody>
+      </table>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid rgba(14,165,160,.06)">
+        <div style="font-size:11px;color:var(--muted);font-family:var(--mono)">Menampilkan 6 dari 37 pasien</div>
+        <div style="display:flex;gap:6px">
+          <div style="background:#071226;border:1px solid var(--border);border-radius:5px;padding:4px 10px;font-size:11px;color:var(--muted);cursor:pointer">← Prev</div>
+          <div style="background:var(--teal);border-radius:5px;padding:4px 10px;font-size:11px;color:#fff;cursor:pointer">1</div>
+          <div style="background:#071226;border:1px solid var(--border);border-radius:5px;padding:4px 10px;font-size:11px;color:var(--muted);cursor:pointer">2</div>
+          <div style="background:#071226;border:1px solid var(--border);border-radius:5px;padding:4px 10px;font-size:11px;color:var(--muted);cursor:pointer">Next →</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REKAM MEDIS -->
+    <div class="mscreen" id="tab-rm">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:9px">
+        <div>
+          <div class="pid" style="margin-bottom:3px">P001 — Budi Santoso</div>
+          <div style="font-size:12px;color:var(--muted)">41 th · Gol. Darah A+ · ⚠ Alergi: Penisilin · Rawat Jalan</div>
+        </div>
+        <div class="mbtn">+ Tambah Rekam Medis</div>
+      </div>
+      <div class="rmcard">
+        <div class="rmhd"><span class="rmid">RM003 · Follow-up</span><span class="rmdate">28 Mei 2026</span></div>
+        <div class="rmdiag">Influenza — Perbaikan Signifikan</div>
+        <div class="rmdoc">Dr. Hendra Wijaya · Poli Umum</div>
+        <div class="rmvit">
+          <span class="rv">🩺 118/78 mmHg</span><span class="rv">🌡 36.5°C</span>
+          <span class="rv">⚖ 70 kg</span><span class="rv">📏 170 cm</span>
+          <span class="rv" style="color:#4ade80">✓ Kondisi membaik</span>
+        </div>
+      </div>
+      <div class="rmcard">
+        <div class="rmhd"><span class="rmid">RM002 · Kontrol</span><span class="rmdate">24 Mei 2026</span></div>
+        <div class="rmdiag">Influenza — Pemantauan</div>
+        <div class="rmdoc">Dr. Hendra Wijaya · Poli Umum</div>
+        <div class="rmvit">
+          <span class="rv">🩺 122/82 mmHg</span><span class="rv">🌡 37.8°C</span>
+          <span class="rv">⚖ 70 kg</span><span class="rv">📏 170 cm</span>
+        </div>
+      </div>
+      <div class="rmcard">
+        <div class="rmhd"><span class="rmid">RM001 · Kunjungan Pertama</span><span class="rmdate">20 Mei 2026</span></div>
+        <div class="rmdiag">Influenza</div>
+        <div class="rmdoc">Dr. Hendra Wijaya · Poli Umum</div>
+        <div class="rmvit">
+          <span class="rv">🩺 120/80 mmHg</span><span class="rv">🌡 38.5°C</span>
+          <span class="rv">⚖ 70 kg</span><span class="rv">📏 170 cm</span>
+          <span class="rv" style="color:#f87171">⚠ Demam tinggi</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANALITIK -->
+    <div class="mscreen" id="tab-analitik">
+      <div class="angrid">
+        <div class="ancard">
+          <div class="antitle">Distribusi Diagnosa — Bulan Ini</div>
+          <div class="barrow"><div class="barlbl">Influenza</div><div class="bartrack"><div class="barfill" style="width:72%;background:var(--teal)"></div></div><div class="barval">18</div></div>
+          <div class="barrow"><div class="barlbl">Hipertensi</div><div class="bartrack"><div class="barfill" style="width:44%;background:var(--gold)"></div></div><div class="barval">11</div></div>
+          <div class="barrow"><div class="barlbl">Diabetes</div><div class="bartrack"><div class="barfill" style="width:28%;background:#f87171"></div></div><div class="barval">7</div></div>
+          <div class="barrow"><div class="barlbl">ISPA</div><div class="bartrack"><div class="barfill" style="width:20%;background:#c084fc"></div></div><div class="barval">5</div></div>
+          <div class="barrow"><div class="barlbl">Lainnya</div><div class="bartrack"><div class="barfill" style="width:16%;background:var(--muted)"></div></div><div class="barval">4</div></div>
+        </div>
+        <div class="ancard">
+          <div class="antitle">Ringkasan Performa</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div><div class="tnum">37</div><div class="tsub">Pasien Aktif</div><div class="tbadge">↑ +12%</div></div>
+            <div><div class="tnum" style="color:var(--gold)">148</div><div class="tsub">Total Rekam Medis</div><div class="tbadge">↑ +8%</div></div>
+            <div><div class="tnum" style="color:#4ade80">40%</div><div class="tsub">Kapasitas Terpakai</div><div class="tbadge" style="background:rgba(74,222,128,.1);color:#4ade80">Normal</div></div>
+            <div><div class="tnum" style="color:#f87171">3</div><div class="tsub">Rujukan Keluar</div><div class="tbadge" style="background:rgba(248,113,113,.1);color:#f87171">↓ -25%</div></div>
+          </div>
+        </div>
+        <div class="ancard">
+          <div class="antitle">Pasien per Poli</div>
+          <div class="barrow"><div class="barlbl">Poli Umum</div><div class="bartrack"><div class="barfill" style="width:65%;background:var(--teal)"></div></div><div class="barval">16</div></div>
+          <div class="barrow"><div class="barlbl">Poli Dalam</div><div class="bartrack"><div class="barfill" style="width:44%;background:var(--gold)"></div></div><div class="barval">11</div></div>
+          <div class="barrow"><div class="barlbl">Poli Anak</div><div class="bartrack"><div class="barfill" style="width:24%;background:#c084fc"></div></div><div class="barval">6</div></div>
+          <div class="barrow"><div class="barlbl">IGD</div><div class="bartrack"><div class="barfill" style="width:16%;background:#f87171"></div></div><div class="barval">4</div></div>
+        </div>
+        <div class="ancard">
+          <div class="antitle">Tren Kunjungan 6 Bulan</div>
+          <div style="display:flex;align-items:flex-end;gap:7px;height:85px;margin-bottom:7px">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="background:var(--teal);border-radius:3px 3px 0 0;width:100%;height:42px;opacity:.35"></div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="background:var(--teal);border-radius:3px 3px 0 0;width:100%;height:50px;opacity:.45"></div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="background:var(--teal);border-radius:3px 3px 0 0;width:100%;height:38px;opacity:.5"></div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="background:var(--teal);border-radius:3px 3px 0 0;width:100%;height:60px;opacity:.65"></div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="background:var(--teal);border-radius:3px 3px 0 0;width:100%;height:68px;opacity:.8"></div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="background:var(--teal);border-radius:3px 3px 0 0;width:100%;height:85px"></div></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);font-family:var(--mono)"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>Mei</span><span>Jun</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="dv"/>
+
+<!-- ─── FLOW ─── -->
+<section class="sec" style="background:var(--navy2)">
+<div class="sec-inner">
+  <div class="sec-label reveal">04 — Alur Kerja</div>
+  <h2 class="sh reveal">Proses Digital yang <em>Mulus</em></h2>
+  <p class="ssub reveal">Dari kedatangan pasien hingga tersimpannya rekam medis — seluruh alur terintegrasi tanpa perpindahan platform.</p>
+  <div class="flow-steps reveal">
+    <div class="fstep"><div class="fnum">1</div><h4>Pasien Datang</h4><p>Pendaftaran digital di meja administrasi</p></div>
+    <div class="fstep"><div class="fnum">2</div><h4>Input Data</h4><p>Identitas, alergi, status rawat diinput sistem</p></div>
+    <div class="fstep"><div class="fnum">3</div><h4>Triage Suster</h4><p>Tanda vital dicatat ke rekam medis digital</p></div>
+    <div class="fstep"><div class="fnum">4</div><h4>Pemeriksaan Dokter</h4><p>Akses riwayat, input diagnosis & resep</p></div>
+    <div class="fstep"><div class="fnum">5</div><h4>Tersimpan Otomatis</h4><p>Data masuk ke database agregat RS</p></div>
+  </div>
+</div>
+</section>
+
+<hr class="dv"/>
+
+<!-- ─── SPECS ─── -->
+<section class="sec">
+<div class="sec-inner">
+  <div class="sec-label reveal">05 — Spesifikasi Teknis</div>
+  <h2 class="sh reveal">Teknologi <em>Terpercaya</em></h2>
+  <p class="ssub reveal">Arsitektur modern yang aman, skalabel, dan mudah dimaintain oleh tim IT rumah sakit.</p>
+  <div class="specs-grid">
+    <div class="scard reveal"><div class="sic">⚙️</div><h4>Frontend</h4><ul class="sul"><li>React.js + TypeScript</li><li>Responsive mobile & desktop</li><li>Progressive Web App (PWA)</li><li>Offline-capable</li></ul></div>
+    <div class="scard reveal" style="transition-delay:.06s"><div class="sic">🖥️</div><h4>Backend</h4><ul class="sul"><li>Node.js + Express API</li><li>RESTful Architecture</li><li>JWT Authentication</li><li>Role-based Access Control</li></ul></div>
+    <div class="scard reveal" style="transition-delay:.12s"><div class="sic">🗄️</div><h4>Database</h4><ul class="sul"><li>PostgreSQL (data utama)</li><li>Redis (cache & session)</li><li>Backup otomatis harian</li><li>Enkripsi data at-rest</li></ul></div>
+    <div class="scard reveal" style="transition-delay:.18s"><div class="sic">🔐</div><h4>Keamanan</h4><ul class="sul"><li>HTTPS / TLS 1.3</li><li>Enkripsi end-to-end</li><li>Audit log seluruh aktivitas</li><li>Sesuai regulasi Permenkes</li></ul></div>
+  </div>
+</div>
+</section>
+
+<hr class="dv"/>
+
+<!-- ─── ROI ─── -->
+<section class="sec" style="background:var(--navy2)">
+<div class="sec-inner">
+  <div class="sec-label reveal">06 — Dampak & ROI</div>
+  <h2 class="sh reveal">Manfaat <em>Terukur</em></h2>
+  <p class="ssub reveal">Investasi pada sistem digital memberikan pengembalian nyata dalam efisiensi operasional dan keselamatan pasien.</p>
+  <div class="roi-grid">
+    <div class="rcard reveal"><div class="rnum">85%</div><div class="rlbl">Pengurangan waktu pencarian data pasien</div></div>
+    <div class="rcard reveal" style="transition-delay:.08s"><div class="rnum">0</div><div class="rlbl">Risiko kehilangan rekam medis fisik</div></div>
+    <div class="rcard reveal" style="transition-delay:.16s"><div class="rnum">3×</div><div class="rlbl">Kecepatan akses riwayat medis pasien</div></div>
+    <div class="rcard reveal" style="transition-delay:.24s"><div class="rnum">100%</div><div class="rlbl">Data pasien tersentralisasi & terstruktur</div></div>
+  </div>
+</div>
+</section>
+
+<hr class="dv"/>
+
+<!-- ─── TIMELINE ─── -->
+<section class="sec">
+<div class="sec-inner">
+  <div class="sec-label reveal">07 — Rencana Implementasi</div>
+  <h2 class="sh reveal">Go Live dalam <em>6 Minggu</em></h2>
+  <p class="ssub reveal">4 fase terstruktur untuk memastikan transisi mulus tanpa mengganggu operasional rumah sakit.</p>
+  <div class="tl">
+    <div class="tli reveal"><div class="tldot">W1</div><div class="tlb"><h4>Fase 1 — Setup & Konfigurasi</h4><p>Instalasi server, konfigurasi database, setup environment</p><span class="tltag">Minggu 1–2</span><span class="tltag">IT Setup</span></div></div>
+    <div class="tli reveal" style="transition-delay:.08s"><div class="tldot">W2</div><div class="tlb"><h4>Fase 2 — Migrasi Data</h4><p>Input data pasien existing dari rekam medis fisik ke sistem digital</p><span class="tltag">Minggu 3–4</span><span class="tltag">Data Entry</span></div></div>
+    <div class="tli reveal" style="transition-delay:.16s"><div class="tldot">W3</div><div class="tlb"><h4>Fase 3 — Pelatihan Staf</h4><p>Training dokter, suster, dan admin penggunaan sistem baru</p><span class="tltag">Minggu 5</span><span class="tltag">Training</span></div></div>
+    <div class="tli reveal" style="transition-delay:.24s"><div class="tldot">W4</div><div class="tlb"><h4>Fase 4 — Go Live & Support</h4><p>Sistem aktif penuh + support 30 hari pertama operasional</p><span class="tltag">Minggu 6</span><span class="tltag">Go Live</span><span class="tltag">Support 30 Hari</span></div></div>
+  </div>
+</div>
+</section>
+
+<hr class="dv"/>
+
+<!-- ─── CLOSING CTA ─── -->
+<div class="closing">
+  <div class="closing-glow"></div>
+  <div class="sec-label" style="justify-content:center;margin-bottom:1.25rem">08 — Mari Bicara</div>
+  <h2>Siap Transformasi<br/>Digital Rumah Sakit Anda?</h2>
+  <p class="csub">Hubungi kami sekarang untuk demo gratis. Kami akan tunjukkan sistem berjalan langsung sesuai kebutuhan rumah sakit Anda.</p>
+  <div class="cta-group">
+    <a href="https://wa.me/6208877775559?text=Halo%20Hendy%2C%20saya%20tertarik%20dengan%20MediCore%20HMS%2C%20boleh%20minta%20demo%20gratis%3F" class="btn-cta-wa" target="_blank" rel="noopener">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      WhatsApp: 0887 777 5559
+    </a>
+    <a href="mailto:unggul@outlook.com?subject=Inquiry%20MediCore%20HMS&body=Halo%20Hendy%2C%0A%0ASaya%20tertarik%20dengan%20sistem%20MediCore%20HMS%20untuk%20rumah%20sakit%20kami.%0A%0AMohon%20informasi%20lebih%20lanjut%20dan%20jadwal%20demo." class="btn-cta-mail">
+      ✉ unggul@outlook.com
+    </a>
+  </div>
+  <div class="closing-chips">
+    <span class="cchip">Demo Gratis</span>
+    <span class="cchip">Implementasi 6 Minggu</span>
+    <span class="cchip">Garansi 1 Tahun</span>
+    <span class="cchip">Support 24/7</span>
+    <span class="cchip">Sesuai Regulasi Kemenkes</span>
+  </div>
+</div>
+
+<!-- ─── DEVELOPER STRIP (trust builder) ─── -->
+<div class="dev-strip">
+  <div class="dev-strip-left">
+    <div class="dav">H</div>
+    <div>
+      <div class="dname">Hendy Unggul</div>
+      <div class="drole">Full Stack Engineer · Apps Developer · Jakarta, ID</div>
+    </div>
+  </div>
+  <div class="dev-strip-links">
+    <a href="/" class="dlink flowo">
+      <div class="flowo-mark">
+        <span style="background:#5B4FE8"></span><span style="background:#7B6FFF;opacity:.6"></span>
+        <span style="background:#38D9A9"></span><span style="background:#5B4FE8;opacity:.4"></span>
+      </div>
+      flowo.io — lihat semua karya
+    </a>
+    <a href="mailto:unggul@outlook.com" class="dlink">✉ unggul@outlook.com</a>
+    <a href="https://wa.me/6208877775559" class="dlink" target="_blank" rel="noopener">📱 0887 777 5559</a>
+  </div>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="ftbrand">Medi<em>Core</em> HMS</div>
+  <div class="ftcopy">© 2026 · MediCore Health Systems · Dibuat oleh Hendy Unggul</div>
+  <div class="ftcopy" style="font-family:var(--mono);font-size:10px;color:var(--border)">Dokumen Penawaran · Rahasia & Terbatas</div>
+</footer>
+
+<!-- ─── FLOATING ACTIONS ─── -->
+<div class="share-strip">
+  <a href="https://wa.me/6208877775559?text=Halo%20Hendy%2C%20saya%20tertarik%20dengan%20MediCore%20HMS" class="sbtn wa" target="_blank" rel="noopener">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Hubungi WA
+  </a>
+  <button class="sbtn" onclick="copyLink(this)">🔗 Salin Link</button>
+</div>
+
+<script>
+function showTab(id,el){
+  document.querySelectorAll('.mscreen').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('tab-'+id).classList.add('on');
+  el.classList.add('on');
+  if(id==='dash'){
+    const f=document.getElementById('capfill');
+    if(f){f.style.width='0';setTimeout(()=>{f.style.width='37%'},80)}
+  }
+}
+function copyLink(btn){
+  navigator.clipboard.writeText(window.location.href).then(()=>{
+    const o=btn.innerHTML;btn.innerHTML='✓ Tersalin!';btn.style.color='var(--teal)';
+    setTimeout(()=>{btn.innerHTML=o;btn.style.color=''},2200);
+  }).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=window.location.href;
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');
+    document.body.removeChild(ta);
+    const o=btn.innerHTML;btn.innerHTML='✓ Tersalin!';btn.style.color='var(--teal)';
+    setTimeout(()=>{btn.innerHTML=o;btn.style.color=''},2200);
+  });
+}
+const ro=new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target)}})
+},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    const f=document.getElementById('capfill');
+    if(f){f.style.width='0';setTimeout(()=>{f.style.width='37%'},400)}
+  },600);
+});
+</script>
+</body>
+</html>
