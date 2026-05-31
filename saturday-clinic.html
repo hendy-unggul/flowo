@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Saturday Clinic — Program pilot Private Doctor untuk dokter spesialis. Praktek dari rumah, Sabtu pagi, tanpa meninggalkan keluarga."/>
+<meta name="robots" content="noindex"/>
+<title>Saturday Clinic — Undangan Eksklusif · Private Doctor</title>
+<link rel="icon" type="image/svg+xml" href="/public/favicon.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0A0C;--bg2:#0F0D08;--surface:#18140A;--surface2:#1E1A0F;
+  --border:rgba(200,169,110,.12);--border2:rgba(200,169,110,.22);
+  --gold:#C8A96E;--gold2:#E2C88A;--gold3:#F0DFB0;
+  --teal:#2DB89A;--teal2:#38D4B4;
+  --text:#F4F1EC;--text2:rgba(244,241,236,.65);--text3:rgba(244,241,236,.35);
+  --serif:'Playfair Display',Georgia,serif;
+  --warm:'Lora',Georgia,serif;
+  --font:'DM Sans',sans-serif;
+  --mono:'DM Mono',monospace;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+  --max:680px;
+}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+.page{max-width:var(--max);margin:0 auto;animation:fadeUp .6s var(--ease) both}
+
+/* ─── BACK ─── */
+.back{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);font-family:var(--mono);letter-spacing:.04em;text-decoration:none;margin-bottom:2rem;transition:color .2s}
+.back:hover{color:var(--gold)}
+
+/* ─── HEADER ─── */
+.hd{
+  background:linear-gradient(135deg,#0F0D08 0%,#1C1608 60%,#0A0A0C 100%);
+  border:0.5px solid var(--border2);border-radius:20px;
+  padding:40px;margin-bottom:1rem;position:relative;overflow:hidden;
+}
+.hd::before{content:'';position:absolute;top:-100px;right:-100px;width:350px;height:350px;border-radius:50%;background:rgba(200,169,110,.05);filter:blur(60px);pointer-events:none}
+.hd-ey{display:inline-flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(200,169,110,.6);margin-bottom:22px;font-family:var(--mono)}
+.hd-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite}
+.hd-title{font-family:var(--serif);font-size:clamp(38px,8vw,54px);font-weight:700;color:var(--text);line-height:1.05;letter-spacing:-.01em;margin-bottom:6px}
+.hd-title em{font-style:italic;color:var(--gold)}
+.hd-sub{font-family:var(--warm);font-size:15px;color:rgba(200,169,110,.55);font-style:italic;margin-bottom:28px}
+.hd-tagline{
+  display:inline-block;
+  font-family:var(--serif);font-size:18px;font-weight:700;
+  color:var(--text);letter-spacing:-.01em;
+  border-left:2px solid var(--gold);padding-left:14px;
+  margin-bottom:28px;line-height:1.4;
+}
+.hd-tagline em{font-style:italic;color:var(--gold)}
+.hd-dev{display:flex;align-items:center;gap:10px}
+.hd-av{width:36px;height:36px;border-radius:50%;background:rgba(200,169,110,.1);border:0.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:13px;font-weight:700;color:var(--gold);flex-shrink:0}
+.hd-devname{font-size:13px;font-weight:500;color:var(--text)}
+.hd-devrole{font-size:10px;color:rgba(200,169,110,.5);margin-top:2px;letter-spacing:.06em;font-family:var(--mono)}
+
+/* ─── CARDS ─── */
+.card{background:var(--surface);border:0.5px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:1rem}
+.card-head{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:0.5px solid var(--border);background:rgba(200,169,110,.04)}
+.card-ic{width:36px;height:36px;border-radius:9px;background:rgba(200,169,110,.08);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.card-title{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--text)}
+.card-sub{font-size:11px;color:var(--text3);margin-top:2px;font-family:var(--mono);letter-spacing:.04em}
+.card-body{padding:20px}
+
+/* ─── STATEMENT ─── */
+.statement{
+  background:rgba(200,169,110,.05);border:0.5px solid var(--border2);
+  border-radius:14px;padding:22px 24px;margin-bottom:1rem;
+}
+.st-text{font-family:var(--warm);font-size:17px;color:var(--text);line-height:1.7;font-style:italic}
+.st-text strong{font-style:normal;color:var(--gold);font-weight:600}
+
+/* ─── PAIN GRID ─── */
+.pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pain-item{background:rgba(0,0,0,.3);border:0.5px solid rgba(255,255,255,.05);border-radius:10px;padding:13px 15px;display:flex;align-items:flex-start;gap:9px}
+.pain-ic{font-size:17px;flex-shrink:0;opacity:.65}
+.pain-text{font-size:12px;color:var(--text3);line-height:1.6;font-family:var(--warm)}
+
+/* ─── OFFER ITEMS ─── */
+.oi{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--border)}
+.oi:last-child{border-bottom:none;padding-bottom:0}
+.oi-num{width:26px;height:26px;border-radius:50%;background:rgba(200,169,110,.1);border:0.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--gold);flex-shrink:0;margin-top:2px;font-family:var(--mono)}
+.oi-text{font-size:13px;color:var(--text);line-height:1.65;font-family:var(--warm)}
+.oi-text em{font-style:normal;color:var(--gold);font-weight:500}
+
+/* ─── MATH ─── */
+.math-wrap{background:rgba(0,0,0,.3);border-radius:12px;padding:18px 20px}
+.math-label{font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;font-family:var(--mono)}
+.math-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.math-row:last-of-type{margin-bottom:0}
+.math-key{font-size:13px;color:var(--text2);font-family:var(--warm)}
+.math-val{font-size:13px;font-weight:500;color:var(--text);font-family:var(--mono)}
+.math-div{height:.5px;background:var(--border2);margin:14px 0}
+.math-total{display:flex;align-items:center;justify-content:space-between}
+.math-total-key{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--gold)}
+.math-total-val{font-family:var(--mono);font-size:24px;font-weight:600;color:var(--gold)}
+.math-note{font-size:11px;color:var(--text3);margin-top:12px;text-align:center;font-family:var(--warm);font-style:italic}
+
+/* ─── CAMPAIGN ─── */
+.campaign-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.cg-card{background:rgba(0,0,0,.3);border:0.5px solid var(--border);border-radius:10px;padding:14px 16px}
+.cg-label{font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;font-family:var(--mono)}
+.cg-val{font-family:var(--mono);font-size:20px;font-weight:500;color:var(--gold)}
+.cg-sub{font-size:11px;color:var(--text3);margin-top:4px;font-family:var(--warm)}
+.campaign-total{background:rgba(200,169,110,.06);border:0.5px solid var(--border2);border-radius:10px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
+.ct-label{font-family:var(--warm);font-size:13px;color:var(--text2)}
+.ct-val{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--gold)}
+.ct-note{font-size:11px;color:var(--text3);margin-top:10px;font-family:var(--warm);font-style:italic;line-height:1.6}
+
+/* ─── STEPS ─── */
+.step{display:flex;gap:14px;padding:13px 0;border-bottom:0.5px solid rgba(255,255,255,.04)}
+.step:last-child{border-bottom:none;padding-bottom:0}
+.step-num{width:30px;height:30px;border-radius:50%;background:rgba(200,169,110,.08);border:0.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--gold);flex-shrink:0;margin-top:2px}
+.step-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px}
+.step-desc{font-size:12px;color:var(--text3);line-height:1.6;font-family:var(--warm)}
+.step-tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:4px;margin-top:5px;font-family:var(--mono)}
+.tag-g{background:rgba(45,184,154,.1);color:var(--teal)}
+.tag-y{background:rgba(200,169,110,.1);color:var(--gold)}
+
+/* ─── TESIS ─── */
+.tesis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.tesis-card{background:rgba(0,0,0,.3);border:0.5px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.tesis-num{font-family:var(--mono);font-size:26px;font-weight:500;line-height:1;margin-bottom:4px}
+.tesis-label{font-size:11px;color:var(--text3);line-height:1.5;font-family:var(--warm)}
+.tesis-card:nth-child(1) .tesis-num{color:var(--gold)}
+.tesis-card:nth-child(2) .tesis-num{color:var(--teal)}
+.tesis-card:nth-child(3) .tesis-num{color:var(--gold2)}
+
+/* ─── GUARANTEE ─── */
+.guarantee{background:rgba(45,184,154,.05);border:0.5px solid rgba(45,184,154,.2);border-radius:14px;padding:18px 20px;display:flex;gap:14px}
+.gu-ic{font-size:22px;flex-shrink:0;margin-top:2px}
+.gu-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:5px}
+.gu-text{font-size:12px;color:var(--text3);line-height:1.65;font-family:var(--warm)}
+
+/* ─── CTA ─── */
+.cta{background:linear-gradient(135deg,var(--surface),var(--bg2));border:0.5px solid var(--border2);border-radius:16px;padding:28px;text-align:center;margin-bottom:1rem}
+.cta-title{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:8px}
+.cta-title em{font-style:italic;color:var(--gold)}
+.cta-sub{font-size:13px;color:var(--text3);margin-bottom:20px;font-family:var(--warm);font-style:italic;line-height:1.6}
+.cta-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-wa{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;color:#4ade80;background:#1a5c36;border:0.5px solid rgba(74,222,128,.2);padding:11px 22px;border-radius:100px;text-decoration:none;transition:background .2s}
+.btn-wa:hover{background:#1d6b3e}
+.btn-mail{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;color:var(--gold);background:rgba(200,169,110,.08);border:0.5px solid var(--border2);padding:11px 22px;border-radius:100px;text-decoration:none;transition:background .2s}
+.btn-mail:hover{background:rgba(200,169,110,.14)}
+
+/* ─── FOOTER ─── */
+.ft{display:flex;align-items:center;justify-content:space-between;padding:0 4px;flex-wrap:wrap;gap:8px}
+.ft-brand{font-family:var(--serif);font-size:14px;color:var(--text3)}
+.ft-brand em{font-style:italic;color:rgba(200,169,110,.5)}
+.ft-conf{font-size:10px;color:rgba(255,255,255,.15);letter-spacing:.08em;font-family:var(--mono)}
+
+@media(max-width:500px){
+  .hd{padding:28px 22px}
+  .card-body{padding:16px}
+  .pain-grid,.campaign-grid,.tesis{grid-template-columns:1fr}
+  body{padding:1.25rem .75rem}
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <a href="/privatedoctor.html" class="back">← Private Doctor</a>
+
+  <!-- HEADER -->
+  <div class="hd">
+    <div class="hd-ey"><div class="hd-dot"></div>Undangan Eksklusif · Program Pilot</div>
+    <div class="hd-title">Saturday<br><em>Clinic</em></div>
+    <div class="hd-sub">Klinik Anda. Sabtu Anda. Dari rumah Anda.</div>
+    <div class="hd-tagline">
+      "Dokter Anda.<br>
+      <em>Bukan dokter semua orang.</em>"
+    </div>
+    <div class="hd-dev">
+      <div class="hd-av">H</div>
+      <div>
+        <div class="hd-devname">Hendy Unggul</div>
+        <div class="hd-devrole">Full Stack Engineer · Apps Developer · Jakarta</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPENING -->
+  <div class="statement">
+    <div class="st-text">
+      Anda sudah <strong>lebih dari 20 tahun</strong> mengabdikan waktu untuk pasien dan sistem. Sudah saatnya ada platform yang <strong>bekerja untuk Anda</strong> — bukan sebaliknya.
+    </div>
+  </div>
+
+  <!-- PAIN -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-ic">😮‍💨</div>
+      <div>
+        <div class="card-title">Rutinitas yang tidak harus seperti ini</div>
+        <div class="card-sub">Setiap dokter spesialis senior merasakannya</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="pain-grid">
+        <div class="pain-item"><div class="pain-ic">🚗</div><div class="pain-text">2–3 jam di kemacetan setiap hari berpindah lokasi praktek</div></div>
+        <div class="pain-item"><div class="pain-ic">🏥</div><div class="pain-text">40–50% fee dipotong RS untuk setiap konsultasi yang Anda lakukan</div></div>
+        <div class="pain-item"><div class="pain-ic">⏰</div><div class="pain-text">Pasien follow-up harus datang ke RS — membuang waktu keduanya</div></div>
+        <div class="pain-item"><div class="pain-ic">👨‍👩‍👧</div><div class="pain-text">Weekend yang seharusnya untuk keluarga, habis untuk sistem</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE OFFER -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-ic">☕</div>
+      <div>
+        <div class="card-title">Saturday Clinic — cara kerjanya</div>
+        <div class="card-sub">Sabtu pagi · 2 sesi · dari rumah · tanpa mengetik</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="oi">
+        <div class="oi-num">1</div>
+        <div class="oi-text">Anda buka slot <em>Sabtu pagi</em> — maksimal <em>10 pasien per sesi</em>, 2 sesi per bulan. Tidak lebih dari itu di awal.</div>
+      </div>
+      <div class="oi">
+        <div class="oi-num">2</div>
+        <div class="oi-text"><em>Malam sebelumnya</em>, AI Ara menghubungi setiap pasien via voice — mendengarkan keluhan terbaru, menyiapkan clinical brief lengkap untuk Anda.</div>
+      </div>
+      <div class="oi">
+        <div class="oi-num">3</div>
+        <div class="oi-text">Sabtu pagi Anda buka app — <em>brief sudah siap, dibacakan</em>. Anda cukup angkat telepon dan bicara seperti biasa dengan pasien Anda.</div>
+      </div>
+      <div class="oi">
+        <div class="oi-num">4</div>
+        <div class="oi-text">Setelah selesai, <em>bicara hasil konsultasi ke app</em> — AI yang catat, format resep, kirim ke pasien. <em>Tidak perlu mengetik apapun.</em></div>
+      </div>
+      <div class="oi">
+        <div class="oi-num">5</div>
+        <div class="oi-text"><em>Transfer hari itu juga.</em> Transparan, real-time. Anda bisa lihat setiap sen yang masuk langsung dari app.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MATH PER SESSION -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-ic">🧮</div>
+      <div>
+        <div class="card-title">Hitungan per Sabtu</div>
+        <div class="card-sub">Tarif Anda tentukan sendiri · kami hanya ambil 4%</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="math-wrap">
+        <div class="math-label">Satu sesi Sabtu pagi · 10 pasien</div>
+        <div class="math-row"><div class="math-key">Tarif per konsultasi (Anda tentukan)</div><div class="math-val">Rp 300.000</div></div>
+        <div class="math-row"><div class="math-key">Jumlah pasien</div><div class="math-val">10 pasien</div></div>
+        <div class="math-row"><div class="math-key">Platform fee (infrastruktur saja)</div><div class="math-val">4% = Rp 12.000</div></div>
+        <div class="math-row"><div class="math-key">Potongan RS / manajemen</div><div class="math-val" style="color:var(--teal)">Rp 0</div></div>
+        <div class="math-div"></div>
+        <div class="math-total">
+          <div class="math-total-key">Anda terima per Sabtu</div>
+          <div class="math-total-val">Rp 2.880.000</div>
+        </div>
+        <div class="math-note">Sambil ngopi. Sebelum keluarga bangun. Tanpa kemacetan.<br>Dalam 2–3 jam — pakai piyama jika mau.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAMPAIGN INVESTMENT -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-ic">📊</div>
+      <div>
+        <div class="card-title">Program pilot 3 bulan</div>
+        <div class="card-sub">Investment untuk membuktikan tesis · bukan biaya operasional</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="campaign-grid">
+        <div class="cg-card">
+          <div class="cg-label">Insentif dokter</div>
+          <div class="cg-val">Rp150jt</div>
+          <div class="cg-sub">10 dokter × 5 sesi × 3 bulan × Rp1jt</div>
+        </div>
+        <div class="cg-card">
+          <div class="cg-label">Voucher pasien</div>
+          <div class="cg-val">Rp500jt</div>
+          <div class="cg-sub">Konsultasi gratis untuk menarik traksi awal</div>
+        </div>
+      </div>
+      <div class="campaign-total">
+        <div class="ct-label">Total marketing campaign</div>
+        <div class="ct-val">Rp 650jt</div>
+      </div>
+      <div class="ct-note">
+        Untuk konteks: HaloDoc Series A butuh $13 juta (2017) untuk validasi model yang sama. Kami validasi dengan Rp650 juta — dengan data yang jauh lebih spesifik dan terarah.
+      </div>
+    </div>
+  </div>
+
+  <!-- TESIS -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-ic">🔬</div>
+      <div>
+        <div class="card-title">Yang dibuktikan dalam 3 bulan</div>
+        <div class="card-sub">Tesis terbukti atau tidak — jawaban jelas di akhir bulan ke-3</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="tesis">
+        <div class="tesis-card">
+          <div class="tesis-num">6/10</div>
+          <div class="tesis-label">dokter lanjut setelah insentif habis = tesis terbukti</div>
+        </div>
+        <div class="tesis-card">
+          <div class="tesis-num">3bln</div>
+          <div class="tesis-label">waktu untuk habit terbentuk di kedua sisi</div>
+        </div>
+        <div class="tesis-card">
+          <div class="tesis-num">100%</div>
+          <div class="tesis-label">data real dari dokter dan pasien nyata Indonesia</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW TO START -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-ic">🚀</div>
+      <div>
+        <div class="card-title">Cara memulai</div>
+        <div class="card-sub">3 langkah · tidak ada kontrak · tidak ada risiko</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div>
+          <div class="step-title">15 menit setup profil klinik digital Anda</div>
+          <div class="step-desc">Nama, spesialisasi, dan tarif. Kami yang guide dari awal — tidak perlu belajar teknologi baru.</div>
+          <span class="step-tag tag-y">Sekali saja</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div>
+          <div class="step-title">Invite 8–10 pasien regular Anda untuk coba</div>
+          <div class="step-desc">Bukan pasien asing. Pasien Anda yang sudah kenal dan percaya. Trust sudah ada — kami hanya merapikan infrastrukturnya.</div>
+          <span class="step-tag tag-g">Trust sudah ada</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div>
+          <div class="step-title">Jalankan satu Sabtu — rasakan sendiri</div>
+          <div class="step-desc">Kami standby penuh di sesi pertama. Kalau ada yang tidak sempurna — itu tanggung jawab kami, bukan Anda.</div>
+          <span class="step-tag tag-y">Full support</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GUARANTEE -->
+  <div class="guarantee" style="margin-bottom:1rem">
+    <div class="gu-ic">🛡️</div>
+    <div>
+      <div class="gu-title">Jaminan satu Sabtu</div>
+      <div class="gu-text">Kalau setelah satu sesi Saturday Clinic Anda tidak merasakan perbedaan yang nyata — tidak ada komitmen apapun. Tidak ada kontrak, tidak ada biaya setup, tidak ada tekanan untuk lanjut. Anda yang memutuskan segalanya, sepenuhnya.</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta">
+    <div class="cta-title">Sabtu pagi pertama Anda,<br><em>kapan kita mulai?</em></div>
+    <div class="cta-sub">Ngobrol 20 menit — tidak ada presentasi, tidak ada demo panjang.<br>Hanya diskusi apakah ini masuk akal untuk Anda.</div>
+    <div class="cta-btns">
+      <a href="https://wa.me/6208877775559?text=Halo%20Hendy%2C%20saya%20tertarik%20dengan%20Saturday%20Clinic%20Private%20Doctor" class="btn-wa" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WA: 0887 777 5559
+      </a>
+      <a href="mailto:unggul@outlook.com?subject=Saturday%20Clinic%20—%20Tertarik%20Diskusi&body=Halo%20Hendy%2C%0A%0ASaya%20tertarik%20mendiskusikan%20Saturday%20Clinic.%0A%0ANama%20saya%3A%0ASpesialisasi%3A%0ARS%20tempat%20praktek%3A" class="btn-mail">
+        ✉ unggul@outlook.com
+      </a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="ft">
+    <div class="ft-brand">Private <em>Doctor</em></div>
+    <div class="ft-conf">UNDANGAN TERBATAS · TIDAK UNTUK DISEBARLUASKAN</div>
+  </div>
+
+</div>
+</body>
+</html>
