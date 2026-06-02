@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Private Doctor — Demo Interaktif</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&family=Lora:ital,wght@0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060609;--bg2:#09090D;--sf:#0D0D14;--sf2:#111119;--sf3:#161620;
+  --bd:#1C1C2A;--bd2:#252535;--bd3:#2E2E48;
+  --tx:#F4F0EC;--tx2:#887E70;--tx3:#3A3530;--tx4:#252018;
+  --g:#C8A96E;--gb:rgba(200,169,110,.09);--gbd:rgba(200,169,110,.28);
+  --g2:#E2C88A;--g3:#F0DDB8;
+  --tl:#2DB89A;--tlb:rgba(45,184,154,.09);--tlbd:rgba(45,184,154,.25);
+  --bl:#5B8FE8;--blb:rgba(91,143,232,.09);--blbd:rgba(91,143,232,.25);
+  --am:#E8A030;--amb:rgba(232,160,48,.09);--ambd:rgba(232,160,48,.25);
+  --rd:#E24B4A;--rdb:rgba(226,75,74,.09);--rdbd:rgba(226,75,74,.22);
+  --gn:#2DA865;--gnb:rgba(45,168,101,.09);--gnbd:rgba(45,168,101,.25);
+  --vt:#8B7FFF;--vtb:rgba(139,127,255,.09);--vtbd:rgba(139,127,255,.25);
+  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;--serif:'Lora',serif;
+}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--tx);overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.4}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;width:100%;z-index:200;background:rgba(6,6,9,.92);backdrop-filter:blur(28px);border-bottom:1px solid var(--bd);height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 max(18px,calc(50vw - 640px))}
+.nb{display:flex;align-items:center;gap:10px}
+.nl{font-family:var(--serif);font-size:17px;font-weight:500;color:var(--tx);letter-spacing:-.2px}
+.nl span{color:var(--g);font-style:italic}
+.ntag{font-size:10px;font-family:var(--mono);color:var(--tx3);background:var(--sf2);padding:2px 8px;border-radius:4px;border:1px solid var(--bd2);letter-spacing:.06em}
+.nr{display:flex;align-items:center;gap:8px}
+.roletab{font-size:12px;padding:6px 13px;border-radius:8px;cursor:pointer;border:1px solid transparent;color:var(--tx2);transition:all .2s;background:transparent}
+.roletab.rp{border-color:var(--gbd);background:var(--gb);color:var(--g);font-weight:500}
+.roletab.rd{border-color:var(--blbd);background:var(--blb);color:var(--bl);font-weight:500}
+.ncta{font-size:12px;font-weight:600;color:var(--bg);background:var(--g);padding:7px 16px;border-radius:8px;cursor:pointer;border:none;transition:all .2s}
+.ncta:hover{background:var(--g2)}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px max(18px,calc(50vw - 580px)) 60px;position:relative;overflow:hidden}
+.orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(120px)}
+.o1{width:700px;height:700px;background:rgba(200,169,110,.045);top:-250px;left:50%;transform:translateX(-50%)}
+.o2{width:350px;height:350px;background:rgba(45,184,154,.035);bottom:-100px;right:-80px}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:500;color:var(--g);background:var(--gb);border:1px solid var(--gbd);padding:5px 14px;border-radius:100px;margin-bottom:28px;letter-spacing:.07em;text-transform:uppercase}
+.pulse-dot{width:6px;height:6px;background:var(--g);border-radius:50%;animation:pd 2s infinite}
+@keyframes pd{0%,100%{opacity:1}50%{opacity:.15}}
+h1{font-family:var(--serif);font-size:clamp(2.8rem,5.8vw,5.2rem);font-weight:500;line-height:1.07;letter-spacing:-.025em;margin-bottom:18px;font-style:italic}
+h1 em{font-style:normal;color:var(--g);background:linear-gradient(135deg,var(--g),var(--am));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(1rem,1.8vw,1.12rem);color:var(--tx2);max-width:540px;line-height:1.8;margin-bottom:44px;font-weight:300}
+.hero-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:56px}
+.btn-g{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--bg);background:var(--g);padding:13px 28px;border-radius:100px;cursor:pointer;border:none;font-family:var(--font);transition:all .2s}
+.btn-g:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(200,169,110,.3);background:var(--g2)}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--tx2);padding:13px 28px;border-radius:100px;border:1px solid var(--bd2);cursor:pointer;font-family:var(--font);transition:all .2s;background:transparent}
+.btn-ghost:hover{border-color:var(--bd3);color:var(--tx)}
+.diff-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.diff{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:16px 18px;text-align:left;min-width:200px;max-width:240px}
+.diff-vs{font-size:10px;color:var(--tx3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;font-family:var(--mono)}
+.diff-bad{font-size:12px;color:var(--rd);text-decoration:line-through;margin-bottom:4px;opacity:.7}
+.diff-good{font-size:13px;font-weight:500;color:var(--g)}
+
+/* ── SECTION ── */
+.sec{padding:72px max(18px,calc(50vw - 640px))}
+.sec-label{font-size:11px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--tx3);margin-bottom:12px;text-align:center}
+.sec-h2{font-family:var(--serif);font-size:clamp(1.9rem,3.5vw,2.8rem);font-weight:500;font-style:italic;line-height:1.12;letter-spacing:-.02em;margin-bottom:10px;text-align:center}
+.sec-sub{font-size:13px;color:var(--tx2);line-height:1.75;text-align:center;max-width:480px;margin:0 auto 40px;font-weight:300}
+
+/* ── DEMO SECTION ── */
+.demo-sec{padding:64px max(18px,calc(50vw - 640px));background:var(--bg2);border-top:1px solid var(--bd)}
+.role-switcher{display:flex;gap:10px;justify-content:center;margin-bottom:36px}
+.rsw{display:flex;align-items:center;gap:10px;padding:12px 22px;border-radius:12px;border:1px solid var(--bd2);cursor:pointer;transition:all .2s;background:var(--sf)}
+.rsw:hover{border-color:var(--bd3)}
+.rsw.sp{border-color:var(--gbd);background:var(--gb)}
+.rsw.sd{border-color:var(--blbd);background:var(--blb)}
+.rsw-ic{font-size:22px}
+.rsw-name{font-size:13px;font-weight:500;color:var(--tx2)}
+.rsw-desc{font-size:11px;color:var(--tx3);margin-top:2px}
+.rsw.sp .rsw-name{color:var(--g)}
+.rsw.sd .rsw-name{color:var(--bl)}
+.demo-layout{display:flex;gap:40px;align-items:flex-start;justify-content:center;flex-wrap:wrap}
+
+/* ── PHONE ── */
+.phone-outer{position:relative}
+.phone{width:336px;background:var(--sf);border:1.5px solid var(--bd2);border-radius:38px;overflow:hidden;box-shadow:0 32px 96px rgba(0,0,0,.65)}
+.notch{width:96px;height:20px;background:var(--bg);border-radius:0 0 14px 14px;margin:0 auto;z-index:5;position:relative}
+.phone-body{background:var(--bg2);height:596px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.status-bar{display:flex;align-items:center;justify-content:space-between;padding:6px 16px;font-size:10px;font-family:var(--mono);color:var(--tx2);flex-shrink:0}
+.screen-wrap{flex:1;overflow:hidden;position:relative}
+.sc{position:absolute;inset:0;overflow-y:auto;display:none}
+.sc.on{display:block}
+.home-indicator{height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hi-bar{width:100px;height:4px;background:var(--bd2);border-radius:2px}
+
+/* ── COMMON PHONE ELEMENTS ── */
+.ph{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;position:sticky;top:0;background:var(--bg2);z-index:10;border-bottom:.5px solid var(--bd)}
+.ph-title{font-family:var(--serif);font-size:18px;font-style:italic;color:var(--tx)}
+.ph-back{font-size:18px;cursor:pointer;padding:4px}
+.ph-action{font-size:12px;color:var(--g);cursor:pointer}
+.pad{padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:16px;overflow:hidden}
+.card-h{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:.5px solid var(--bd);background:var(--sf2)}
+.ch-t{font-size:12px;font-weight:500;color:var(--tx);display:flex;align-items:center;gap:6px}
+.ch-b{font-size:10px;padding:2px 9px;border-radius:100px;font-family:var(--mono)}
+.b-g{background:var(--gb);color:var(--g);border:1px solid var(--gbd)}
+.b-tl{background:var(--tlb);color:var(--tl);border:1px solid var(--tlbd)}
+.b-bl{background:var(--blb);color:var(--bl);border:1px solid var(--blbd)}
+.b-am{background:var(--amb);color:var(--am);border:1px solid var(--ambd)}
+.b-rd{background:var(--rdb);color:var(--rd);border:1px solid var(--rdbd)}
+.card-b{padding:12px 14px}
+.row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:12px;border-bottom:.5px solid var(--bd)}
+.row:last-child{border-bottom:none}
+.rk{color:var(--tx2)}.rv{color:var(--tx);font-weight:500;text-align:right;font-size:11px}
+.rv-g{color:var(--g)}.rv-tl{color:var(--tl)}.rv-rd{color:var(--rd)}.rv-am{color:var(--am)}
+
+/* ── PATIENT SCREENS ── */
+
+/* P1 ONBOARDING */
+.ob-wrap{min-height:596px;background:linear-gradient(180deg,var(--bg),var(--bg2));display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px 18px 16px;gap:16px}
+.ob-logo{font-family:var(--serif);font-size:26px;font-weight:600;font-style:italic;color:var(--tx);margin-bottom:2px}
+.ob-logo span{color:var(--g)}
+.ob-step{display:flex;gap:5px;margin-bottom:4px}
+.ob-dot{width:20px;height:3px;border-radius:2px;background:var(--bd2)}
+.ob-dot.on{background:var(--g)}
+.upload-area{width:100%;border:1.5px dashed var(--gbd);border-radius:16px;padding:22px;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;transition:all .2s;background:var(--gb)}
+.upload-area:hover{background:rgba(200,169,110,.14)}
+.ua-ic{font-size:32px}
+.ua-title{font-size:13px;font-weight:500;color:var(--tx)}
+.ua-sub{font-size:11px;color:var(--tx2);text-align:center;line-height:1.55}
+.upload-area.done{border-color:var(--tlbd);background:var(--tlb)}
+.upload-area.done .ua-title{color:var(--tl)}
+.ktp-preview{width:100%;background:linear-gradient(135deg,#1a3a6b,#2a5298);border-radius:10px;padding:12px;position:relative}
+.ktp-label{font-size:9px;color:rgba(255,255,255,.5);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;font-family:var(--mono)}
+.ktp-name{font-size:14px;font-weight:600;color:#fff;margin-bottom:2px}
+.ktp-nik{font-size:11px;color:rgba(255,255,255,.6);font-family:var(--mono)}
+.ktp-data{display:flex;gap:16px;margin-top:8px}
+.kd{font-size:10px;color:rgba(255,255,255,.55)}
+.kd b{color:rgba(255,255,255,.85);display:block;font-size:11px}
+.btn-gfull{width:100%;padding:14px;border-radius:14px;background:var(--g);border:none;cursor:pointer;font-family:var(--font);font-size:14px;font-weight:600;color:var(--bg);transition:all .2s}
+.btn-gfull:hover{background:var(--g2)}
+.btn-sfull{width:100%;padding:12px;border-radius:14px;background:transparent;border:1px solid var(--gbd);cursor:pointer;font-family:var(--font);font-size:13px;color:var(--g);transition:all .2s}
+
+/* P2 HOME */
+.greeting-card{background:linear-gradient(135deg,rgba(200,169,110,.12),rgba(200,169,110,.04));border:1px solid var(--gbd);border-radius:18px;padding:16px}
+.gc-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.gc-av{width:38px;height:38px;border-radius:50%;background:var(--gb);border:2px solid var(--gbd);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:15px;color:var(--g);font-style:italic;flex-shrink:0}
+.gc-name{font-family:var(--serif);font-size:16px;font-style:italic;color:var(--tx)}
+.gc-sub{font-size:11px;color:var(--tx2);margin-top:2px}
+.ara-msg{background:var(--sf2);border-radius:12px;padding:11px 13px;font-size:12px;color:var(--tx2);line-height:1.65;position:relative}
+.ara-msg::before{content:'Ara';position:absolute;top:-9px;left:12px;font-size:9px;background:var(--sf2);padding:0 6px;color:var(--g);font-family:var(--mono);letter-spacing:.07em}
+.queue-big{text-align:center;padding:16px 0}
+.qb-num{font-size:58px;font-weight:500;font-family:var(--mono);color:var(--tx);line-height:1}
+.qb-sub{font-size:11px;color:var(--tx2);margin-top:3px}
+.qb-eta{font-size:12px;color:var(--am);margin-top:6px;font-weight:500}
+.queue-track{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:12px}
+.qt{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-family:var(--mono)}
+.qt-d{background:var(--tlb);color:var(--tl);border:1px solid var(--tlbd)}
+.qt-a{background:var(--g);color:var(--bg);font-weight:700}
+.qt-w{background:var(--sf2);color:var(--tx3);border:1px solid var(--bd)}
+.qt-sep{width:14px;height:1px;background:var(--bd)}
+.reminder-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:.5px solid var(--bd)}
+.reminder-item:last-child{border-bottom:none}
+.ri-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ri-info{flex:1}
+.ri-drug{font-size:12px;font-weight:500;color:var(--tx)}
+.ri-dose{font-size:10px;color:var(--tx2);margin-top:1px}
+.ri-check{width:28px;height:28px;border-radius:50%;border:2px solid var(--bd2);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.ri-check.done{background:var(--g);border-color:var(--g);color:var(--bg)}
+.tip-card{background:linear-gradient(135deg,rgba(200,169,110,.08),rgba(200,169,110,.02));border:1px solid var(--gbd);border-radius:14px;padding:14px}
+.tip-lbl{font-size:9px;color:var(--g);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;font-family:var(--mono)}
+.tip-text{font-size:12px;color:var(--tx2);line-height:1.7}
+
+/* P3 BOOKING */
+.doc-item{background:var(--sf);border:1px solid var(--bd);border-radius:16px;padding:14px;cursor:pointer;transition:all .2s}
+.doc-item:hover,.doc-item.sel{border-color:var(--gbd);background:var(--gb)}
+.di-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.di-av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:15px;font-style:italic;flex-shrink:0}
+.di-name{font-family:var(--serif);font-size:14px;font-style:italic;color:var(--tx)}
+.di-spec{font-size:10px;color:var(--g);font-family:var(--mono);letter-spacing:.04em;margin-top:2px}
+.di-fee{font-size:14px;font-weight:500;color:var(--g);margin-left:auto;font-family:var(--mono)}
+.di-stats{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.dis{font-size:10px;padding:3px 9px;border-radius:100px;background:var(--sf2);color:var(--tx2);border:1px solid var(--bd)}
+.slots{display:flex;gap:6px;flex-wrap:wrap}
+.slot{font-size:10px;padding:5px 11px;border-radius:100px;border:1px solid var(--bd2);color:var(--tx2);cursor:pointer;transition:all .15s}
+.slot.open{border-color:var(--gbd);color:var(--g)}
+.slot.sel{background:var(--g);color:var(--bg);border-color:var(--g);font-weight:600}
+.slot.full{opacity:.35;cursor:not-allowed}
+.escrow-note{background:var(--tlb);border:1px solid var(--tlbd);border-radius:12px;padding:12px 14px;font-size:12px;color:var(--tl);line-height:1.6}
+.en-title{font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:5px}
+
+/* P4 ARA CHAT */
+.ara-screen-wrap{display:flex;flex-direction:column;height:596px}
+.ara-hdr{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--sf);border-bottom:1px solid var(--bd);flex-shrink:0}
+.ara-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--am));display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:14px;font-style:italic;color:var(--bg);font-weight:600;flex-shrink:0}
+.ara-name{font-size:13px;font-weight:500;color:var(--tx)}
+.ara-status{font-size:10px;color:var(--tl);margin-top:1px}
+.chat-body{flex:1;padding:14px 12px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;background:var(--bg2)}
+.msg{max-width:84%;display:flex;flex-direction:column;gap:3px}
+.msg.a{align-self:flex-start}
+.msg.u{align-self:flex-end}
+.mb{padding:10px 13px;border-radius:14px;font-size:12px;line-height:1.65}
+.msg.a .mb{background:var(--sf);border:1px solid var(--bd);color:var(--tx2);border-bottom-left-radius:4px}
+.msg.u .mb{background:var(--g);color:var(--bg);border-bottom-right-radius:4px}
+.mt{font-size:9px;color:var(--tx3);font-family:var(--mono)}
+.msg.u .mt{text-align:right}
+.typing .mb{display:flex;align-items:center;gap:4px;padding:12px 14px}
+.td{width:6px;height:6px;border-radius:50%;background:var(--tx3);animation:td .8s infinite}
+.td:nth-child(2){animation-delay:.15s}
+.td:nth-child(3){animation-delay:.3s}
+@keyframes td{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+.chat-inp{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--sf);border-top:1px solid var(--bd);flex-shrink:0}
+.ci-f{flex:1;background:var(--sf2);border:1px solid var(--bd2);border-radius:20px;padding:8px 14px;font-size:12px;color:var(--tx);outline:none;font-family:var(--font)}
+.ci-f::placeholder{color:var(--tx3)}
+.ci-mic,.ci-snd{width:34px;height:34px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;flex-shrink:0;transition:all .2s}
+.ci-mic{background:var(--gb);border:1px solid var(--gbd)}
+.ci-snd{background:var(--g)}
+.ci-snd:active{transform:scale(.92)}
+
+/* P5 INCOMING CALL */
+.call-screen{min-height:596px;background:linear-gradient(160deg,#08060C,#07060B,#060609);display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:50px 20px 36px;text-align:center}
+.call-av{width:88px;height:88px;border-radius:50%;background:var(--gb);border:3px solid var(--gbd);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:28px;font-style:italic;color:var(--g);animation:ring-anim 2.5s infinite}
+@keyframes ring-anim{0%,100%{box-shadow:0 0 0 0 rgba(200,169,110,.35)}60%{box-shadow:0 0 0 24px rgba(200,169,110,.0)}}
+.call-name{font-family:var(--serif);font-size:22px;font-style:italic;color:var(--tx);margin-top:16px}
+.call-spec{font-size:13px;color:var(--tx2);margin-top:4px}
+.call-stat{font-size:12px;color:var(--g);margin-top:8px;font-family:var(--mono)}
+.waveform{display:flex;align-items:center;justify-content:center;gap:4px;height:44px}
+.wb{width:4px;border-radius:2px;background:var(--g);animation:wv 1.2s ease-in-out infinite}
+.wb:nth-child(1){animation-delay:0s;height:10px}
+.wb:nth-child(2){animation-delay:.1s;height:18px}
+.wb:nth-child(3){animation-delay:.2s;height:30px}
+.wb:nth-child(4){animation-delay:.15s;height:22px}
+.wb:nth-child(5){animation-delay:.05s;height:14px}
+@keyframes wv{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+.call-btns{display:flex;gap:22px;align-items:center}
+.cb{width:58px;height:58px;border-radius:50%;border:none;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.cb:active{transform:scale(.92)}
+.cb-end{background:var(--rd)}
+.cb-mute{background:var(--sf2);border:1px solid var(--bd2)}
+
+/* P6 REKAM MEDIS */
+.rx-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:.5px solid var(--bd)}
+.rx-row:last-child{border-bottom:none}
+.rx-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.rx-drug{font-size:12px;font-weight:500;color:var(--tx);flex:1}
+.rx-dose{font-size:11px;color:var(--tx2)}
+.fu-banner{background:var(--gb);border:1px solid var(--gbd);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.fu-ic{font-size:20px;flex-shrink:0}
+.fu-title{font-size:12px;font-weight:500;color:var(--g)}
+.fu-date{font-size:11px;color:var(--g);opacity:.75;margin-top:2px}
+.history-item{padding:11px 14px;border-bottom:.5px solid var(--bd);cursor:pointer;transition:all .15s}
+.history-item:hover{background:var(--sf2)}
+.hi-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.hi-date{font-size:11px;color:var(--tx2)}
+.hi-doc{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--tx)}
+.hi-diag{font-size:12px;color:var(--g);margin-top:1px}
+.hi-badge{font-size:10px;padding:2px 8px;border-radius:100px;background:var(--tlb);color:var(--tl);border:1px solid var(--tlbd);font-family:var(--mono)}
+
+/* ── DOCTOR SCREENS ── */
+
+/* D1 DASHBOARD */
+.earn-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px}
+.eg{background:var(--sf2);border-radius:12px;padding:12px;text-align:center}
+.eg-n{font-size:22px;font-weight:500;font-family:var(--mono);color:var(--tx);line-height:1}
+.eg-n.gold{color:var(--g)}
+.eg-n.tl{color:var(--tl)}
+.eg-l{font-size:10px;color:var(--tx2);margin-top:4px}
+.pat-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:.5px solid var(--bd);cursor:pointer;transition:all .15s}
+.pat-row:hover{background:var(--sf2)}
+.pat-row.active{background:var(--gb);border-left:2px solid var(--g)}
+.pr-q{font-size:11px;font-family:var(--mono);color:var(--tx3);width:26px;flex-shrink:0}
+.pr-name{font-size:13px;font-weight:500;color:var(--tx);flex:1}
+.pr-sub{font-size:10px;color:var(--tx2);margin-top:2px}
+.pr-badge{font-size:10px;padding:2px 8px;border-radius:100px}
+.pb-brief{background:var(--tlb);color:var(--tl);border:1px solid var(--tlbd)}
+.pb-wait{background:var(--sf2);color:var(--tx2)}
+.pb-done{background:var(--sf2);color:var(--tx3)}
+.pr-flag{font-size:13px;margin-left:4px}
+.call-next{width:100%;padding:13px;background:linear-gradient(135deg,var(--g),var(--am));border:none;border-radius:0 0 16px 16px;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:600;color:var(--bg);display:flex;align-items:center;justify-content:center;gap:7px;transition:all .2s}
+.call-next:hover{opacity:.92}
+
+/* D2 BRIEF */
+.brief-pat{background:var(--sf);border:1px solid var(--gbd);border-radius:16px;padding:14px}
+.bp-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.bp-av{width:40px;height:40px;border-radius:50%;background:var(--gb);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:15px;font-style:italic;color:var(--g);flex-shrink:0}
+.bp-name{font-family:var(--serif);font-size:16px;font-style:italic;color:var(--tx)}
+.bp-meta{font-size:11px;color:var(--tx2);margin-top:2px}
+.br{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:.5px solid var(--bd);font-size:12px}
+.br:last-child{border-bottom:none}
+.brk{color:var(--tx2);width:88px;flex-shrink:0}
+.brv{color:var(--tx);flex:1;line-height:1.5}
+.brv.rd{color:var(--rd)}
+.brv.am{color:var(--am)}
+.ara-brief{background:var(--blb);border:1px solid var(--blbd);border-radius:14px;padding:13px}
+.abl{font-size:9px;color:var(--bl);letter-spacing:.09em;text-transform:uppercase;margin-bottom:7px;font-family:var(--mono);opacity:.75}
+.abt{font-size:12px;color:var(--bl);line-height:1.65}
+.ab-flags{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
+.abf{font-size:10px;padding:3px 9px;border-radius:100px;background:var(--rdb);color:var(--rd);border:1px solid var(--rdbd)}
+.abf.warn{background:var(--amb);color:var(--am);border-color:var(--ambd)}
+.start-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--g),var(--am));border:none;border-radius:14px;cursor:pointer;font-family:var(--font);font-size:14px;font-weight:600;color:var(--bg);display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+.start-btn:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(200,169,110,.28)}
+
+/* D3 POST CALL DICTATION */
+.dictation-screen{padding:14px;display:flex;flex-direction:column;gap:12px}
+.dictate-btn{width:100%;padding:18px;border-radius:16px;background:var(--rdb);border:1.5px solid var(--rdbd);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;color:var(--rd);display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s}
+.dictate-btn.active{animation:pulse-rec 1.5s infinite}
+@keyframes pulse-rec{0%,100%{background:var(--rdb)}50%{background:rgba(226,75,74,.18)}}
+.dictate-btn.done{background:var(--tlb);border-color:var(--tlbd);color:var(--tl);animation:none}
+.rec-wave{display:flex;align-items:center;gap:3px}
+.rw{width:3px;border-radius:2px;background:currentColor}
+.generated-record{background:var(--sf);border:1px solid var(--tlbd);border-radius:14px;overflow:hidden}
+.gr-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:.5px solid var(--bd);background:var(--sf2)}
+.gr-title{font-size:12px;font-weight:500;color:var(--tx)}
+.gr-badge{font-size:10px;padding:2px 8px;border-radius:100px;background:var(--tlb);color:var(--tl);border:1px solid var(--tlbd);font-family:var(--mono)}
+.gr-field{padding:10px 14px;border-bottom:.5px solid var(--bd)}
+.gr-field:last-child{border-bottom:none}
+.grf-lbl{font-size:10px;color:var(--tx3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px;font-family:var(--mono)}
+.grf-val{font-size:12px;color:var(--tx);line-height:1.6}
+.confirm-btn{width:100%;padding:14px;border-radius:14px;background:var(--tlb);border:1px solid var(--tlbd);cursor:pointer;font-family:var(--font);font-size:14px;font-weight:600;color:var(--tl);display:flex;align-items:center;justify-content:center;gap:7px;transition:all .2s}
+.confirm-btn:hover{background:rgba(45,184,154,.16)}
+
+/* D4 EARNINGS */
+.earn-summary{background:var(--gb);border:1px solid var(--gbd);border-radius:16px;padding:16px}
+.es-label{font-size:10px;color:var(--g);letter-spacing:.09em;text-transform:uppercase;margin-bottom:10px;font-family:var(--mono);opacity:.8}
+.es-amount{font-size:28px;font-weight:500;font-family:var(--mono);color:var(--g);line-height:1}
+.es-sub{font-size:11px;color:var(--g);opacity:.7;margin-top:4px}
+.payout-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:.5px solid var(--bd)}
+.payout-row:last-child{border-bottom:none}
+.po-ic{font-size:15px;flex-shrink:0}
+.po-info{flex:1}
+.po-name{font-size:12px;font-weight:500;color:var(--tx)}
+.po-sub{font-size:10px;color:var(--tx2);margin-top:1px}
+.po-amt{font-size:13px;font-weight:500;font-family:var(--mono);color:var(--tl)}
+.saturday-banner{background:var(--blb);border:1px solid var(--blbd);border-radius:14px;padding:14px}
+.sb-title{font-family:var(--serif);font-size:15px;font-style:italic;color:var(--tx);margin-bottom:8px}
+.sb-text{font-size:12px;color:var(--tx2);line-height:1.65}
+
+/* ── BOTTOM NAV ── */
+.bnav{display:flex;background:var(--sf);border-top:1px solid var(--bd);flex-shrink:0}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 0;border-radius:0;transition:all .15s;position:relative}
+.bni:hover{background:var(--sf2)}
+.bni.ap{background:var(--gb)}
+.bni.ad{background:var(--blb)}
+.bni-ic{font-size:18px}
+.bni-lbl{font-size:9px;color:var(--tx3);letter-spacing:.02em}
+.bni.ap .bni-lbl{color:var(--g)}
+.bni.ad .bni-lbl{color:var(--bl)}
+.bni-dot{position:absolute;top:4px;right:10px;width:7px;height:7px;border-radius:50%;background:var(--rd);border:1.5px solid var(--sf)}
+
+/* ── FEATURES PANEL ── */
+.feat-panel{width:310px}
+.fp-h{font-family:var(--serif);font-size:20px;font-style:italic;color:var(--tx);margin-bottom:18px}
+.fi{display:flex;align-items:flex-start;gap:12px;padding:13px 0;border-bottom:.5px solid var(--bd)}
+.fi:last-child{border-bottom:none}
+.fi-ic{font-size:18px;flex-shrink:0;width:26px;text-align:center;margin-top:2px}
+.fi-t{font-size:13px;font-weight:500;color:var(--tx);margin-bottom:4px}
+.fi-d{font-size:11px;color:var(--tx2);line-height:1.6}
+.fi-tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:5px;margin-top:5px;font-family:var(--mono)}
+.tag-g{background:var(--gb);color:var(--g);border:1px solid var(--gbd)}
+.tag-tl{background:var(--tlb);color:var(--tl);border:1px solid var(--tlbd)}
+.tag-bl{background:var(--blb);color:var(--bl);border:1px solid var(--blbd)}
+.tag-vt{background:var(--vtb);color:var(--vt);border:1px solid var(--vtbd)}
+
+/* ── FLOW SECTION ── */
+.flow-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--bd);border-radius:18px;overflow:hidden;margin-top:40px}
+.fs{padding:22px;border-right:1px solid var(--bd);position:relative}
+.fs:last-child{border-right:none}
+.fs-n{font-size:10px;font-family:var(--mono);color:var(--tx4);letter-spacing:.08em;margin-bottom:10px}
+.fs-i{font-size:24px;margin-bottom:10px}
+.fs-t{font-size:13px;font-weight:500;color:var(--tx);margin-bottom:6px}
+.fs-d{font-size:11px;color:var(--tx2);line-height:1.6}
+
+/* ── PRICING ── */
+.price-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:680px;margin:0 auto;text-align:left}
+.pc{background:var(--sf);border:1px solid var(--bd);border-radius:20px;padding:24px;position:relative}
+.pc.feat{border-color:var(--gbd)}
+.pc-lbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono);color:var(--tx3);margin-bottom:10px}
+.pc-role{font-family:var(--serif);font-size:19px;font-style:italic;color:var(--tx);margin-bottom:14px}
+.pc-n{font-size:26px;font-weight:500;font-family:var(--mono);color:var(--g);margin-bottom:4px}
+.pc-p{font-size:11px;color:var(--tx2);margin-bottom:16px}
+.pc-items{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.pci{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--tx2);line-height:1.5}
+.pci .ic{flex-shrink:0;margin-top:1px}
+.pc-btn{width:100%;padding:12px;border-radius:10px;background:var(--gb);border:1px solid var(--gbd);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;color:var(--g);transition:all .2s}
+.pc-btn:hover{background:rgba(200,169,110,.16)}
+.pc-btn.primary{background:var(--g);color:var(--bg);border-color:var(--g)}
+.pc-btn.primary:hover{background:var(--g2)}
+
+/* CTA */
+.cta-sec{padding:80px max(18px,calc(50vw - 640px));text-align:center;border-top:1px solid var(--bd)}
+.cta-h2{font-family:var(--serif);font-size:clamp(2rem,4vw,3rem);font-style:italic;color:var(--tx);margin-bottom:12px}
+.cta-sub{font-size:13px;color:var(--tx2);max-width:420px;margin:0 auto 32px;line-height:1.8}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* FOOTER */
+footer{padding:22px max(18px,calc(50vw - 640px));border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.ft-logo{font-family:var(--serif);font-size:15px;font-style:italic;color:var(--tx2)}
+.ft-logo span{color:var(--g);font-style:normal}
+.ft-copy{font-size:11px;color:var(--tx4)}
+.ft-links{display:flex;gap:16px}
+.ft-links a{font-size:11px;color:var(--tx4);transition:color .2s;text-decoration:none}
+.ft-links a:hover{color:var(--tx3)}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+@media(max-width:780px){
+  .diff-row{flex-direction:column;align-items:center}
+  .flow-grid{grid-template-columns:1fr 1fr}
+  .fs{border-bottom:1px solid var(--bd)}
+  .price-grid{grid-template-columns:1fr}
+  .demo-layout{flex-direction:column;align-items:center}
+  .feat-panel{width:100%;max-width:336px}
+  .nav-tabs{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nb">
+    <span class="nl">Private<span>Doctor</span></span>
+    <span class="ntag">by Flowo Studio</span>
+  </div>
+  <div class="nr">
+    <div style="display:flex;gap:5px" class="nav-tabs">
+      <div class="roletab rp" id="nt-p" onclick="switchRole('patient')">📱 Pasien</div>
+      <div class="roletab" id="nt-d" onclick="switchRole('doctor')">🩺 Dokter</div>
+    </div>
+    <button class="ncta" onclick="wa()">Hubungi Kami</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <div class="eyebrow"><div class="pulse-dot"></div>HealthTech · Indonesia · AI-Powered</div>
+  <h1>Dokter Anda.<br><em>Bukan dokter semua orang.</em></h1>
+  <p class="hero-sub">Konsultasi eksklusif dengan dokter spesialis pribadi Anda — dari mana saja. Didukung AI Ara yang mengenal riwayat kesehatan Anda sejak pertama kali bertemu.</p>
+  <div class="hero-ctas">
+    <button class="btn-g" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">▶ Jelajahi Demo</button>
+    <button class="btn-ghost" onclick="wa()">💬 Hubungi Kami</button>
+  </div>
+  <div class="diff-row reveal">
+    <div class="diff">
+      <div class="diff-vs">vs Marketplace</div>
+      <div class="diff-bad">Dokter random tiap sesi</div>
+      <div class="diff-good">Dokter Anda selalu ingat riwayat</div>
+    </div>
+    <div class="diff">
+      <div class="diff-vs">Platform fee</div>
+      <div class="diff-bad">30–40% ke platform</div>
+      <div class="diff-good">Hanya 4% — dokter dapat 96%</div>
+    </div>
+    <div class="diff">
+      <div class="diff-vs">Anamnesis</div>
+      <div class="diff-bad">Ketik ulang riwayat tiap kali</div>
+      <div class="diff-good">AI Ara siapkan brief H-1</div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section class="demo-sec" id="demo">
+  <div class="sec-label">Demo Interaktif</div>
+  <div style="font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.6rem);font-style:italic;color:var(--tx);text-align:center;margin-bottom:8px">Pilih role dan explore langsung</div>
+  <p style="font-size:13px;color:var(--tx2);text-align:center;margin-bottom:28px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.7">Semua data dummy. Semua fitur aktif. Tap antar screen bebas.</p>
+
+  <div class="role-switcher">
+    <div class="rsw sp" id="rsw-p" onclick="switchRole('patient')">
+      <div class="rsw-ic">📱</div>
+      <div><div class="rsw-name">Pasien</div><div class="rsw-desc">Onboarding, Ara, Konsultasi, Rekam</div></div>
+    </div>
+    <div class="rsw" id="rsw-d" onclick="switchRole('doctor')">
+      <div class="rsw-ic">🩺</div>
+      <div><div class="rsw-name">Dokter Spesialis</div><div class="rsw-desc">Dashboard, Brief, Dictation, Earning</div></div>
+    </div>
+  </div>
+
+  <div class="demo-layout">
+    <!-- PHONE -->
+    <div class="phone-outer">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="phone-body">
+          <div class="status-bar" id="sbar"><span id="sbar-time">09.34</span><span id="sbar-right">☀️ Sabtu</span></div>
+          <div class="screen-wrap" id="screen-wrap">
+
+            <!-- ══ PATIENT ══ -->
+            <!-- P1: ONBOARDING -->
+            <div class="sc on" id="sc-ob">
+              <div class="ob-wrap">
+                <div>
+                  <div class="ob-logo">Private<span>Doctor</span></div>
+                  <div style="font-size:12px;color:var(--tx2);font-style:italic;text-align:center">Dokter Anda. Bukan dokter semua orang.</div>
+                </div>
+                <div class="ob-step">
+                  <div class="ob-dot on"></div><div class="ob-dot on"></div><div class="ob-dot"></div>
+                </div>
+                <div style="font-size:14px;font-weight:500;color:var(--tx);text-align:center">Upload KTP untuk mulai</div>
+                <div class="upload-area done" id="ktp-area" onclick="tapKTP()">
+                  <div class="ua-ic">✅</div>
+                  <div class="ua-title" id="ktp-title">KTP terdeteksi</div>
+                  <div class="ua-sub" id="ktp-sub">OCR selesai · tap untuk lihat</div>
+                </div>
+                <div class="ktp-preview">
+                  <div class="ktp-label">KARTU TANDA PENDUDUK</div>
+                  <div class="ktp-name">BUDI SANTOSO</div>
+                  <div class="ktp-nik">3271 0514 0578 0003</div>
+                  <div class="ktp-data">
+                    <div class="kd"><b>47 tahun</b>TTL</div>
+                    <div class="kd"><b>Laki-laki</b>JK</div>
+                    <div class="kd"><b>Jakarta Sel.</b>Wilayah</div>
+                  </div>
+                </div>
+                <div style="width:100%">
+                  <div style="font-size:12px;font-weight:500;color:var(--tx);margin-bottom:8px">Health anchor (centang semua)</div>
+                  <div style="display:flex;flex-direction:column;gap:6px">
+                    <div style="display:flex;align-items:center;gap:9px;padding:9px 12px;background:var(--rdb);border:1px solid var(--rdbd);border-radius:10px;font-size:12px;color:var(--rd)">
+                      <span>⚠️</span><span>Alergi: <strong>Penisilin (BERAT)</strong></span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:9px;padding:9px 12px;background:var(--blb);border:1px solid var(--blbd);border-radius:10px;font-size:12px;color:var(--bl)">
+                      <span>🩺</span><span>Kondisi: Hipertensi · Dislipidemia</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:9px;padding:9px 12px;background:var(--sf2);border:1px solid var(--bd);border-radius:10px;font-size:12px;color:var(--tx2)">
+                      <span>💊</span><span>Bisoprolol 10mg · Amlodipine 10mg</span>
+                    </div>
+                  </div>
+                </div>
+                <button class="btn-gfull" onclick="goPat('home')">Mulai Cari Dokter →</button>
+              </div>
+            </div>
+
+            <!-- P2: HOME / BERANDA -->
+            <div class="sc" id="sc-home">
+              <div class="pad">
+                <div class="greeting-card">
+                  <div class="gc-top">
+                    <div class="gc-av">P</div>
+                    <div>
+                      <div class="gc-name">Selamat pagi, Pak Budi</div>
+                      <div class="gc-sub">Konsultasi hari ini · Sabtu 7 Jun · 10.00</div>
+                    </div>
+                  </div>
+                  <div class="ara-msg">Pak Budi, saya sudah bicara dengan Bapak kemarin malam dan brief sudah disiapkan untuk Dr. Arman. Bapak tinggal santai dan tunggu telepon dari beliau.</div>
+                </div>
+                <div class="card">
+                  <div class="card-h"><div class="ch-t">📋 Antrian hari ini</div><div class="ch-b b-am">~35 mnt</div></div>
+                  <div class="card-b">
+                    <div class="queue-big">
+                      <div class="qb-num">3</div>
+                      <div class="qb-sub">Posisi Anda · dr. Arman Wijaya, Sp.PD</div>
+                      <div class="qb-eta">Estimasi dipanggil pukul 10.22</div>
+                    </div>
+                    <div class="queue-track">
+                      <div class="qt qt-d">1</div><div class="qt-sep"></div>
+                      <div class="qt qt-d">2</div><div class="qt-sep"></div>
+                      <div class="qt qt-a">3</div><div class="qt-sep"></div>
+                      <div class="qt qt-w">4</div><div class="qt-sep"></div>
+                      <div class="qt qt-w">5</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-h">
+                    <div class="ch-t">💊 Obat pagi</div>
+                    <div class="ch-b b-am">🔥 12 hari berturut</div>
+                  </div>
+                  <div class="reminder-item">
+                    <div class="ri-dot" style="background:var(--bl)"></div>
+                    <div class="ri-info"><div class="ri-drug">Bisoprolol 10mg</div><div class="ri-dose">1 tablet · setelah sarapan</div></div>
+                    <div class="ri-check done">✓</div>
+                  </div>
+                  <div class="reminder-item">
+                    <div class="ri-dot" style="background:var(--g)"></div>
+                    <div class="ri-info"><div class="ri-drug">Amlodipine 10mg</div><div class="ri-dose">1 tablet · setelah sarapan</div></div>
+                    <div class="ri-check" id="amlo-check" onclick="tapCheck('amlo-check')"></div>
+                  </div>
+                </div>
+                <div class="tip-card">
+                  <div class="tip-lbl">💡 Untuk kondisi Bapak</div>
+                  <div class="tip-text">Hipertensi dan stres kerja terhubung erat. Lima menit pernapasan dalam sebelum meeting pertama terbukti menurunkan tekanan darah 8–10 poin secara konsisten.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- P3: BOOKING -->
+            <div class="sc" id="sc-booking">
+              <div class="ph">
+                <div class="ph-title">Pilih Dokter</div>
+                <div class="ph-action">Filter ▾</div>
+              </div>
+              <div class="pad" style="padding-top:10px">
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:2px">
+                  <div style="font-size:11px;padding:5px 12px;border-radius:100px;background:var(--gb);border:1px solid var(--gbd);color:var(--g);cursor:pointer">Semua</div>
+                  <div style="font-size:11px;padding:5px 12px;border-radius:100px;background:var(--sf);border:1px solid var(--bd);color:var(--tx2);cursor:pointer">Sp.PD</div>
+                  <div style="font-size:11px;padding:5px 12px;border-radius:100px;background:var(--sf);border:1px solid var(--bd);color:var(--tx2);cursor:pointer">Sp.KK</div>
+                  <div style="font-size:11px;padding:5px 12px;border-radius:100px;background:var(--sf);border:1px solid var(--bd);color:var(--tx2);cursor:pointer">Sp.JP</div>
+                </div>
+                <div class="doc-item sel" onclick="selDoc(this)">
+                  <div class="di-top">
+                    <div class="di-av" style="background:var(--gb)">A</div>
+                    <div style="flex:1">
+                      <div class="di-name">dr. Arman Wijaya</div>
+                      <div class="di-spec">Sp.PD · 18 tahun praktek</div>
+                    </div>
+                    <div class="di-fee">Rp 280rb</div>
+                  </div>
+                  <div class="di-stats">
+                    <div class="dis">⭐ 4.9</div>
+                    <div class="dis">👥 847 pasien</div>
+                    <div class="dis">⏱ ~18 mnt/sesi</div>
+                  </div>
+                  <div class="slots">
+                    <div class="slot open">08.00</div>
+                    <div class="slot sel">10.00</div>
+                    <div class="slot full">12.00 ●</div>
+                    <div class="slot open">14.00</div>
+                  </div>
+                </div>
+                <div class="doc-item" onclick="selDoc(this)">
+                  <div class="di-top">
+                    <div class="di-av" style="background:rgba(45,168,101,.12);color:var(--gn)">R</div>
+                    <div style="flex:1">
+                      <div class="di-name">dr. Rina Kusuma</div>
+                      <div class="di-spec">Sp.KK · 12 tahun praktek</div>
+                    </div>
+                    <div class="di-fee">Rp 250rb</div>
+                  </div>
+                  <div class="di-stats">
+                    <div class="dis">⭐ 4.8</div>
+                    <div class="dis">👥 512 pasien</div>
+                  </div>
+                  <div class="slots">
+                    <div class="slot open">09.00</div>
+                    <div class="slot open">11.00</div>
+                    <div class="slot open">13.00</div>
+                  </div>
+                </div>
+                <div class="escrow-note">
+                  <div class="en-title">🔒 Deposit — bukan pembayaran</div>
+                  Uang belum berpindah ke dokter sampai konsultasi selesai. Batalkan kapanpun — refund penuh tanpa syarat. Tidak konsultasi 30 hari — otomatis dikembalikan.
+                </div>
+                <button class="btn-gfull" onclick="goPat('ara')">Konfirmasi Booking →</button>
+              </div>
+            </div>
+
+            <!-- P4: ARA CHAT -->
+            <div class="sc" id="sc-ara">
+              <div class="ara-screen-wrap">
+                <div class="ara-hdr">
+                  <div class="ara-av">Ar</div>
+                  <div>
+                    <div class="ara-name">Ara</div>
+                    <div class="ara-status">● Teman ngobrol sebelum bertemu Dr. Arman</div>
+                  </div>
+                </div>
+                <div class="chat-body" id="chat-body">
+                  <div class="msg a"><div class="mb">Halo Pak Budi, senang bertemu lagi. Terakhir kita ngobrol, dada Bapak lagi kurang enak saat naik tangga. Sekarang bagaimana kabarnya?</div><div class="mt">20.14</div></div>
+                  <div class="msg u"><div class="mb">Sudah jauh membaik dok. Sekarang skala 3 dari 10, minggu lalu masih 7</div><div class="mt">20.15</div></div>
+                  <div class="msg a"><div class="mb">Syukurlah membaik Pak. Nyerinya muncul hanya saat aktivitas, atau kadang juga saat istirahat?</div><div class="mt">20.15</div></div>
+                  <div class="msg u"><div class="mb">Hanya saat naik tangga atau jalan cepat. Istirahat tidak ada sama sekali</div><div class="mt">20.16</div></div>
+                  <div class="msg a"><div class="mb">Itu informasi penting Pak. Pola itu menunjukkan aktivitas jadi pencetus. Obat Bisoprolol dan Amlodipine masih rutin diminum?</div><div class="mt">20.17</div></div>
+                </div>
+                <div class="chat-inp">
+                  <input class="ci-f" id="ci-f" placeholder="Ketik atau rekam suara...">
+                  <button class="ci-mic" onclick="sendMsg()">🎤</button>
+                  <button class="ci-snd" onclick="sendMsg()">↑</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- P5: INCOMING CALL -->
+            <div class="sc" id="sc-call">
+              <div class="call-screen">
+                <div>
+                  <div class="call-av">A</div>
+                  <div class="call-name">dr. Arman Wijaya</div>
+                  <div class="call-spec">Sp. Penyakit Dalam · Konsultasi</div>
+                  <div class="call-stat" id="call-timer">00:00</div>
+                </div>
+                <div class="waveform">
+                  <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+                  <div class="wb"></div><div class="wb"></div>
+                </div>
+                <div class="call-btns">
+                  <div class="cb cb-mute">🔇</div>
+                  <div class="cb cb-end" onclick="endCall()">📵</div>
+                  <div class="cb cb-mute">🔊</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- P6: REKAM MEDIS -->
+            <div class="sc" id="sc-rekam">
+              <div class="ph">
+                <div class="ph-title">Rekam Medis</div>
+                <div class="ph-action">Export PDF</div>
+              </div>
+              <div class="pad" style="padding-top:10px">
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px">
+                  <div style="font-size:11px;padding:4px 10px;border-radius:100px;background:var(--rdb);border:1px solid var(--rdbd);color:var(--rd)">⚠️ Alergi Penisilin</div>
+                  <div style="font-size:11px;padding:4px 10px;border-radius:100px;background:var(--blb);border:1px solid var(--blbd);color:var(--bl)">HT · Dislipidemia</div>
+                </div>
+                <div class="card">
+                  <div class="card-h"><div class="ch-t">✅ Konsultasi terbaru</div><div class="ch-b b-tl">7 Jun</div></div>
+                  <div class="card-b">
+                    <div class="row"><span class="rk">Dokter</span><span class="rv rv-g">dr. Arman Wijaya, Sp.PD</span></div>
+                    <div class="row"><span class="rk">Diagnosis</span><span class="rv">Angina stabil · HT grade 2</span></div>
+                    <div class="row"><span class="rk">Durasi</span><span class="rv">18 menit</span></div>
+                  </div>
+                  <div class="rx-row"><div class="rx-dot" style="background:var(--bl)"></div><div class="rx-drug">Bisoprolol 10mg</div><div class="rx-dose">1×1 pagi</div></div>
+                  <div class="rx-row"><div class="rx-dot" style="background:var(--g)"></div><div class="rx-drug">Amlodipine 10mg</div><div class="rx-dose">1×1 malam</div></div>
+                  <div class="rx-row"><div class="rx-dot" style="background:var(--am)"></div><div class="rx-drug">ISDN 5mg sublingual</div><div class="rx-dose">PRN nyeri dada</div></div>
+                </div>
+                <div class="fu-banner">
+                  <div class="fu-ic">📅</div>
+                  <div><div class="fu-title">Follow-up berikutnya</div><div class="fu-date">Sabtu 5 Juli 2026 · Dr. Arman sudah catat</div></div>
+                </div>
+                <div class="card">
+                  <div class="card-h"><div class="ch-t">📚 Riwayat sebelumnya</div></div>
+                  <div class="history-item">
+                    <div class="hi-top"><div class="hi-date">3 Jun 2026</div><div class="hi-badge">✓ Selesai</div></div>
+                    <div class="hi-doc">dr. Arman Wijaya</div>
+                    <div class="hi-diag">HT grade 2 · Kontrol rutin</div>
+                  </div>
+                  <div class="history-item">
+                    <div class="hi-top"><div class="hi-date">8 Mei 2026</div><div class="hi-badge">✓ Selesai</div></div>
+                    <div class="hi-doc">dr. Arman Wijaya</div>
+                    <div class="hi-diag">HT grade 2 · Dislipidemia</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ══ DOCTOR SCREENS ══ -->
+
+            <!-- D1: DASHBOARD -->
+            <div class="sc" id="sc-dash">
+              <div class="ph">
+                <div class="ph-title" style="font-size:15px">dr. Arman · Saturday Clinic</div>
+                <div style="font-size:10px;color:var(--tl);font-family:var(--mono);display:flex;align-items:center;gap:4px"><div style="width:6px;height:6px;border-radius:50%;background:var(--tl);animation:pd 1.5s infinite"></div>Live</div>
+              </div>
+              <div class="card" style="margin:10px 14px 0;border-radius:14px;overflow:hidden">
+                <div class="earn-grid">
+                  <div class="eg"><div class="eg-n gold">Rp 2.82jt</div><div class="eg-l">Bulan ini · ditransfer</div></div>
+                  <div class="eg"><div class="eg-n">Rp 846rb</div><div class="eg-l">Hari ini · pending</div></div>
+                  <div class="eg"><div class="eg-n tl">4%</div><div class="eg-l">Platform fee</div></div>
+                  <div class="eg"><div class="eg-n">18</div><div class="eg-l">Pasien bulan ini</div></div>
+                </div>
+              </div>
+              <div class="card" style="margin:10px 14px 0;border-radius:14px;overflow:hidden">
+                <div class="card-h"><div class="ch-t">Antrian hari ini · 4 pasien</div><div class="ch-b b-tl">Live</div></div>
+                <div class="pat-row active" onclick="goDoc('brief')">
+                  <div class="pr-q">3</div>
+                  <div style="flex:1"><div class="pr-name">Pak Budi</div><div class="pr-sub">Nyeri dada · HT · Follow-up</div></div>
+                  <div class="pr-badge pb-brief">Brief ✓</div>
+                  <div class="pr-flag">⚠️</div>
+                </div>
+                <div class="pat-row" onclick="goDoc('brief')">
+                  <div class="pr-q">4</div>
+                  <div style="flex:1"><div class="pr-name">Bu Siti</div><div class="pr-sub">Kontrol DM · Ke-6</div></div>
+                  <div class="pr-badge pb-wait">Menunggu</div>
+                </div>
+                <div class="pat-row" onclick="goDoc('brief')">
+                  <div class="pr-q">5</div>
+                  <div style="flex:1"><div class="pr-name">Pak Hendra</div><div class="pr-sub">HT baru · Pertama kali</div></div>
+                  <div class="pr-badge pb-wait">Menunggu</div>
+                </div>
+                <div class="pat-row" style="opacity:.5">
+                  <div class="pr-q">2</div>
+                  <div style="flex:1"><div class="pr-name">Bu Dewi</div><div class="pr-sub">Selesai · 14 menit</div></div>
+                  <div class="pr-badge pb-done">✓ Done</div>
+                </div>
+                <button class="call-next" onclick="goPat('call');startTimer()">📞 Panggil Pak Budi Sekarang</button>
+              </div>
+            </div>
+
+            <!-- D2: BRIEF -->
+            <div class="sc" id="sc-brief">
+              <div class="ph">
+                <div class="ph-back" onclick="goDoc('dash')">←</div>
+                <div class="ph-title">Brief — Pak Budi</div>
+                <div class="ph-action">Riwayat</div>
+              </div>
+              <div class="pad" style="padding-top:10px">
+                <div class="brief-pat">
+                  <div class="bp-top">
+                    <div class="bp-av">BS</div>
+                    <div><div class="bp-name">Budi Santoso</div><div class="bp-meta">47th · L · Kunjungan ke-8 · BPJS Kelas II</div></div>
+                  </div>
+                  <div class="br"><span class="brk">Alergi</span><span class="brv rd">⚠️ Penisilin (BERAT) — jangan resepkan Beta-Lactam</span></div>
+                  <div class="br"><span class="brk">Kondisi</span><span class="brv">HT Grade 2 · Dislipidemia · Suspek Angina</span></div>
+                  <div class="br"><span class="brk">Obat aktif</span><span class="brv">Bisoprolol 10mg · Amlodipine 10mg · Rosuvastatin 20mg</span></div>
+                  <div class="br"><span class="brk">Vital pagi</span><span class="brv am">↑ Tensi 148/92 · Nadi 84 · SpO2 97%</span></div>
+                </div>
+                <div class="ara-brief">
+                  <div class="abl">Brief dari Ara · kemarin 20.14</div>
+                  <div class="abt">Nyeri dada exertional membaik dari skala 7 ke 3 minggu ini. Hanya muncul saat naik tangga — tidak saat istirahat. Kepatuhan obat baik. Stres kerja deadline akhir bulan diakui. Pertanyaan pasien: kapan sebaiknya ISDN diminum?</div>
+                  <div class="ab-flags">
+                    <div class="abf">⚠️ Exertional chest pain</div>
+                    <div class="abf warn">↑ Tensi dari bulan lalu</div>
+                  </div>
+                </div>
+                <button class="start-btn" onclick="goPat('call');startTimer()">
+                  📞 Mulai Konsultasi — Panggil Pak Budi
+                </button>
+              </div>
+            </div>
+
+            <!-- D3: POST-CALL DICTATION -->
+            <div class="sc" id="sc-dictate">
+              <div class="ph">
+                <div class="ph-back" onclick="goDoc('dash')">←</div>
+                <div class="ph-title">Post-call · Dictate</div>
+              </div>
+              <div class="dictation-screen">
+                <div style="background:var(--tlb);border:1px solid var(--tlbd);border-radius:12px;padding:11px 14px;font-size:12px;color:var(--tl);line-height:1.6">
+                  ✅ Konsultasi Pak Budi selesai · 18 menit · Transfer dijadwalkan H+1
+                </div>
+                <div id="dictate-btn-wrap">
+                  <button class="dictate-btn" id="dictate-btn" onclick="startDictate()">
+                    <div class="rec-wave">
+                      <div class="rw" style="height:8px;animation:wv 1s .0s infinite"></div>
+                      <div class="rw" style="height:14px;animation:wv 1s .1s infinite"></div>
+                      <div class="rw" style="height:20px;animation:wv 1s .2s infinite"></div>
+                      <div class="rw" style="height:14px;animation:wv 1s .1s infinite"></div>
+                      <div class="rw" style="height:8px;animation:wv 1s .0s infinite"></div>
+                    </div>
+                    🎤 Tap untuk dictate rekam medis
+                  </button>
+                </div>
+                <div id="generated-rec" style="display:none">
+                  <div class="generated-record">
+                    <div class="gr-head"><div class="gr-title">🤖 Rekam Medis Generated</div><div class="gr-badge">AI parsed · 22 detik</div></div>
+                    <div class="gr-field"><div class="grf-lbl">Diagnosis</div><div class="grf-val">Angina pectoris stabil (I20.8) · Hipertensi grade 2 tidak terkontrol adekuat (I10) · Dislipidemia (E78.5)</div></div>
+                    <div class="gr-field"><div class="grf-lbl">Temuan</div><div class="grf-val">EKG hari ini normal. Tensi 148/92 — di atas target. Keluhan membaik dari skala 7 ke 3.</div></div>
+                    <div class="gr-field"><div class="grf-lbl">Resep</div><div class="grf-val">Bisoprolol 10mg 1×1 · Amlodipine 10mg 1×1 · Rosuvastatin 20mg 1×1 · ISDN 5mg sublingual PRN</div></div>
+                    <div class="gr-field"><div class="grf-lbl">Rencana</div><div class="grf-val">Order TMT jika keluhan tidak membaik 2 minggu. Follow-up 5 Juli 2026.</div></div>
+                  </div>
+                  <button class="confirm-btn" onclick="goDoc('earn')">✓ Konfirmasi — Kirim ke Pasien & Apotek</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- D4: EARNINGS -->
+            <div class="sc" id="sc-earn">
+              <div class="ph">
+                <div class="ph-back" onclick="goDoc('dash')">←</div>
+                <div class="ph-title">Pendapatan</div>
+              </div>
+              <div class="pad" style="padding-top:10px">
+                <div class="earn-summary">
+                  <div class="es-label">Total Juni 2026</div>
+                  <div class="es-amount">Rp 2.820.000</div>
+                  <div class="es-sub">18 konsultasi · Sudah ditransfer ke rekening</div>
+                </div>
+                <div class="card">
+                  <div class="card-h"><div class="ch-t">Hari ini · Sabtu 7 Jun</div><div class="ch-b b-am">Pending H+1</div></div>
+                  <div class="payout-row">
+                    <div class="po-ic">💰</div>
+                    <div class="po-info"><div class="po-name">Pak Budi Santoso</div><div class="po-sub">18 menit · Rp 300.000 bruto</div></div>
+                    <div class="po-amt">Rp 282.000</div>
+                  </div>
+                  <div class="payout-row">
+                    <div class="po-ic">💰</div>
+                    <div class="po-info"><div class="po-name">Bu Siti Rahayu</div><div class="po-sub">14 menit · Rp 300.000 bruto</div></div>
+                    <div class="po-amt">Rp 282.000</div>
+                  </div>
+                  <div class="payout-row">
+                    <div class="po-ic">💰</div>
+                    <div class="po-info"><div class="po-name">Bu Dewi Kusuma</div><div class="po-sub">11 menit · Rp 300.000 bruto</div></div>
+                    <div class="po-amt">Rp 282.000</div>
+                  </div>
+                  <div class="payout-row" style="background:var(--sf2)">
+                    <div class="po-ic">📊</div>
+                    <div class="po-info"><div class="po-name" style="color:var(--g)">Total hari ini</div><div class="po-sub">3 konsultasi · ~43 menit total</div></div>
+                    <div class="po-amt" style="color:var(--g);font-size:15px">Rp 846.000</div>
+                  </div>
+                </div>
+                <div class="saturday-banner">
+                  <div class="sb-title">Saturday Clinic — setiap Sabtu pagi</div>
+                  <div class="sb-text">3 jam dari rumah = Rp 800rb–1.2jt bersih per sesi. Tanpa perjalanan. Tanpa baju dokter. Platform fee 4% saja — jauh di bawah marketplace.</div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /screen-wrap -->
+
+          <!-- PATIENT NAV -->
+          <div class="bnav" id="p-nav">
+            <div class="bni ap" id="bn-ob" onclick="goPat('ob')"><div class="bni-ic">👤</div><div class="bni-lbl">Profil</div></div>
+            <div class="bni" id="bn-home" onclick="goPat('home')"><div class="bni-ic">🏠</div><div class="bni-lbl">Beranda</div><div class="bni-dot"></div></div>
+            <div class="bni" id="bn-booking" onclick="goPat('booking')"><div class="bni-ic">📅</div><div class="bni-lbl">Booking</div></div>
+            <div class="bni" id="bn-ara" onclick="goPat('ara')"><div class="bni-ic">✨</div><div class="bni-lbl">Ara</div></div>
+            <div class="bni" id="bn-rekam" onclick="goPat('rekam')"><div class="bni-ic">📋</div><div class="bni-lbl">Rekam</div></div>
+          </div>
+
+          <!-- DOCTOR NAV -->
+          <div class="bnav" id="d-nav" style="display:none">
+            <div class="bni ad" id="bn-dash" onclick="goDoc('dash')"><div class="bni-ic">📋</div><div class="bni-lbl">Antrian</div></div>
+            <div class="bni" id="bn-brief" onclick="goDoc('brief')"><div class="bni-ic">📝</div><div class="bni-lbl">Brief</div></div>
+            <div class="bni" id="bn-dictate" onclick="goDoc('dictate')"><div class="bni-ic">🎤</div><div class="bni-lbl">Dictate</div></div>
+            <div class="bni" id="bn-earn" onclick="goDoc('earn')"><div class="bni-ic">💰</div><div class="bni-lbl">Earning</div></div>
+          </div>
+
+        </div><!-- /phone-body -->
+        <div class="home-indicator"><div class="hi-bar"></div></div>
+      </div><!-- /phone -->
+    </div><!-- /phone-outer -->
+
+    <!-- FEATURES -->
+    <div class="feat-panel">
+      <div class="fp-h" id="fp-h">Fitur Pasien</div>
+      <div id="pf">
+        <div class="fi"><div class="fi-ic">✨</div><div><div class="fi-t">AI Ara — Teman Ngobrol</div><div class="fi-d">Malam sebelum konsultasi, Ara menghubungi Anda. Percakapan natural — bukan kuesioner kaku. Brief klinis disiapkan untuk dokter sebelum pasien bicara sepatah kata.</div><span class="fi-tag tag-bl">Claude Haiku</span></div></div>
+        <div class="fi"><div class="fi-ic">📞</div><div><div class="fi-t">Voice Call — Dokter yang Menelepon</div><div class="fi-d">HP berdering seperti telepon biasa. Dokter yang initiate — bukan Anda yang join link. Pengalaman "dokter pribadi yang menelepon" yang sesungguhnya.</div><span class="fi-tag tag-tl">Agora Voice SDK</span></div></div>
+        <div class="fi"><div class="fi-ic">🔒</div><div><div class="fi-t">Deposit Escrow — Uang 100% Aman</div><div class="fi-d">Uang tidak berpindah ke dokter sampai konsultasi selesai. Batalkan kapanpun — refund penuh. Tidak konsultasi 30 hari — otomatis dikembalikan tanpa perlu minta.</div><span class="fi-tag tag-g">Midtrans Escrow</span></div></div>
+        <div class="fi"><div class="fi-ic">💊</div><div><div class="fi-t">Reminder Obat + Streak</div><div class="fi-d">Jadwal obat dari resep dokter — bukan alarm generik. Streak motivasi harian. Data kepatuhan dikirim ke dokter sebelum konsultasi berikutnya.</div></div></div>
+        <div class="fi"><div class="fi-ic">📋</div><div><div class="fi-t">Rekam Medis Seumur Hidup</div><div class="fi-d">Semua diagnosis, resep, hasil lab tersimpan. Ganti HP tidak kehilangan data. Share ke dokter lain via QR sementara yang expire otomatis.</div><span class="fi-tag tag-vt">Cloud · Encrypted</span></div></div>
+      </div>
+      <div id="df" style="display:none">
+        <div class="fi"><div class="fi-ic">🏠</div><div><div class="fi-t">Saturday Clinic — dari Rumah</div><div class="fi-d">Sabtu pagi 08.00–11.00. Maksimal 10 pasien. Tanpa perjalanan, tanpa RS. Mulai satu Sabtu — tanpa komitmen. Transfer langsung H+1.</div><span class="fi-tag tag-g">Entry point</span></div></div>
+        <div class="fi"><div class="fi-ic">💰</div><div><div class="fi-t">Platform Fee 4% Saja</div><div class="fi-d">Dokter terima 96% per konsultasi. Marketplace biasa ambil 30–40%. Transfer otomatis H+1 setelah selesai. Tidak ada lock-in kontrak jangka panjang.</div><span class="fi-tag tag-tl">vs 30-40% marketplace</span></div></div>
+        <div class="fi"><div class="fi-ic">📝</div><div><div class="fi-t">Brief Siap Sebelum Pasien Masuk</div><div class="fi-d">Ara sudah gali anamnesis H-1. Dokter buka app: keluhan, vital, riwayat, alergi, obat aktif — semua sudah ada. Zero tanya ulang dari awal.</div></div></div>
+        <div class="fi"><div class="fi-ic">🎤</div><div><div class="fi-t">Voice Dictation Post-Konsultasi</div><div class="fi-d">Setelah call, dokter bicara 30 detik. Sistem generate rekam medis + resep lengkap. Satu tap konfirmasi. Tidak perlu ketik apapun.</div><span class="fi-tag tag-bl">Groq Whisper</span></div></div>
+        <div class="fi"><div class="fi-ic">👥</div><div><div class="fi-t">Pasien yang Mengenal Dokter</div><div class="fi-d">Pasien existing Anda — bukan pasien random marketplace. Hubungan jangka panjang yang dibangun. Kepercayaan yang tidak bisa dibeli.</div></div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FLOW -->
+<section class="sec reveal">
+  <div class="sec-label">Alur konsultasi</div>
+  <div class="sec-h2">Dari booking sampai rekam medis — semua terotomasi.</div>
+  <div class="flow-grid">
+    <div class="fs" style="background:var(--gb)">
+      <div class="fs-n">01</div><div class="fs-i">📅</div>
+      <div class="fs-t">Booking + Deposit Escrow</div>
+      <div class="fs-d">Pasien pilih dokter dan slot. Deposit ke escrow Midtrans. Uang aman — belum ke dokter sampai konsultasi selesai.</div>
+    </div>
+    <div class="fs">
+      <div class="fs-n">02</div><div class="fs-i">✨</div>
+      <div class="fs-t">Ara Anamnesis H-1</div>
+      <div class="fs-d">Malam sebelumnya Ara menghubungi pasien via WhatsApp atau in-app. Clinical brief disiapkan. Dokter terima brief sebelum sesi dimulai.</div>
+    </div>
+    <div class="fs">
+      <div class="fs-n">03</div><div class="fs-i">📞</div>
+      <div class="fs-t">Dokter Menelepon</div>
+      <div class="fs-d">HP pasien berdering seperti telepon biasa. Dokter yang initiate via Agora. Voice-only — hemat bandwidth, privasi terjaga.</div>
+    </div>
+    <div class="fs" style="background:var(--tlb)">
+      <div class="fs-n">04</div><div class="fs-i">✅</div>
+      <div class="fs-t">Selesai & Transfer</div>
+      <div class="fs-d">Dokter dictate 30 detik → rekam medis + resep generated. Konfirmasi satu tap. Transfer ke dokter otomatis H+1.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="sec" style="background:var(--bg2);border-top:1px solid var(--bd)">
+  <div class="sec-label">Pricing</div>
+  <div class="sec-h2">Transparan. Tanpa biaya tersembunyi.</div>
+  <p class="sec-sub">Dokter set tarif sendiri. Platform hanya ambil 4%.</p>
+  <div class="price-grid reveal">
+    <div class="pc">
+      <div class="pc-lbl">Untuk Pasien</div>
+      <div class="pc-role">Harga konsultasi</div>
+      <div class="pc-n">Rp 200–350rb</div>
+      <div class="pc-p">per konsultasi · tergantung dokter & spesialisasi</div>
+      <div class="pc-items">
+        <div class="pci"><span class="ic">✓</span>Voice call langsung dengan dokter Anda</div>
+        <div class="pci"><span class="ic">✓</span>AI Ara siapkan brief H-1</div>
+        <div class="pci"><span class="ic">✓</span>Resep digital + reminder obat otomatis</div>
+        <div class="pci"><span class="ic">✓</span>Rekam medis tersimpan seumur hidup</div>
+        <div class="pci"><span class="ic">✓</span>Refund penuh jika batal · auto-refund 30 hari</div>
+      </div>
+      <button class="pc-btn primary" onclick="wa()">Cari Dokter Sekarang →</button>
+    </div>
+    <div class="pc feat">
+      <div class="pc-lbl">Untuk Dokter Spesialis</div>
+      <div class="pc-role">Platform fee saja</div>
+      <div class="pc-n">4%</div>
+      <div class="pc-p">dari setiap konsultasi · dokter terima 96%</div>
+      <div class="pc-items">
+        <div class="pci"><span class="ic">✓</span>Klinik digital sendiri — bukan slot marketplace</div>
+        <div class="pci"><span class="ic">✓</span>AI Ara siapkan semua pasien Anda</div>
+        <div class="pci"><span class="ic">✓</span>Zero ketik — semua voice dictation</div>
+        <div class="pci"><span class="ic">✓</span>Transfer H+1 otomatis ke rekening</div>
+        <div class="pci"><span class="ic">✓</span>Mulai Saturday Clinic — tanpa komitmen</div>
+      </div>
+      <button class="pc-btn" onclick="wa('dokter')">Daftar sebagai Dokter →</button>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-sec reveal">
+  <div class="cta-h2">Siap bergabung?</div>
+  <p class="cta-sub">Untuk pasien yang ingin dokter pribadi, atau dokter yang ingin praktek digital dengan penghasilan lebih besar dan waktu lebih efisien.</p>
+  <div class="cta-btns">
+    <button class="btn-g" onclick="wa()">💬 WhatsApp Kami</button>
+    <button class="btn-ghost" onclick="window.open('mailto:unggul@outlook.com','_blank')">📧 unggul@outlook.com</button>
+  </div>
+</section>
+
+<footer>
+  <div class="ft-logo">Private<span>Doctor</span> — by Flowo Studio</div>
+  <div class="ft-links">
+    <a href="https://flowo-delta.vercel.app" target="_blank">flowo-delta.vercel.app</a>
+    <a href="https://flowo-delta.vercel.app/medicore_demo.html" target="_blank">MediCore HMS</a>
+  </div>
+  <div class="ft-copy">© 2026 Flowo Studio · Hendy Unggul · Jakarta 🇮🇩</div>
+</footer>
+
+<script>
+var role='patient';
+
+// ─── NAVIGATION ───
+var pScreens=['ob','home','booking','ara','call','rekam'];
+var dScreens=['dash','brief','dictate','earn'];
+var pNavMap={ob:'bn-ob',home:'bn-home',booking:'bn-booking',ara:'bn-ara',rekam:'bn-rekam'};
+var dNavMap={dash:'bn-dash',brief:'bn-brief',dictate:'bn-dictate',earn:'bn-earn'};
+
+function goPat(id){
+  if(role!=='patient') return;
+  pScreens.forEach(function(s){var el=document.getElementById('sc-'+s);if(el)el.className='sc'});
+  var el=document.getElementById('sc-'+id);if(el)el.className='sc on';
+  Object.values(pNavMap).forEach(function(n){var el=document.getElementById(n);if(el)el.className='bni'});
+  if(pNavMap[id]){document.getElementById(pNavMap[id]).className='bni ap'}
+}
+
+function goDoc(id){
+  if(role!=='doctor') return;
+  dScreens.forEach(function(s){var el=document.getElementById('sc-'+s);if(el)el.className='sc'});
+  var el=document.getElementById('sc-'+id);if(el)el.className='sc on';
+  Object.values(dNavMap).forEach(function(n){var el=document.getElementById(n);if(el)el.className='bni'});
+  if(dNavMap[id]){document.getElementById(dNavMap[id]).className='bni ad'}
+}
+
+function switchRole(r){
+  role=r;
+  var isP=(r==='patient');
+
+  // nav
+  document.getElementById('nt-p').className='roletab'+(isP?' rp':'');
+  document.getElementById('nt-d').className='roletab'+(!isP?' rd':'');
+  document.getElementById('rsw-p').className='rsw'+(isP?' sp':'');
+  document.getElementById('rsw-d').className='rsw'+(!isP?' sd':'');
+
+  // screens: hide all
+  pScreens.concat(dScreens).forEach(function(s){var el=document.getElementById('sc-'+s);if(el)el.className='sc'});
+
+  // show appropriate default
+  if(isP){
+    document.getElementById('sc-ob').className='sc on';
+    document.getElementById('p-nav').style.display='flex';
+    document.getElementById('d-nav').style.display='none';
+    document.getElementById('bn-ob').className='bni ap';
+    document.getElementById('pf').style.display='block';
+    document.getElementById('df').style.display='none';
+    document.getElementById('fp-h').textContent='Fitur Pasien';
+  } else {
+    document.getElementById('sc-dash').className='sc on';
+    document.getElementById('p-nav').style.display='none';
+    document.getElementById('d-nav').style.display='flex';
+    document.getElementById('bn-dash').className='bni ad';
+    document.getElementById('pf').style.display='none';
+    document.getElementById('df').style.display='block';
+    document.getElementById('fp-h').textContent='Fitur Dokter';
+  }
+}
+
+// ─── CALL TIMER ───
+var timerInt=null, timerSecs=0;
+function startTimer(){
+  clearInterval(timerInt);timerSecs=0;
+  timerInt=setInterval(function(){
+    timerSecs++;
+    var m=Math.floor(timerSecs/60).toString().padStart(2,'0');
+    var s=(timerSecs%60).toString().padStart(2,'0');
+    var el=document.getElementById('call-timer');if(el)el.textContent=m+':'+s;
+  },1000);
+}
+function endCall(){
+  clearInterval(timerInt);
+  goPat('rekam');
+}
+
+// ─── INTERACTIONS ───
+function tapCheck(id){
+  var el=document.getElementById(id);
+  if(el){el.classList.add('done');el.innerHTML='✓'}
+}
+
+function selDoc(el){
+  document.querySelectorAll('.doc-item').forEach(function(d){d.classList.remove('sel')});
+  el.classList.add('sel');
+}
+
+// ─── ARA CHAT ───
+var araReplies=[
+  'Itu informasi penting untuk Dr. Arman, terimakasih Pak. Kepatuhan obat seperti ini sangat membantu pemulihan.',
+  'Baik Pak Budi. Saya sudah catat semua untuk Dr. Arman. Brief sudah siap — selamat beristirahat, besok tinggal angkat telepon.',
+  'Tentu Pak. Akan saya sampaikan pertanyaan itu ke Dr. Arman juga. Ada hal lain yang ingin Bapak ceritakan?'
+];
+var araIdx=0;
+
+function sendMsg(){
+  var input=document.getElementById('ci-f');
+  var val=input.value.trim()||'Iya, obat rutin sudah diminum. Tensi pagi ini terasa lebih baik dari kemarin.';
+  var body=document.getElementById('chat-body');
+
+  var um=document.createElement('div');
+  um.className='msg u';
+  um.innerHTML='<div class="mb">'+val+'</div><div class="mt">'+getTime()+'</div>';
+  body.appendChild(um);
+  input.value='';
+  body.scrollTop=body.scrollHeight;
+
+  setTimeout(function(){
+    var tp=document.createElement('div');tp.className='msg a typing';tp.id='tp';
+    tp.innerHTML='<div class="mb"><div class="td"></div><div class="td"></div><div class="td"></div></div>';
+    body.appendChild(tp);body.scrollTop=body.scrollHeight;
+    setTimeout(function(){
+      var t=document.getElementById('tp');if(t)t.remove();
+      var am=document.createElement('div');am.className='msg a';
+      am.innerHTML='<div class="mb">'+araReplies[araIdx%araReplies.length]+'</div><div class="mt">'+getTime()+'</div>';
+      araIdx++;body.appendChild(am);body.scrollTop=body.scrollHeight;
+    },1600);
+  },700);
+}
+
+document.getElementById('ci-f').addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg()});
+
+function getTime(){var n=new Date();return n.getHours().toString().padStart(2,'0')+'.'+n.getMinutes().toString().padStart(2,'0')}
+
+// ─── DICTATION ───
+var dictStep=0;
+function startDictate(){
+  var btn=document.getElementById('dictate-btn');
+  if(dictStep===0){
+    btn.className='dictate-btn active';
+    btn.innerHTML='<div class="rec-wave"><div class="rw" style="height:8px;animation:wv 1s .0s infinite"></div><div class="rw" style="height:14px;animation:wv 1s .1s infinite"></div><div class="rw" style="height:20px;animation:wv 1s .2s infinite"></div><div class="rw" style="height:14px;animation:wv 1s .1s infinite"></div><div class="rw" style="height:8px;animation:wv 1s .0s infinite"></div></div>🔴 Merekam... tap untuk stop';
+    dictStep=1;
+  } else if(dictStep===1){
+    btn.className='dictate-btn';
+    btn.innerHTML='⟳ AI memproses...';
+    btn.disabled=true;
+    setTimeout(function(){
+      btn.className='dictate-btn done';
+      btn.innerHTML='✅ Rekam medis generated — konfirmasi di bawah';
+      document.getElementById('generated-rec').style.display='block';
+      dictStep=2;
+    },2000);
+  }
+}
+
+// ─── WA LINK ───
+function wa(type){
+  var msg=type==='dokter'?'Halo%2C%20saya%20ingin%20daftar%20sebagai%20dokter%20di%20Private%20Doctor':'Halo%2C%20saya%20tertarik%20dengan%20Private%20Doctor';
+  window.open('https://wa.me/6208877775559?text='+msg,'_blank');
+}
+
+// ─── REVEAL ───
+var ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target)}})},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(function(el){ro.observe(el)});
+</script>
+</body>
+</html>
