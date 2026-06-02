@@ -400,6 +400,18 @@ footer{padding:22px max(18px,calc(50vw - 640px));border-top:1px solid var(--bd);
 .ft-links a{font-size:11px;color:var(--tx4);transition:color .2s;text-decoration:none}
 .ft-links a:hover{color:var(--tx3)}
 
+/* ── PAYMENT ── */
+.pay-method{display:flex;align-items:center;justify-content:space-between;background:var(--sf);border:1px solid var(--bd2);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .2s}
+.pay-method:hover{border-color:var(--bd3)}
+.pay-method.sel{border-color:var(--gbd);background:var(--gb)}
+.pm-left{display:flex;align-items:center;gap:10px}
+.pm-logo{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
+.pm-name{font-size:13px;font-weight:500;color:var(--tx)}
+.pay-method.sel .pm-name{color:var(--g)}
+.pm-sub{font-size:10px;color:var(--tx2);margin-top:2px}
+.pm-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--bg);transition:all .2s;flex-shrink:0}
+.pay-method.sel .pm-check{background:var(--g);border-color:var(--g)}
+@keyframes success-pop{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
 /* REVEAL */
 .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
 .reveal.in{opacity:1;transform:translateY(0)}
@@ -642,7 +654,7 @@ footer{padding:22px max(18px,calc(50vw - 640px));border-top:1px solid var(--bd);
                   <div class="en-title">🔒 Deposit — bukan pembayaran</div>
                   Uang belum berpindah ke dokter sampai konsultasi selesai. Batalkan kapanpun — refund penuh tanpa syarat. Tidak konsultasi 30 hari — otomatis dikembalikan.
                 </div>
-                <button class="btn-gfull" onclick="goPat('ara')">Konfirmasi Booking →</button>
+                <button class="btn-gfull" onclick="goPat('payment')">Konfirmasi & Bayar →</button>
               </div>
             </div>
 
@@ -668,6 +680,141 @@ footer{padding:22px max(18px,calc(50vw - 640px));border-top:1px solid var(--bd);
                   <button class="ci-mic" onclick="sendMsg()">🎤</button>
                   <button class="ci-snd" onclick="sendMsg()">↑</button>
                 </div>
+              </div>
+            </div>
+
+            <!-- P4B: PAYMENT -->
+            <div class="sc" id="sc-payment">
+              <div class="ph">
+                <div class="ph-back" onclick="goPat('booking')">←</div>
+                <div class="ph-title">Pembayaran</div>
+              </div>
+              <div class="pad" style="padding-top:10px">
+
+                <!-- ORDER SUMMARY -->
+                <div style="background:var(--gb);border:1px solid var(--gbd);border-radius:14px;padding:14px">
+                  <div style="font-size:10px;color:var(--g);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;font-family:var(--mono)">Ringkasan Booking</div>
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                    <div style="width:40px;height:40px;border-radius:50%;background:var(--gb);border:2px solid var(--gbd);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:15px;color:var(--g);font-style:italic;flex-shrink:0">A</div>
+                    <div>
+                      <div style="font-family:var(--serif);font-size:14px;font-style:italic;color:var(--tx)">dr. Arman Wijaya, Sp.PD</div>
+                      <div style="font-size:11px;color:var(--tx2);margin-top:2px">Sabtu 7 Jun · 10.00 WIB · Voice Konsultasi</div>
+                    </div>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;font-size:12px;padding:7px 0;border-top:.5px solid var(--gbd)">
+                    <span style="color:var(--tx2)">Tarif konsultasi</span>
+                    <span style="color:var(--tx);font-weight:500">Rp 300.000</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;font-size:12px;padding:7px 0;border-top:.5px solid var(--gbd)">
+                    <span style="color:var(--tx2)">Platform fee (4%)</span>
+                    <span style="color:var(--tx2)">Rp 12.000</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:600;padding:8px 0;border-top:1px solid var(--gbd);margin-top:2px">
+                    <span style="color:var(--tx)">Total deposit</span>
+                    <span style="color:var(--g);font-family:var(--mono)">Rp 300.000</span>
+                  </div>
+                </div>
+
+                <!-- ESCROW BADGE -->
+                <div style="display:flex;align-items:center;gap:9px;background:var(--tlb);border:1px solid var(--tlbd);border-radius:10px;padding:10px 13px;font-size:12px;color:var(--tl)">
+                  <span style="font-size:16px;flex-shrink:0">🔒</span>
+                  <span><strong>Deposit — bukan pembayaran.</strong> Uang belum ke dokter sampai konsultasi selesai. Batal kapanpun → refund penuh.</span>
+                </div>
+
+                <!-- PAYMENT METHODS -->
+                <div>
+                  <div style="font-size:11px;font-weight:500;color:var(--tx);margin-bottom:10px">Pilih metode pembayaran</div>
+                  <div id="pay-methods" style="display:flex;flex-direction:column;gap:7px">
+
+                    <div class="pay-method sel" id="pm-gopay" onclick="selPay('gopay')">
+                      <div class="pm-left">
+                        <div class="pm-logo" style="background:linear-gradient(135deg,#00AED6,#00C3F1)">G</div>
+                        <div><div class="pm-name">GoPay</div><div class="pm-sub">Saldo: Rp 520.000</div></div>
+                      </div>
+                      <div class="pm-check" id="pmc-gopay">✓</div>
+                    </div>
+
+                    <div class="pay-method" id="pm-ovo" onclick="selPay('ovo')">
+                      <div class="pm-left">
+                        <div class="pm-logo" style="background:linear-gradient(135deg,#4C3494,#6B4DBB)">O</div>
+                        <div><div class="pm-name">OVO</div><div class="pm-sub">Linked · Rp 1.2jt</div></div>
+                      </div>
+                      <div class="pm-check" id="pmc-ovo"></div>
+                    </div>
+
+                    <div class="pay-method" id="pm-briva" onclick="selPay('briva')">
+                      <div class="pm-left">
+                        <div class="pm-logo" style="background:linear-gradient(135deg,#003D82,#005BB5)">B</div>
+                        <div><div class="pm-name">BRI Virtual Account</div><div class="pm-sub">Transfer bank · berlaku 24 jam</div></div>
+                      </div>
+                      <div class="pm-check" id="pmc-briva"></div>
+                    </div>
+
+                    <div class="pay-method" id="pm-qris" onclick="selPay('qris')">
+                      <div class="pm-left">
+                        <div class="pm-logo" style="background:linear-gradient(135deg,#E74C3C,#C0392B);font-size:10px">QR</div>
+                        <div><div class="pm-name">QRIS</div><div class="pm-sub">Scan QR dari semua e-wallet</div></div>
+                      </div>
+                      <div class="pm-check" id="pmc-qris"></div>
+                    </div>
+
+                    <div class="pay-method" id="pm-cc" onclick="selPay('cc')">
+                      <div class="pm-left">
+                        <div class="pm-logo" style="background:linear-gradient(135deg,#1A1A2E,#16213E)">💳</div>
+                        <div><div class="pm-name">Kartu Kredit / Debit</div><div class="pm-sub">Visa · Mastercard · JCB</div></div>
+                      </div>
+                      <div class="pm-check" id="pmc-cc"></div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- PAY BUTTON -->
+                <button class="btn-gfull" id="pay-btn" onclick="processPayment()">
+                  Bayar Rp 300.000 via GoPay
+                </button>
+
+                <div style="font-size:11px;color:var(--tx3);text-align:center;line-height:1.6">
+                  Powered by Midtrans · Transaksi dienkripsi SSL
+                </div>
+              </div>
+            </div>
+
+            <!-- P4C: BOOKING CONFIRMED -->
+            <div class="sc" id="sc-confirmed">
+              <div style="min-height:596px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:32px 20px 20px;text-align:center;background:linear-gradient(180deg,var(--bg),var(--bg2))">
+
+                <!-- SUCCESS ANIMATION -->
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">
+                  <div id="success-ring" style="width:80px;height:80px;border-radius:50%;background:var(--tlb);border:3px solid var(--tl);display:flex;align-items:center;justify-content:center;font-size:32px;animation:success-pop .4s ease">✅</div>
+                  <div style="font-family:var(--serif);font-size:22px;font-style:italic;color:var(--tx)">Booking Terkonfirmasi!</div>
+                  <div style="font-size:12px;color:var(--tx2);line-height:1.65;max-width:260px">Deposit Rp 300.000 berhasil masuk ke escrow. Uang aman sampai konsultasi selesai.</div>
+                </div>
+
+                <!-- BOOKING CARD -->
+                <div style="width:100%;background:var(--sf);border:1px solid var(--gbd);border-radius:16px;padding:16px;margin-bottom:14px">
+                  <div style="font-size:10px;color:var(--g);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;font-family:var(--mono)">Detail Booking</div>
+                  <div class="row"><span class="rk">Dokter</span><span class="rv rv-g">dr. Arman Wijaya, Sp.PD</span></div>
+                  <div class="row"><span class="rk">Tanggal</span><span class="rv">Sabtu, 7 Juni 2026</span></div>
+                  <div class="row"><span class="rk">Waktu</span><span class="rv">10.00 WIB</span></div>
+                  <div class="row"><span class="rk">Nomor antrian</span><span class="rv rv-g" style="font-family:var(--mono);font-size:13px">#A-003</span></div>
+                  <div class="row"><span class="rk">Deposit</span><span class="rv rv-tl">Rp 300.000 · Escrow</span></div>
+                  <div class="row"><span class="rk">Order ID</span><span class="rv" style="font-family:var(--mono);font-size:10px">PD-20260607-0342</span></div>
+                </div>
+
+                <!-- WHAT'S NEXT -->
+                <div style="width:100%;display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+                  <div style="display:flex;align-items:center;gap:10px;background:var(--sf2);border-radius:10px;padding:10px 12px;text-align:left">
+                    <span style="font-size:18px;flex-shrink:0">✨</span>
+                    <div style="font-size:12px;color:var(--tx2);line-height:1.5"><strong style="color:var(--tx)">Malam ini</strong> Ara akan menghubungi Anda untuk anamnesis singkat. Siapkan 10 menit.</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;background:var(--sf2);border-radius:10px;padding:10px 12px;text-align:left">
+                    <span style="font-size:18px;flex-shrink:0">📞</span>
+                    <div style="font-size:12px;color:var(--tx2);line-height:1.5"><strong style="color:var(--tx)">Sabtu 10.00</strong> dr. Arman akan menelepon HP Anda. Pastikan sinyal baik.</div>
+                  </div>
+                </div>
+
+                <button class="btn-gfull" onclick="goPat('home')" style="width:100%">Ke Beranda →</button>
               </div>
             </div>
 
@@ -1020,7 +1167,7 @@ footer{padding:22px max(18px,calc(50vw - 640px));border-top:1px solid var(--bd);
 var role='patient';
 
 // ─── NAVIGATION ───
-var pScreens=['ob','home','booking','ara','call','rekam'];
+var pScreens=['ob','home','booking','payment','confirmed','ara','call','rekam'];
 var dScreens=['dash','brief','dictate','earn'];
 var pNavMap={ob:'bn-ob',home:'bn-home',booking:'bn-booking',ara:'bn-ara',rekam:'bn-rekam'};
 var dNavMap={dash:'bn-dash',brief:'bn-brief',dictate:'bn-dictate',earn:'bn-earn'};
@@ -1072,6 +1219,29 @@ function switchRole(r){
     document.getElementById('df').style.display='block';
     document.getElementById('fp-h').textContent='Fitur Dokter';
   }
+}
+
+// ─── PAYMENT ───
+var selectedPay='gopay';
+var payLabels={gopay:'GoPay',ovo:'OVO',briva:'BRI Virtual Account',qris:'QRIS',cc:'Kartu Kredit'};
+function selPay(id){
+  document.querySelectorAll('.pay-method').forEach(function(m){m.classList.remove('sel')});
+  document.querySelectorAll('.pm-check').forEach(function(c){c.textContent=''});
+  document.getElementById('pm-'+id).classList.add('sel');
+  document.getElementById('pmc-'+id).textContent='✓';
+  selectedPay=id;
+  document.getElementById('pay-btn').textContent='Bayar Rp 300.000 via '+payLabels[id];
+}
+function processPayment(){
+  var btn=document.getElementById('pay-btn');
+  btn.textContent='⟳ Memproses...';
+  btn.disabled=true;
+  btn.style.opacity='.7';
+  setTimeout(function(){
+    goPat('confirmed');
+    btn.textContent='Bayar Rp 300.000 via '+payLabels[selectedPay];
+    btn.disabled=false;btn.style.opacity='1';
+  },1800);
 }
 
 // ─── CALL TIMER ───
