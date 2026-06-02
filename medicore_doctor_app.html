@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediCore — Doctor App</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Lora:ital,wght@0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07070F;--bg2:#090912;--surface:#0D0D1C;--surface2:#111122;--surface3:#141430;
+  --border:#1A1A30;--border2:#222240;--border3:#2A2A50;
+  --text:#F2F0FF;--text2:#7875B0;--text3:#3A3768;--text4:#252350;
+  --teal:#2DB89A;--tealb:rgba(45,184,154,.08);--tealbd:rgba(45,184,154,.18);
+  --blue:#5B8FE8;--blueb:rgba(91,143,232,.08);--bluebd:rgba(91,143,232,.18);
+  --gold:#C8A96E;--goldb:rgba(200,169,110,.08);--goldbd:rgba(200,169,110,.2);
+  --amber:#E8A030;--amberb:rgba(232,160,48,.08);--amberbd:rgba(232,160,48,.2);
+  --red:#E24B4A;--redb:rgba(226,75,74,.08);--redbd:rgba(226,75,74,.2);
+  --violet:#8B7FFF;
+  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;--serif:'Lora',serif;
+  --r:10px;--r2:14px;--r3:18px;
+}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ── TOP BAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 22px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.tb-brand{display:flex;align-items:center;gap:12px}
+.tb-doc{font-family:var(--serif);font-size:15px;font-weight:500;color:var(--text);font-style:italic}
+.tb-spec{font-size:10px;font-family:var(--mono);color:var(--text3);background:var(--surface2);padding:2px 9px;border-radius:4px;border:1px solid var(--border)}
+.tb-right{display:flex;align-items:center;gap:14px}
+.tb-patient-count{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
+.tb-count{font-size:20px;font-weight:500;font-family:var(--mono);color:var(--text)}
+.tb-time{font-family:var(--mono);font-size:14px;color:var(--text2);letter-spacing:.04em}
+.tb-status{font-size:10px;padding:3px 10px;border-radius:100px;background:var(--tealb);color:var(--teal);border:1px solid var(--tealbd)}
+
+/* ── LAYOUT ── */
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 44px)}
+
+/* ── PATIENT LIST (left panel) ── */
+.patient-list{background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;height:calc(100vh - 44px);position:sticky;top:44px}
+.pl-header{padding:14px 16px;border-bottom:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:space-between}
+.pl-title{font-size:12px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:6px}
+.pl-count{font-size:10px;color:var(--text2)}
+.pl-tabs{display:flex;padding:8px 10px;gap:5px;border-bottom:1px solid var(--border)}
+.plt{font-size:11px;padding:5px 11px;border-radius:7px;cursor:pointer;color:var(--text2);border:1px solid transparent;transition:all .15s}
+.plt:hover{background:var(--surface2)}
+.plt.on{background:var(--blueb);color:var(--blue);border-color:var(--bluebd)}
+.patient-item{padding:11px 16px;cursor:pointer;border-bottom:1px solid var(--border);transition:all .15s;position:relative}
+.patient-item:hover{background:var(--surface2)}
+.patient-item.active{background:var(--blueb);border-left:2px solid var(--blue)}
+.patient-item.done{opacity:.45}
+.pi-top{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.pi-num{font-size:11px;font-weight:500;font-family:var(--mono);color:var(--text3);width:36px;flex-shrink:0}
+.pi-name{font-size:13px;font-weight:500;color:var(--text);flex:1}
+.pi-s{font-size:9px;padding:2px 7px;border-radius:100px}
+.s-brief{background:var(--tealb);color:var(--teal)}
+.s-wait{background:var(--surface2);color:var(--text2)}
+.s-active{background:var(--blueb);color:var(--blue)}
+.s-done{background:var(--surface2);color:var(--text3)}
+.s-call{background:var(--amberb);color:var(--amber)}
+.pi-detail{font-size:10px;color:var(--text2);padding-left:45px;line-height:1.4}
+.pi-flag{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12px}
+.call-btn{margin:0 10px 8px;padding:8px;background:var(--amberb);border:1px solid var(--amberbd);border-radius:8px;width:calc(100% - 20px);cursor:pointer;font-family:var(--font);font-size:11px;font-weight:500;color:var(--amber);display:flex;align-items:center;justify-content:center;gap:5px;transition:all .15s}
+.call-btn:hover{background:rgba(232,160,48,.15)}
+
+/* ── MAIN CONTENT ── */
+.doctor-content{background:var(--bg2);overflow-y:auto;height:calc(100vh - 44px)}
+.sc{display:none}.sc.on{display:block}
+
+/* ── SCREEN: IDLE ── */
+.idle-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 44px);padding:40px;text-align:center;gap:20px}
+.idle-title{font-family:var(--serif);font-size:28px;font-weight:500;color:var(--text);font-style:italic;letter-spacing:-.3px}
+.idle-sub{font-size:14px;color:var(--text2);max-width:380px;line-height:1.7}
+.idle-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%;max-width:500px}
+.is{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:16px;text-align:center}
+.is-n{font-size:28px;font-weight:500;font-family:var(--mono);color:var(--text);margin-bottom:3px}
+.is-l{font-size:11px;color:var(--text2)}
+
+/* ── SCREEN: CONSULTATION ── */
+.consult-layout{display:flex;flex-direction:column}
+
+/* patient header */
+.consult-header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;align-items:flex-start;gap:16px;position:sticky;top:0;z-index:10}
+.ch-av{width:48px;height:48px;border-radius:50%;background:var(--goldb);border:2px solid var(--goldbd);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:var(--gold);flex-shrink:0}
+.ch-main{flex:1}
+.ch-name{font-family:var(--serif);font-size:22px;font-weight:500;color:var(--text);letter-spacing:-.3px;margin-bottom:3px}
+.ch-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ch-tag{font-size:11px;color:var(--text2)}
+.ch-tag.bpjs{color:var(--teal)}
+.ch-separator{width:3px;height:3px;border-radius:50%;background:var(--text3);flex-shrink:0}
+.ch-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.btn{border:none;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:500;padding:8px 16px;border-radius:9px;display:flex;align-items:center;gap:6px;transition:all .15s}
+.btn:active{transform:scale(.97)}
+.btn-done{background:var(--tealb);color:var(--teal);border:1px solid var(--tealbd);font-size:14px;padding:10px 20px}
+.btn-ghost{background:var(--surface2);color:var(--text2);border:1px solid var(--border2)}
+.btn-amber{background:var(--amberb);color:var(--amber);border:1px solid var(--amberbd)}
+.btn-red{background:var(--redb);color:var(--red);border:1px solid var(--redbd)}
+.btn-blue{background:var(--blueb);color:var(--blue);border:1px solid var(--bluebd)}
+
+/* anchor always visible */
+.anchor-bar{background:var(--redb);border-bottom:1px solid var(--redbd);padding:8px 20px;display:flex;align-items:center;gap:14px}
+.ab-item{font-size:11px;color:var(--red);display:flex;align-items:center;gap:5px}
+.ab-sep{width:.5px;height:14px;background:var(--redbd)}
+.ab-cond{font-size:11px;color:var(--text2);display:flex;align-items:center;gap:6px}
+
+/* consult body */
+.consult-body{padding:18px 20px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.consult-body.full{grid-template-columns:1fr}
+
+/* section cards */
+.sec{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.sec-h{display:flex;align-items:center;justify-content:space-between;padding:11px 15px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.sec-title{font-size:12px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:7px}
+.sec-badge{font-size:10px;padding:2px 9px;border-radius:100px;font-family:var(--mono)}
+.bgt{background:var(--tealb);color:var(--teal);border:1px solid var(--tealbd)}
+.bga{background:var(--amberb);color:var(--amber);border:1px solid var(--amberbd)}
+.bgr{background:var(--redb);color:var(--red);border:1px solid var(--redbd)}
+.bgb{background:var(--blueb);color:var(--blue);border:1px solid var(--bluebd)}
+.bgg{background:var(--surface2);color:var(--text2);border:1px solid var(--border2)}
+.bgo{background:var(--goldb);color:var(--gold);border:1px solid var(--goldbd)}
+.sec-body{padding:13px 15px}
+
+/* PRE-ANAMNESIS */
+.ara-summary{background:var(--blueb);border:1px solid var(--bluebd);border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.as-head{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.as-av{width:22px;height:22px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:#fff;flex-shrink:0}
+.as-lbl{font-size:10px;color:var(--blue);opacity:.8;font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.as-text{font-size:12px;color:var(--blue);line-height:1.65}
+.as-items{display:flex;flex-direction:column;gap:4px;margin-top:7px}
+.as-item{display:flex;align-items:flex-start;gap:7px;font-size:11px;color:var(--blue)}
+.as-dot{width:4px;height:4px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:5px;opacity:.7}
+.suster-note{background:var(--amberb);border:1px solid var(--amberbd);border-radius:9px;padding:10px 13px;margin-bottom:8px;font-size:11px;color:var(--amber);line-height:1.6}
+.sn-lbl{font-size:9px;color:var(--amber);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;font-family:var(--mono);opacity:.8}
+
+/* VITAL SIGNS */
+.vitals-compact{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.vc{background:var(--surface2);border-radius:9px;padding:9px 11px}
+.vc.alert{background:var(--amberb);border:1px solid var(--amberbd)}
+.vc.normal{background:var(--tealb)}
+.vc-lbl{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;font-family:var(--mono)}
+.vc.alert .vc-lbl{color:var(--amber);opacity:.8}
+.vc.normal .vc-lbl{color:var(--teal);opacity:.8}
+.vc-val{font-size:17px;font-weight:500;color:var(--text);font-family:var(--mono);margin-top:2px}
+.vc.alert .vc-val{color:var(--amber)}
+.vc.normal .vc-val{color:var(--teal)}
+.vc-ref{font-size:9px;color:var(--text2);margin-top:1px}
+.vc.alert .vc-ref{color:var(--amber);opacity:.7}
+
+/* DIAGNOSIS — voice first */
+.voice-input{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .2s;margin-bottom:8px}
+.voice-input:hover{border-color:var(--border3)}
+.voice-input.active{border-color:var(--amberbd);background:var(--amberb)}
+.vi-mic{width:34px;height:34px;border-radius:50%;background:var(--amberb);border:1px solid var(--amberbd);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;transition:all .2s}
+.voice-input.active .vi-mic{background:var(--amber);animation:micropulse 1s infinite}
+@keyframes micropulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.vi-text{font-size:13px;color:var(--text);line-height:1.5;flex:1}
+.vi-text.placeholder{color:var(--text2);font-style:italic}
+.icd-select{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:10px 13px;display:flex;align-items:center;gap:9px;cursor:pointer;transition:all .15s;margin-bottom:7px}
+.icd-select:hover{border-color:var(--border3)}
+.icd-code{font-size:11px;font-weight:500;font-family:var(--mono);color:var(--gold);padding:3px 8px;border-radius:5px;background:var(--goldb);flex-shrink:0}
+.icd-name{font-size:12px;color:var(--text);flex:1}
+.icd-action{font-size:10px;color:var(--text2)}
+.plan-text{font-size:12px;color:var(--text2);line-height:1.65;font-style:italic;padding:8px 12px;background:var(--surface2);border-radius:8px;cursor:pointer;transition:all .15s}
+.plan-text:hover{color:var(--text)}
+
+/* PRESCRIPTION */
+.rx-item{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--surface2);border-radius:9px;margin-bottom:6px;border:1px solid var(--border);cursor:pointer;transition:all .15s}
+.rx-item:hover{border-color:var(--border2)}
+.rx-item.warn{border-color:var(--amberbd);background:var(--amberb)}
+.rx-item.confirm{border-color:var(--tealbd);background:var(--tealb)}
+.rx-ic{font-size:16px;flex-shrink:0}
+.rx-drug{font-size:13px;font-weight:500;color:var(--text);flex:1}
+.rx-item.warn .rx-drug{color:var(--amber)}
+.rx-dose{font-size:11px;color:var(--text2)}
+.rx-status{font-size:10px;padding:2px 8px;border-radius:100px}
+.rx-ok{background:var(--tealb);color:var(--teal)}
+.rx-warn{background:var(--amberb);color:var(--amber)}
+.rx-add{border:1px dashed var(--border2);border-radius:9px;padding:9px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;color:var(--text2);transition:all .15s}
+.rx-add:hover{border-color:var(--border3);color:var(--text)}
+
+/* ALERTS for doctor */
+.alert-card{border-radius:var(--r);padding:12px 14px;margin-bottom:8px}
+.alert-card.red{background:var(--redb);border:1px solid var(--redbd)}
+.alert-card.amber{background:var(--amberb);border:1px solid var(--amberbd)}
+.alert-card.teal{background:var(--tealb);border:1px solid var(--tealbd)}
+.ac-title{font-size:12px;font-weight:600;margin-bottom:4px}
+.alert-card.red .ac-title{color:var(--red)}
+.alert-card.amber .ac-title{color:var(--amber)}
+.alert-card.teal .ac-title{color:var(--teal)}
+.ac-text{font-size:11px;line-height:1.55}
+.alert-card.red .ac-text{color:var(--red);opacity:.85}
+.alert-card.amber .ac-text{color:var(--amber);opacity:.85}
+.alert-card.teal .ac-text{color:var(--teal);opacity:.85}
+
+/* QUICK ACTIONS */
+.quick-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.qa{font-size:11px;padding:6px 13px;border-radius:8px;cursor:pointer;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);transition:all .15s;display:flex;align-items:center;gap:5px}
+.qa:hover{border-color:var(--border3);color:var(--text)}
+.qa.active{background:var(--blueb);border-color:var(--bluebd);color:var(--blue)}
+
+/* HISTORY */
+.history-item{padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:all .15s}
+.history-item:last-child{border-bottom:none}
+.history-item:hover{opacity:.8}
+.hi-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.hi-date{font-size:11px;color:var(--text2)}
+.hi-diag{font-size:12px;font-weight:500;color:var(--text)}
+.hi-rx{font-size:11px;color:var(--text2);margin-top:2px}
+.hi-vitals{font-size:10px;color:var(--text3);margin-top:2px;font-family:var(--mono)}
+
+/* LAB RESULT in doctor view */
+.lab-flag{background:var(--redb);border:1px solid var(--redbd);border-radius:9px;padding:10px 13px;margin-bottom:7px}
+.lf-lbl{font-size:10px;color:var(--red);letter-spacing:.07em;text-transform:uppercase;font-family:var(--mono);margin-bottom:5px}
+.lf-row{display:flex;align-items:center;gap:9px;font-size:12px;padding:3px 0}
+.lf-ind{width:6px;height:6px;border-radius:50%;flex-shrink:0;animation:blink 1s infinite;background:var(--red)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.lf-name{flex:1;color:var(--red)}
+.lf-val{font-weight:500;font-family:var(--mono);color:var(--red)}
+
+/* DONE OVERLAY */
+.done-overlay{position:fixed;inset:0;background:rgba(7,7,15,.95);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center}
+.done-overlay.show{display:flex}
+.do-ic{font-size:52px;margin-bottom:8px}
+.do-title{font-family:var(--serif);font-size:28px;color:var(--teal);font-style:italic}
+.do-sub{font-size:14px;color:var(--text2);max-width:360px;line-height:1.7}
+.do-next{padding:12px 28px;background:var(--tealb);border:1px solid var(--tealbd);border-radius:var(--r);cursor:pointer;font-family:var(--font);font-size:14px;font-weight:600;color:var(--teal);margin-top:8px}
+
+/* row util */
+.row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:12px;border-bottom:.5px solid var(--border)}
+.row:last-child{border-bottom:none}
+.rk{color:var(--text2)}.rv{color:var(--text);font-weight:500}
+.rv-t{color:var(--teal)}.rv-a{color:var(--amber)}.rv-r{color:var(--red)}
+
+/* lab order */
+.lab-order-list{display:flex;flex-direction:column;gap:6px}
+.lo-item{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--surface2);border-radius:9px;border:1px solid var(--border);cursor:pointer;transition:all .15s}
+.lo-item:hover{border-color:var(--border2)}
+.lo-item.ordered{border-color:var(--bluebd);background:var(--blueb)}
+.lo-ic{font-size:16px;flex-shrink:0}
+.lo-name{flex:1;font-size:12px;font-weight:500;color:var(--text)}
+.lo-s{font-size:10px;padding:2px 8px;border-radius:100px}
+.lo-new{background:var(--blueb);color:var(--blue)}
+.lo-ok{background:var(--tealb);color:var(--teal)}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-brand">
+    <span class="tb-doc">dr. Arman Wijaya, Sp.PD</span>
+    <span class="tb-spec">Spesialis Penyakit Dalam</span>
+  </div>
+  <div class="tb-right">
+    <div class="tb-patient-count">
+      <div><div class="tb-count" id="done-count">3</div><div style="font-size:10px;color:var(--text2)">/ 8 selesai</div></div>
+    </div>
+    <span class="tb-status">● Praktek aktif</span>
+    <span class="tb-time">11.45</span>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- PATIENT LIST -->
+  <div class="patient-list">
+    <div class="pl-header">
+      <div class="pl-title">📋 Antrian hari ini</div>
+      <div class="pl-count">8 pasien</div>
+    </div>
+    <div class="pl-tabs">
+      <div class="plt on" onclick="filtPat(this,'all')">Semua</div>
+      <div class="plt" onclick="filtPat(this,'brief')">Brief siap</div>
+      <div class="plt" onclick="filtPat(this,'done')">Selesai</div>
+    </div>
+
+    <!-- PASIEN AKTIF -->
+    <div class="patient-item active" onclick="showConsult('budi')" id="pi-budi">
+      <div class="pi-top">
+        <div class="pi-num">A-047</div>
+        <div class="pi-name">Pak Budi</div>
+        <span class="pi-s s-active">Aktif</span>
+      </div>
+      <div class="pi-detail">47th · HT · Dislipidemia · Nyeri dada</div>
+      <div class="pi-flag">⚠️</div>
+    </div>
+
+    <!-- BRIEF SIAP -->
+    <div class="patient-item" onclick="showConsult('dewi')" id="pi-dewi">
+      <div class="pi-top">
+        <div class="pi-num">A-048</div>
+        <div class="pi-name">Bu Dewi Lestari</div>
+        <span class="pi-s s-brief">Brief ✓</span>
+      </div>
+      <div class="pi-detail">29th · Asma · SpO2 94%</div>
+      <div class="pi-flag">🔴</div>
+    </div>
+
+    <div class="patient-item" onclick="showConsult('ahmad')" id="pi-ahmad">
+      <div class="pi-top">
+        <div class="pi-num">A-049</div>
+        <div class="pi-name">Pak Ahmad</div>
+        <span class="pi-s s-brief">Brief ✓</span>
+      </div>
+      <div class="pi-detail">51th · HT Kontrol · Ke-12</div>
+    </div>
+
+    <!-- CALL NEXT BUTTON — one tap -->
+    <button class="call-btn" onclick="callNext()">📣 Panggil pasien berikutnya</button>
+
+    <!-- WAITING -->
+    <div class="patient-item" id="pi-w1">
+      <div class="pi-top">
+        <div class="pi-num">A-050</div>
+        <div class="pi-name">Bu Ratna</div>
+        <span class="pi-s s-wait">Menunggu</span>
+      </div>
+      <div class="pi-detail">45th · DM Tipe 2 · BPJS</div>
+    </div>
+
+    <div class="patient-item" id="pi-w2">
+      <div class="pi-top">
+        <div class="pi-num">A-051</div>
+        <div class="pi-name">Pak Suharto</div>
+        <span class="pi-s s-wait">Menunggu</span>
+      </div>
+      <div class="pi-detail">62th · Kontrol Rutin</div>
+    </div>
+
+    <!-- SELESAI -->
+    <div class="patient-item done">
+      <div class="pi-top">
+        <div class="pi-num">A-044</div>
+        <div class="pi-name">Bu Siti Rahayu</div>
+        <span class="pi-s s-done">Selesai</span>
+      </div>
+      <div class="pi-detail">Selesai 11.30 · 14 menit</div>
+    </div>
+    <div class="patient-item done">
+      <div class="pi-top">
+        <div class="pi-num">A-043</div>
+        <div class="pi-name">Pak Hendra</div>
+        <span class="pi-s s-done">Selesai</span>
+      </div>
+      <div class="pi-detail">Selesai 10.32 · 11 menit</div>
+    </div>
+    <div class="patient-item done">
+      <div class="pi-top">
+        <div class="pi-num">A-041</div>
+        <div class="pi-name">Bu Yani</div>
+        <span class="pi-s s-done">Selesai</span>
+      </div>
+      <div class="pi-detail">Selesai 09.55 · 9 menit</div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="doctor-content">
+
+    <!-- IDLE SCREEN -->
+    <div class="sc on" id="sc-idle">
+      <div class="idle-screen">
+        <div class="idle-title">Selamat pagi, dr. Arman.</div>
+        <div class="idle-sub" style="color:var(--text2)">8 pasien menunggu hari ini. Brief tersedia untuk semua. Pilih pasien dari daftar untuk memulai.</div>
+        <div class="idle-stats">
+          <div class="is"><div class="is-n">8</div><div class="is-l">Pasien hari ini</div></div>
+          <div class="is"><div class="is-n" style="color:var(--teal)">5</div><div class="is-l">Brief sudah siap</div></div>
+          <div class="is"><div class="is-n" style="color:var(--amber)">1</div><div class="is-l">Nilai lab kritis</div></div>
+        </div>
+        <div style="font-size:12px;color:var(--text3);font-family:var(--mono)">Tap nama pasien → brief sudah tersedia</div>
+      </div>
+    </div>
+
+    <!-- CONSULTATION: PAK BUDI -->
+    <div class="sc" id="sc-budi">
+      <div class="consult-layout">
+
+        <!-- PATIENT HEADER -->
+        <div class="consult-header">
+          <div class="ch-av">BS</div>
+          <div class="ch-main">
+            <div class="ch-name">Budi Santoso</div>
+            <div class="ch-meta">
+              <span class="ch-tag">47 tahun · L</span>
+              <div class="ch-separator"></div>
+              <span class="ch-tag bpjs">BPJS Kelas II Aktif</span>
+              <div class="ch-separator"></div>
+              <span class="ch-tag">Kunjungan ke-8</span>
+              <div class="ch-separator"></div>
+              <span class="ch-tag">Penyakit Dalam</span>
+            </div>
+          </div>
+          <div class="ch-actions">
+            <button class="btn btn-amber">🔬 Order Lab</button>
+            <button class="btn btn-ghost">📋 Riwayat</button>
+            <button class="btn btn-done" onclick="showDone('Pak Budi', 'A-048')">✓ Selesai</button>
+          </div>
+        </div>
+
+        <!-- ALLERGY + CONDITIONS ALWAYS VISIBLE -->
+        <div class="anchor-bar">
+          <div class="ab-item">⚠️ <strong>Alergi: Penisilin (BERAT)</strong></div>
+          <div class="ab-sep"></div>
+          <div class="ab-cond">
+            <span style="font-size:10px;color:var(--text3)">Kondisi:</span>
+            <span style="font-size:11px;color:var(--blue)">Hipertensi Grade 2</span>
+            <span>·</span>
+            <span style="font-size:11px;color:var(--blue)">Dislipidemia</span>
+            <span>·</span>
+            <span style="font-size:11px;color:var(--amber)">Suspek Angina Stabil</span>
+          </div>
+          <div style="margin-left:auto">
+            <span style="font-size:10px;color:var(--text3)">Obat rutin:</span>
+            <span style="font-size:11px;color:var(--text2);margin-left:5px">Bisoprolol 10mg · Amlodipine 10mg · Rosuvastatin 20mg</span>
+          </div>
+        </div>
+
+        <!-- LAB ALERT — ada nilai kritis -->
+        <div style="padding:10px 20px 0">
+          <div class="alert-card red">
+            <div class="ac-title">⚠️ Hasil Lab Masuk — LDL Kritis</div>
+            <div class="ac-text">LDL 156 mg/dL (Normal: &lt;130). Pasien dalam Rosuvastatin 20mg aktif. Suster Ani sudah menambahkan catatan klinis. Konfirmasi sebelum dikirim ke pasien.</div>
+            <div class="quick-actions">
+              <div class="qa active">📊 Lihat hasil lengkap</div>
+              <div class="qa">📝 Tambah catatan interpretasi</div>
+              <div class="qa">✓ Kirim ke pasien</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAIN GRID -->
+        <div class="consult-body">
+
+          <!-- LEFT: PRE-ANAMNESIS + VITALS -->
+          <div style="display:flex;flex-direction:column;gap:12px">
+
+            <div class="sec">
+              <div class="sec-h">
+                <div class="sec-title">🤖 Pre-anamnesis & Brief</div>
+                <span class="sec-badge bgt">Ara · kemarin 20.14 + Suster Ani</span>
+              </div>
+              <div class="sec-body">
+                <div class="ara-summary">
+                  <div class="as-head">
+                    <div class="as-av">Ar</div>
+                    <div class="as-lbl">Yang Ara gali dari Pak Budi</div>
+                  </div>
+                  <div class="as-text">Nyeri dada saat naik tangga, 3 hari, skala 4/10 membaik dari 7/10 minggu lalu.</div>
+                  <div class="as-items">
+                    <div class="as-item"><div class="as-dot"></div><span>Tidak ada sesak napas menyertai</span></div>
+                    <div class="as-item"><div class="as-dot"></div><span>Stres kerja — deadline akhir bulan</span></div>
+                    <div class="as-item"><div class="as-dot"></div><span>Kepatuhan obat baik minggu ini</span></div>
+                    <div class="as-item"><div class="as-dot"></div><span><strong>Pertanyaan pasien:</strong> kapan ISDN diminum?</span></div>
+                  </div>
+                </div>
+                <div class="suster-note">
+                  <div class="sn-lbl">Tambahan Suster Ani</div>
+                  Pasien tampak sedikit tegang saat masuk. Menyebut belum sempat sarapan pagi ini.
+                </div>
+              </div>
+            </div>
+
+            <div class="sec">
+              <div class="sec-h">
+                <div class="sec-title">📊 Vital Signs</div>
+                <span class="sec-badge bga">Tensi ↑ dari kunjungan lalu</span>
+              </div>
+              <div class="sec-body">
+                <div class="vitals-compact">
+                  <div class="vc alert"><div class="vc-lbl">Tensi</div><div class="vc-val">148/92</div><div class="vc-ref">↑ dari 145/90</div></div>
+                  <div class="vc alert"><div class="vc-lbl">Nadi</div><div class="vc-val">84</div><div class="vc-ref">↑ dari 82</div></div>
+                  <div class="vc normal"><div class="vc-lbl">SpO2</div><div class="vc-val">97%</div><div class="vc-ref">Normal</div></div>
+                  <div class="vc normal"><div class="vc-lbl">Suhu</div><div class="vc-val">36.9°</div></div>
+                  <div class="vc normal"><div class="vc-lbl">BB / TB</div><div class="vc-val">72kg</div><div class="vc-ref">BMI 25.5</div></div>
+                  <div class="vc normal"><div class="vc-lbl">GDS</div><div class="vc-val">92</div><div class="vc-ref">Normal</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sec">
+              <div class="sec-h">
+                <div class="sec-title">📚 Riwayat Relevan</div>
+                <span class="sec-badge bgg">3 kunjungan terakhir</span>
+              </div>
+              <div class="sec-body">
+                <div class="history-item">
+                  <div class="hi-top"><div class="hi-date">28 Mei 2026</div><span style="font-size:10px;background:var(--goldb);color:var(--gold);padding:1px 7px;border-radius:4px;font-family:var(--mono)">3 minggu lalu</span></div>
+                  <div class="hi-diag">Hipertensi Grade 2 · Dislipidemia</div>
+                  <div class="hi-rx">Bisoprolol 10mg · Amlodipine 10mg · Rosuvastatin 20mg</div>
+                  <div class="hi-vitals">145/90 · 82/mnt · SpO2 97%</div>
+                </div>
+                <div class="history-item">
+                  <div class="hi-top"><div class="hi-date">14 Apr 2026</div></div>
+                  <div class="hi-diag">Hipertensi Grade 2 — Kontrol</div>
+                  <div class="hi-rx">Bisoprolol 5mg naik ke 10mg</div>
+                  <div class="hi-vitals">152/95 · 86/mnt</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- RIGHT: DIAGNOSIS + RESEP + LAB -->
+          <div style="display:flex;flex-direction:column;gap:12px">
+
+            <div class="sec">
+              <div class="sec-h">
+                <div class="sec-title">🎤 Diagnosis & Rencana Terapi</div>
+                <span class="sec-badge bga">Voice input aktif</span>
+              </div>
+              <div class="sec-body">
+                <div class="voice-input active" onclick="togVoice(this)">
+                  <div class="vi-mic">🎤</div>
+                  <div class="vi-text">Hipertensi grade dua tidak terkontrol adekuat dengan terapi saat ini, kemungkinan angina stabil... perlu evaluasi EKG dan stress test...</div>
+                </div>
+                <div style="font-size:11px;color:var(--text2);margin-bottom:10px;font-style:italic">Atau pilih ICD-10:</div>
+                <div class="icd-select">
+                  <span class="icd-code">I10</span>
+                  <span class="icd-name">Hipertensi esensial (primer)</span>
+                  <span class="icd-action">✓ Dipilih</span>
+                </div>
+                <div class="icd-select">
+                  <span class="icd-code">E78.5</span>
+                  <span class="icd-name">Hiperlipidemia, tidak spesifik</span>
+                  <span class="icd-action">✓ Dipilih</span>
+                </div>
+                <div class="icd-select" style="border-style:dashed;color:var(--text2)">
+                  <span style="font-size:13px">+</span>
+                  <span style="font-size:12px">Tambah diagnosis</span>
+                </div>
+                <div style="margin-top:10px">
+                  <div style="font-size:10px;color:var(--text2);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;font-family:var(--mono)">Rencana Terapi</div>
+                  <div class="plan-text">Evaluasi kepatuhan obat → pertimbangkan tambah ISDN PRN untuk nyeri dada. Cek EKG hari ini. Rujuk stress test jika EKG normal. Follow-up 2 minggu.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sec">
+              <div class="sec-h">
+                <div class="sec-title">💊 Resep</div>
+                <span class="sec-badge bgg">3 obat lanjut · 1 baru</span>
+              </div>
+              <div class="sec-body">
+                <div class="alert-card amber" style="margin-bottom:10px">
+                  <div class="ac-title">⚠️ Cek Interaksi Obat</div>
+                  <div class="ac-text">Bisoprolol + ISDN: pastikan tekanan darah tidak terlalu rendah. Monitor tensi setelah pemberian pertama.</div>
+                </div>
+                <div class="rx-item confirm">
+                  <div class="rx-ic">💙</div>
+                  <div class="rx-drug">Bisoprolol 10mg</div>
+                  <div class="rx-dose">1×1 pagi · lanjut</div>
+                  <span class="rx-status rx-ok">✓ BPJS</span>
+                </div>
+                <div class="rx-item confirm">
+                  <div class="rx-ic">🟠</div>
+                  <div class="rx-drug">Amlodipine 10mg</div>
+                  <div class="rx-dose">1×1 malam · lanjut</div>
+                  <span class="rx-status rx-ok">✓ BPJS</span>
+                </div>
+                <div class="rx-item confirm">
+                  <div class="rx-ic">🟡</div>
+                  <div class="rx-drug">Rosuvastatin 20mg</div>
+                  <div class="rx-dose">1×1 malam · lanjut</div>
+                  <span class="rx-status rx-ok">✓ BPJS</span>
+                </div>
+                <div class="rx-item" style="border-color:var(--goldbd);background:var(--goldb)">
+                  <div class="rx-ic">🆕</div>
+                  <div class="rx-drug" style="color:var(--gold)">ISDN 5mg</div>
+                  <div class="rx-dose">PRN · baru ditambahkan</div>
+                  <span class="rx-status" style="background:var(--goldb);color:var(--gold);border:1px solid var(--goldbd)">✓ BPJS</span>
+                </div>
+                <div class="rx-add">
+                  <span>+</span>
+                  <span>Tambah obat (voice atau autocomplete)</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="sec">
+              <div class="sec-h">
+                <div class="sec-title">🔬 Order Lab & Penunjang</div>
+                <span class="sec-badge bgb">2 di-order hari ini</span>
+              </div>
+              <div class="sec-body">
+                <div class="lab-flag">
+                  <div class="lf-lbl">Hasil Lab Masuk — Nilai Kritis</div>
+                  <div class="lf-row"><div class="lf-ind"></div><div class="lf-name">LDL Kolesterol</div><div class="lf-val">156 mg/dL</div></div>
+                  <div class="lf-row"><div class="lf-ind" style="animation:none;background:var(--amber)"></div><div class="lf-name" style="color:var(--amber)">Kolesterol Total</div><div class="lf-val" style="color:var(--amber)">218 mg/dL</div></div>
+                </div>
+                <div class="lab-order-list">
+                  <div class="lo-item ordered">
+                    <div class="lo-ic">❤️</div>
+                    <div class="lo-name">EKG — 12 lead</div>
+                    <span class="lo-s lo-new">Di-order</span>
+                  </div>
+                  <div class="lo-item ordered">
+                    <div class="lo-ic">🏃</div>
+                    <div class="lo-name">Treadmill Test (TMT)</div>
+                    <span class="lo-s lo-new">Di-order · jika EKG normal</span>
+                  </div>
+                  <div class="lo-item" style="border-style:dashed;color:var(--text2)">
+                    <div class="lo-ic">+</div>
+                    <div class="lo-name">Tambah pemeriksaan...</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONSULTATION: BU DEWI (SpO2 rendah — prioritas) -->
+    <div class="sc" id="sc-dewi">
+      <div class="consult-layout">
+        <div class="consult-header">
+          <div class="ch-av" style="background:var(--redb);border-color:var(--redbd);color:var(--red)">DL</div>
+          <div class="ch-main">
+            <div class="ch-name">Dewi Lestari</div>
+            <div class="ch-meta">
+              <span class="ch-tag">29 tahun · P</span>
+              <div class="ch-separator"></div>
+              <span class="ch-tag bpjs">BPJS Kelas I Aktif</span>
+              <div class="ch-separator"></div>
+              <span class="ch-tag">Kunjungan pertama</span>
+            </div>
+          </div>
+          <div class="ch-actions">
+            <button class="btn btn-ghost">📋 Riwayat</button>
+            <button class="btn btn-done" onclick="showDone('Bu Dewi','A-049')">✓ Selesai</button>
+          </div>
+        </div>
+        <div class="anchor-bar">
+          <div class="ab-item">⚠️ <strong>Alergi: Sulfa (sedang)</strong></div>
+          <div class="ab-sep"></div>
+          <div class="ab-cond">
+            <span style="font-size:10px;color:var(--text3)">Kondisi:</span>
+            <span style="font-size:11px;color:var(--blue)">Asma bronkial</span>
+          </div>
+          <div style="margin-left:auto">
+            <span style="font-size:10px;color:var(--text3)">Obat rutin:</span>
+            <span style="font-size:11px;color:var(--amber);margin-left:5px">⚠ Tidak ada obat rutin tercatat</span>
+          </div>
+        </div>
+        <div style="padding:10px 20px 0">
+          <div class="alert-card red">
+            <div class="ac-title">🔴 SpO2 94% — Di Bawah Normal</div>
+            <div class="ac-text">Saturasi oksigen 94% saat check-in. Pasien tampak sedikit sesak saat berjalan menurut suster. Inhaler terakhir 3 bulan lalu. Prioritaskan evaluasi.</div>
+          </div>
+        </div>
+        <div class="consult-body">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="sec">
+              <div class="sec-h"><div class="sec-title">🤖 Brief Ara & Suster</div><span class="sec-badge bgr">Perhatian klinis</span></div>
+              <div class="sec-body">
+                <div class="ara-summary">
+                  <div class="as-head"><div class="as-av">Ar</div><div class="as-lbl">Ara · kemarin malam</div></div>
+                  <div class="as-text">Sesak napas ringan 2 hari, aktivitas. Riwayat asma sejak kecil. Inhaler habis 3 bulan lalu.</div>
+                  <div class="as-items">
+                    <div class="as-item"><div class="as-dot"></div><span>Tidak ada demam</span></div>
+                    <div class="as-item"><div class="as-dot"></div><span>Paparan debu di tempat kerja baru</span></div>
+                    <div class="as-item"><div class="as-dot"></div><span>Tidak ada riwayat rawat inap karena asma</span></div>
+                  </div>
+                </div>
+                <div class="suster-note">
+                  <div class="sn-lbl">Suster Ani · hari ini</div>
+                  Pasien terlihat sesak saat berjalan masuk. Inhaler yang dibawa sudah kosong. Berikan bronkodilator jika perlu.
+                </div>
+              </div>
+            </div>
+            <div class="sec">
+              <div class="sec-h"><div class="sec-title">📊 Vital Signs</div><span class="sec-badge bgr">SpO2 rendah</span></div>
+              <div class="sec-body">
+                <div class="vitals-compact">
+                  <div class="vc alert"><div class="vc-lbl">SpO2</div><div class="vc-val">94%</div><div class="vc-ref">Di bawah normal</div></div>
+                  <div class="vc normal"><div class="vc-lbl">Nadi</div><div class="vc-val">96</div><div class="vc-ref">Sedikit tinggi</div></div>
+                  <div class="vc normal"><div class="vc-lbl">Tensi</div><div class="vc-val">115/75</div></div>
+                  <div class="vc normal"><div class="vc-lbl">Suhu</div><div class="vc-val">36.5°</div></div>
+                  <div class="vc normal"><div class="vc-lbl">BB / TB</div><div class="vc-val">52kg</div><div class="vc-ref">BMI 19.8</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="sec">
+              <div class="sec-h"><div class="sec-title">🎤 Diagnosis & Terapi</div></div>
+              <div class="sec-body">
+                <div class="voice-input" onclick="togVoice(this)">
+                  <div class="vi-mic">🎤</div>
+                  <div class="vi-text placeholder">Tap mikrofon untuk input diagnosis via suara...</div>
+                </div>
+                <div class="icd-select">
+                  <span class="icd-code">J45.0</span>
+                  <span class="icd-name">Asma predominan alergi</span>
+                  <span class="icd-action">✓ Dipilih</span>
+                </div>
+              </div>
+            </div>
+            <div class="sec">
+              <div class="sec-h"><div class="sec-title">💊 Resep</div><span class="sec-badge bgg">Sulfa diblokir ⚠</span></div>
+              <div class="sec-body">
+                <div class="alert-card teal" style="margin-bottom:10px">
+                  <div class="ac-title">✓ BPJS: Semua obat asma ditanggung</div>
+                  <div class="ac-text">Salbutamol inhaler, budesonide, montelukast — semua masuk Formularium BPJS untuk diagnosis J45.</div>
+                </div>
+                <div class="rx-item" style="border-color:var(--goldbd);background:var(--goldb)">
+                  <div class="rx-ic">🆕</div>
+                  <div class="rx-drug" style="color:var(--gold)">Salbutamol Inhaler 100mcg</div>
+                  <div class="rx-dose">PRN · 2 puff saat sesak</div>
+                  <span class="rx-status" style="background:var(--tealb);color:var(--teal)">✓ BPJS</span>
+                </div>
+                <div class="rx-item" style="border-color:var(--goldbd);background:var(--goldb)">
+                  <div class="rx-ic">🆕</div>
+                  <div class="rx-drug" style="color:var(--gold)">Budesonide 200mcg Inhaler</div>
+                  <div class="rx-dose">2×1 puff · maintenance</div>
+                  <span class="rx-status" style="background:var(--tealb);color:var(--teal)">✓ BPJS</span>
+                </div>
+                <div class="rx-add"><span>+</span><span>Tambah obat</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONSULTATION: PAK AHMAD (kontrol rutin — paling cepat) -->
+    <div class="sc" id="sc-ahmad">
+      <div class="consult-layout">
+        <div class="consult-header">
+          <div class="ch-av" style="background:rgba(56,217,169,.1);border-color:rgba(56,217,169,.2);color:var(--teal)">AF</div>
+          <div class="ch-main">
+            <div class="ch-name">Ahmad Fauzi</div>
+            <div class="ch-meta">
+              <span class="ch-tag">51 tahun · L</span>
+              <div class="ch-separator"></div>
+              <span class="ch-tag bpjs">BPJS Kelas II Aktif</span>
+              <div class="ch-separator"></div>
+              <span class="ch-tag">Kontrol rutin · Ke-12</span>
+            </div>
+          </div>
+          <div class="ch-actions">
+            <button class="btn btn-ghost">📋 Riwayat</button>
+            <button class="btn btn-done" onclick="showDone('Pak Ahmad','A-050')">✓ Selesai</button>
+          </div>
+        </div>
+        <div class="anchor-bar">
+          <div class="ab-item" style="color:var(--text2)">Tidak ada alergi obat yang diketahui</div>
+          <div class="ab-sep"></div>
+          <div class="ab-cond">
+            <span style="font-size:10px;color:var(--text3)">Kondisi:</span>
+            <span style="font-size:11px;color:var(--blue)">Hipertensi Terkontrol</span>
+          </div>
+          <div style="margin-left:auto">
+            <span style="font-size:10px;color:var(--text3)">Obat rutin:</span>
+            <span style="font-size:11px;color:var(--text2);margin-left:5px">Amlodipine 5mg · 1×1</span>
+          </div>
+        </div>
+        <div style="padding:10px 20px 0">
+          <div class="alert-card teal">
+            <div class="ac-title">✅ Kontrol Rutin — Semua Baik</div>
+            <div class="ac-text">Kepatuhan obat 96% bulan ini. Tensi terkontrol 128/82. HbA1c normal. Tidak ada keluhan baru. Kunjungan ini kemungkinan bisa diselesaikan dalam 5 menit.</div>
+          </div>
+        </div>
+        <div class="consult-body">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="sec">
+              <div class="sec-h"><div class="sec-title">🤖 Brief</div><span class="sec-badge bgt">Semua baik</span></div>
+              <div class="sec-body">
+                <div class="ara-summary">
+                  <div class="as-head"><div class="as-av">Ar</div><div class="as-lbl">Ara · tadi malam</div></div>
+                  <div class="as-text">Pak Ahmad tidak ada keluhan baru. Minum obat rutin, tidak ada efek samping. Merasa lebih berenergi dari biasanya.</div>
+                  <div class="as-items">
+                    <div class="as-item"><div class="as-dot"></div><span>Olahraga jalan pagi 4-5x seminggu</span></div>
+                    <div class="as-item"><div class="as-dot"></div><span>Diet garam sudah berkurang</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="sec">
+              <div class="sec-h"><div class="sec-title">📊 Vital Signs</div><span class="sec-badge bgt">Semua normal</span></div>
+              <div class="sec-body">
+                <div class="vitals-compact">
+                  <div class="vc normal"><div class="vc-lbl">Tensi</div><div class="vc-val">128/82</div><div class="vc-ref">↓ Membaik</div></div>
+                  <div class="vc normal"><div class="vc-lbl">Nadi</div><div class="vc-val">72</div></div>
+                  <div class="vc normal"><div class="vc-lbl">SpO2</div><div class="vc-val">98%</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="sec">
+              <div class="sec-h"><div class="sec-title">⚡ One Tap — Kontrol Rutin</div><span class="sec-badge bgt">Semua sama seperti bulan lalu</span></div>
+              <div class="sec-body">
+                <div style="font-size:12px;color:var(--text2);margin-bottom:10px">Semua kondisi stabil. Resep bulan lalu bisa dilanjutkan tanpa perubahan.</div>
+                <button style="width:100%;padding:14px;background:var(--tealb);border:1px solid var(--tealbd);border-radius:var(--r);cursor:pointer;font-family:var(--font);font-size:14px;font-weight:600;color:var(--teal);display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px" onclick="showDone('Pak Ahmad','A-050')">
+                  🔁 Lanjutkan Semua — Sama Seperti Bulan Lalu
+                </button>
+                <div style="font-size:11px;color:var(--text3);text-align:center">Amlodipine 5mg · 1×1 · Follow-up 1 bulan</div>
+                <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:10px">
+                  <div style="font-size:11px;color:var(--text2);margin-bottom:7px">Atau modifikasi:</div>
+                  <div class="quick-actions">
+                    <div class="qa">✎ Ubah dosis</div>
+                    <div class="qa">+ Tambah obat</div>
+                    <div class="qa">🔬 Order lab</div>
+                    <div class="qa">📅 Ubah follow-up</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DONE OVERLAY -->
+<div class="done-overlay" id="done-overlay">
+  <div class="do-ic">✓</div>
+  <div class="do-title" id="done-name">Konsultasi selesai</div>
+  <div class="do-sub">Rekam medis tersimpan. Resep terkirim ke apotek. Pasien dan suster sudah dinotifikasi.</div>
+  <button class="do-next" onclick="closeDone()">→ Pasien berikutnya</button>
+</div>
+
+<script>
+var screens=['idle','budi','dewi','ahmad'];
+function showConsult(id){
+  screens.forEach(function(s){document.getElementById('sc-'+s).classList.remove('on')});
+  document.getElementById('sc-'+id).classList.add('on');
+  document.querySelectorAll('.patient-item').forEach(function(p){p.classList.remove('active')});
+  var pi=document.getElementById('pi-'+id);
+  if(pi)pi.classList.add('active');
+}
+function showDone(name,num){
+  document.getElementById('done-name').textContent=name+' — '+num+' selesai ✓';
+  document.getElementById('done-overlay').classList.add('show');
+  var cnt=document.getElementById('done-count');
+  cnt.textContent=parseInt(cnt.textContent)+1;
+}
+function closeDone(){
+  document.getElementById('done-overlay').classList.remove('show');
+}
+function callNext(){
+  alert('Notif terkirim ke suster: Panggil pasien berikutnya');
+}
+function filtPat(el,type){
+  document.querySelectorAll('.plt').forEach(function(t){t.classList.remove('on')});
+  el.classList.add('on');
+}
+function togVoice(el){
+  el.classList.toggle('active');
+  var text=el.querySelector('.vi-text');
+  if(el.classList.contains('active')){text.classList.remove('placeholder');text.textContent='🎤 Sedang merekam...';}
+  else{text.textContent='Tap mikrofon untuk input diagnosis via suara...';text.classList.add('placeholder');}
+}
+</script>
+</body>
+</html>

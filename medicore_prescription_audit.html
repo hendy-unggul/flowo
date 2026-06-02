@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediCore — Prescription Audit & Verification</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Lora:ital,wght@0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07070F;--bg2:#090912;--surface:#0D0D1C;--surface2:#111122;--surface3:#141430;
+  --border:#1A1A30;--border2:#222240;--border3:#2A2A50;
+  --text:#F2F0FF;--text2:#7875B0;--text3:#3A3768;--text4:#252350;
+  --teal:#2DB89A;--tealb:rgba(45,184,154,.08);--tealbd:rgba(45,184,154,.2);
+  --blue:#5B8FE8;--blueb:rgba(91,143,232,.08);--bluebd:rgba(91,143,232,.2);
+  --gold:#C8A96E;--goldb:rgba(200,169,110,.08);--goldbd:rgba(200,169,110,.2);
+  --amber:#E8A030;--amberb:rgba(232,160,48,.08);--amberbd:rgba(232,160,48,.2);
+  --red:#E24B4A;--redb:rgba(226,75,74,.08);--redbd:rgba(226,75,74,.2);
+  --green:#2DA865;--greenb:rgba(45,168,101,.08);--greenbd:rgba(45,168,101,.2);
+  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;--serif:'Lora',serif;
+  --r:10px;--r2:14px;
+}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;padding:0}
+
+/* LAYOUT */
+.page{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;gap:0}
+.panel{padding:20px;overflow-y:auto;height:100vh}
+.panel-left{background:var(--bg2);border-right:1px solid var(--border)}
+.panel-right{background:var(--surface)}
+.panel-title{font-size:11px;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.panel-title span{color:var(--text2)}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;margin-bottom:12px}
+.card-h{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.ch-t{font-size:12px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:7px}
+.card-b{padding:13px 14px}
+.badge{font-size:10px;padding:2px 9px;border-radius:100px;font-family:var(--mono)}
+.bgt{background:var(--tealb);color:var(--teal);border:1px solid var(--tealbd)}
+.bga{background:var(--amberb);color:var(--amber);border:1px solid var(--amberbd)}
+.bgr{background:var(--redb);color:var(--red);border:1px solid var(--redbd)}
+.bgb{background:var(--blueb);color:var(--blue);border:1px solid var(--bluebd)}
+.bgg{background:var(--surface2);color:var(--text2);border:1px solid var(--border2)}
+.bggreen{background:var(--greenb);color:var(--green);border:1px solid var(--greenbd)}
+
+/* RX ITEMS */
+.rx-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface2);border-radius:9px;margin-bottom:6px;border:1px solid var(--border)}
+.rx-row.ok{border-color:var(--tealbd);background:var(--tealb)}
+.rx-row.warn{border-color:var(--amberbd);background:var(--amberb)}
+.rx-row.danger{border-color:var(--redbd);background:var(--redb)}
+.rx-ic{font-size:16px;flex-shrink:0}
+.rx-info{flex:1}
+.rx-drug{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px}
+.rx-row.warn .rx-drug{color:var(--amber)}
+.rx-row.danger .rx-drug{color:var(--red)}
+.rx-meta{font-size:11px;color:var(--text2)}
+.rx-checks{display:flex;flex-direction:column;gap:3px;margin-right:8px}
+.rc{font-size:10px;display:flex;align-items:center;gap:4px}
+.rc.ok{color:var(--teal)}
+.rc.warn{color:var(--amber)}
+.rc.danger{color:var(--red)}
+.rx-stamp{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2.5px dashed var(--border2)}
+.rx-stamp.pending{border-color:var(--border2)}
+.rx-stamp.approved{border:2.5px solid var(--teal);background:var(--tealb)}
+.rx-stamp.flagged{border:2.5px solid var(--amber);background:var(--amberb)}
+.rx-stamp.blocked{border:2.5px solid var(--red);background:var(--redb)}
+.rs-text{font-size:8px;font-weight:700;letter-spacing:.05em;text-align:center;line-height:1.3}
+.rs-text.approved{color:var(--teal)}
+.rs-text.flagged{color:var(--amber)}
+.rs-text.blocked{color:var(--red)}
+.rs-text.pending{color:var(--text3)}
+
+/* SYSTEM FLAGS */
+.flag-section{background:var(--surface2);border-radius:var(--r);padding:12px 14px;margin-bottom:10px;border:1px solid var(--border)}
+.fs-title{font-size:11px;font-weight:500;color:var(--text2);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.flag-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:.5px solid var(--border);font-size:11px}
+.flag-item:last-child{border-bottom:none}
+.fi-ic{font-size:13px;flex-shrink:0;margin-top:1px}
+.fi-text{flex:1;line-height:1.5}
+.fi-text b{display:block;margin-bottom:2px}
+.fi-t{font-size:10px;font-family:var(--mono);color:var(--text3);margin-top:2px;flex-shrink:0}
+.fi-ok{color:var(--teal)}
+.fi-warn{color:var(--amber)}
+.fi-block{color:var(--red)}
+
+/* VERIFICATION FORM */
+.verify-section{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r2);padding:14px;margin-bottom:12px}
+.vs-title{font-size:12px;font-weight:500;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.nurse-id{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:11px 14px;margin-bottom:10px}
+.ni-av{width:36px;height:36px;border-radius:50%;background:var(--blueb);border:1px solid var(--bluebd);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--blue);flex-shrink:0}
+.ni-name{font-size:13px;font-weight:500;color:var(--text)}
+.ni-nip{font-size:10px;color:var(--text2);font-family:var(--mono);margin-top:2px}
+.ni-time{font-size:11px;color:var(--teal);margin-left:auto}
+
+/* ITEM CHECKBOXES */
+.item-checks{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.ic-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:9px;cursor:pointer;transition:all .15s}
+.ic-item:hover{border-color:var(--border2)}
+.ic-item.checked{background:var(--tealb);border-color:var(--tealbd)}
+.ic-item.checked-warn{background:var(--amberb);border-color:var(--amberbd)}
+.ic-box{width:20px;height:20px;border-radius:6px;border:2px solid var(--border2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s;background:transparent}
+.ic-item.checked .ic-box{background:var(--teal);border-color:var(--teal)}
+.ic-item.checked-warn .ic-box{background:var(--amber);border-color:var(--amber)}
+.ic-check{font-size:11px;color:#fff;display:none;font-weight:700}
+.ic-item.checked .ic-check,.ic-item.checked-warn .ic-check{display:block}
+.ic-text{flex:1}
+.ic-label{font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px}
+.ic-item.checked .ic-label{color:var(--teal)}
+.ic-item.checked-warn .ic-label{color:var(--amber)}
+.ic-sub{font-size:11px;color:var(--text2);line-height:1.4}
+
+/* FLAGGED ITEM NOTE */
+.flag-note{border:1px solid var(--amberbd);background:var(--amberb);border-radius:9px;padding:10px 12px;margin-bottom:10px}
+.fn-title{font-size:11px;font-weight:600;color:var(--amber);margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.fn-input{font-size:12px;color:var(--amber);line-height:1.6;min-height:36px;cursor:text}
+.fn-action{display:flex;gap:7px;margin-top:8px}
+.fa-btn{font-size:11px;padding:6px 12px;border-radius:7px;border:1px solid var(--amberbd);background:transparent;cursor:pointer;color:var(--amber);font-family:var(--font);transition:all .15s}
+.fa-btn.primary{background:var(--amberb)}
+.fa-btn:hover{background:rgba(232,160,48,.15)}
+
+/* DIGITAL STAMP */
+.stamp-preview{border:2px dashed var(--border2);border-radius:var(--r2);padding:20px;text-align:center;transition:all .5s;margin-bottom:12px}
+.stamp-preview.stamping{border-color:var(--amberbd);background:var(--amberb)}
+.stamp-preview.stamped{border:2px solid var(--green);background:var(--greenb)}
+.stamp-circle{width:90px;height:90px;border-radius:50%;border:3px dashed var(--border2);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;transition:all .5s;position:relative;overflow:hidden}
+.stamp-preview.stamping .stamp-circle{border-color:var(--amber);border-style:solid;animation:spin 2s linear infinite}
+.stamp-preview.stamped .stamp-circle{border:3px solid var(--green);border-style:solid;animation:none;background:var(--greenb)}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.sc-inner{font-size:11px;font-weight:700;letter-spacing:.08em;text-align:center;line-height:1.4;color:var(--text3);transition:color .5s}
+.stamp-preview.stamping .sc-inner{color:var(--amber)}
+.stamp-preview.stamped .sc-inner{color:var(--green)}
+.stamp-detail{font-size:11px;color:var(--text2);line-height:1.7;transition:color .5s}
+.stamp-preview.stamped .stamp-detail{color:var(--teal)}
+.stamp-id{font-size:10px;font-family:var(--mono);color:var(--text3);margin-top:4px}
+
+/* SEND BUTTON */
+.send-btn{width:100%;padding:14px;border-radius:var(--r);background:var(--greenb);border:1px solid var(--greenbd);cursor:pointer;font-family:var(--font);font-size:14px;font-weight:600;color:var(--green);display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;opacity:.4}
+.send-btn.ready{opacity:1}
+.send-btn.ready:hover{transform:translateY(-1px);background:rgba(45,168,101,.15)}
+.send-btn:not(.ready){cursor:not-allowed}
+
+/* AUDIT TRAIL */
+.trail-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:.5px solid var(--border);position:relative}
+.trail-item:last-child{border-bottom:none}
+.trail-item::before{content:'';position:absolute;left:16px;top:32px;bottom:-12px;width:1px;background:var(--border);z-index:0}
+.trail-item:last-child::before{display:none}
+.ti-ic{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;z-index:1;border:1px solid var(--border)}
+.ti-ic.doc{background:var(--goldb);border-color:var(--goldbd)}
+.ti-ic.sys{background:var(--blueb);border-color:var(--bluebd)}
+.ti-ic.nurse{background:var(--tealb);border-color:var(--tealbd)}
+.ti-ic.sent{background:var(--greenb);border-color:var(--greenbd)}
+.ti-ic.block{background:var(--redb);border-color:var(--redbd)}
+.ti-body{flex:1}
+.ti-who{font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px}
+.ti-action{font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:3px}
+.ti-time{font-size:10px;font-family:var(--mono);color:var(--text3)}
+.ti-hash{font-size:9px;font-family:var(--mono);color:var(--text4);margin-top:2px}
+
+/* FINAL RECEIPT */
+.receipt{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r2);padding:16px;margin-bottom:12px}
+.receipt-title{font-family:var(--serif);font-size:16px;font-weight:500;color:var(--text);text-align:center;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.receipt-row{display:flex;justify-content:space-between;padding:6px 0;font-size:12px;border-bottom:.5px solid var(--border)}
+.receipt-row:last-child{border-bottom:none}
+.rk{color:var(--text2)}.rv{color:var(--text);font-weight:500;font-family:var(--mono);font-size:11px}
+.rv-ok{color:var(--teal)}
+.stamp-final{display:flex;align-items:center;justify-content:center;gap:12px;background:var(--greenb);border:1px solid var(--greenbd);border-radius:var(--r);padding:12px 16px;margin-top:10px}
+.sf-ic{font-size:24px}
+.sf-text{font-size:12px;font-weight:500;color:var(--green);line-height:1.5}
+.sf-sub{font-size:10px;color:var(--teal);margin-top:2px;font-family:var(--mono)}
+
+/* UTILS */
+.row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;font-size:11px;border-bottom:.5px solid var(--border)}
+.row:last-child{border-bottom:none}
+.sep{height:.5px;background:var(--border);margin:10px 0}
+.tag{font-size:10px;padding:2px 8px;border-radius:5px;font-family:var(--mono)}
+
+/* STEP INDICATOR */
+.steps{display:flex;gap:0;margin-bottom:20px;border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.step{flex:1;padding:9px 6px;text-align:center;font-size:10px;font-family:var(--mono);letter-spacing:.04em;color:var(--text3);border-right:1px solid var(--border);background:var(--surface2);transition:all .3s}
+.step:last-child{border-right:none}
+.step.done{background:var(--tealb);color:var(--teal)}
+.step.active{background:var(--amberb);color:var(--amber);font-weight:500}
+.step.blocked{background:var(--redb);color:var(--red)}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ═══ LEFT PANEL: DOCTOR WRITES + SYSTEM CHECKS ═══ -->
+  <div class="panel panel-left">
+    <div class="panel-title">
+      Resep Digital — dr. Arman Wijaya Sp.PD
+      <span>A-047 · Pak Budi · Senin 1 Jun 2026</span>
+    </div>
+
+    <!-- STEP INDICATOR -->
+    <div class="steps">
+      <div class="step done" id="step1">1 · Dokter Tulis</div>
+      <div class="step active" id="step2">2 · Sistem Cek</div>
+      <div class="step" id="step3">3 · Suster Verifikasi</div>
+      <div class="step" id="step4">4 · Terkirim</div>
+    </div>
+
+    <!-- PRESCRIBER INFO -->
+    <div class="card">
+      <div class="card-h">
+        <div class="ch-t">👨‍⚕️ Penulis Resep</div>
+        <span class="badge bgt">Terautentikasi</span>
+      </div>
+      <div class="card-b">
+        <div class="row"><span class="rk">Dokter</span><span style="color:var(--text);font-weight:500;font-family:var(--serif);font-style:italic">dr. Arman Wijaya, Sp.PD</span></div>
+        <div class="row"><span class="rk">SIP</span><span style="color:var(--text);font-family:var(--mono);font-size:11px">503/DU/XII/2024/PKM-JKS</span></div>
+        <div class="row"><span class="rk">Waktu tulis</span><span style="color:var(--teal);font-family:var(--mono);font-size:11px">Senin 1 Jun 2026 · 11:47:23</span></div>
+        <div class="row"><span class="rk">Platform</span><span style="color:var(--text2);font-size:11px">MediCore v1.0 · Tablet</span></div>
+        <div class="row"><span class="rk">Session ID</span><span style="color:var(--text3);font-family:var(--mono);font-size:10px">SES-20260601-ARW-0847</span></div>
+      </div>
+    </div>
+
+    <!-- PATIENT INFO -->
+    <div class="card">
+      <div class="card-h">
+        <div class="ch-t">👤 Pasien</div>
+      </div>
+      <div class="card-b">
+        <div class="row"><span class="rk">Nama</span><span style="color:var(--text);font-weight:500">Budi Santoso</span></div>
+        <div class="row"><span class="rk">NIK</span><span style="color:var(--text);font-family:var(--mono);font-size:11px">3271051405780003</span></div>
+        <div class="row"><span class="rk">No. BPJS</span><span style="color:var(--teal);font-family:var(--mono);font-size:11px">0001234567890 · Kelas II</span></div>
+        <div class="row"><span class="rk">Diagnosis</span><span style="color:var(--text2);font-size:11px">I10 · E78.5</span></div>
+        <div class="row"><span class="rk">Kunjungan</span><span style="color:var(--text2)">Ke-8 · Kontrol</span></div>
+      </div>
+    </div>
+
+    <!-- RESEP ITEMS dengan system flags -->
+    <div class="card">
+      <div class="card-h">
+        <div class="ch-t">💊 Isi Resep — 4 Item</div>
+        <span class="badge bga">1 item perlu konfirmasi</span>
+      </div>
+      <div class="card-b">
+
+        <!-- Item 1: OK -->
+        <div class="rx-row ok">
+          <div class="rx-ic">💙</div>
+          <div class="rx-info">
+            <div class="rx-drug">Bisoprolol 10mg</div>
+            <div class="rx-meta">1×1 tab · pagi setelah makan · 30 hari</div>
+          </div>
+          <div class="rx-checks">
+            <div class="rc ok">✓ BPJS DPHO</div>
+            <div class="rc ok">✓ Tidak ada alergi</div>
+            <div class="rc ok">✓ Dosis normal</div>
+          </div>
+          <div class="rx-stamp approved">
+            <div class="rs-text approved">AUTO<br>✓<br>CLEAR</div>
+          </div>
+        </div>
+
+        <!-- Item 2: OK -->
+        <div class="rx-row ok">
+          <div class="rx-ic">🟠</div>
+          <div class="rx-info">
+            <div class="rx-drug">Amlodipine 10mg</div>
+            <div class="rx-meta">1×1 tab · malam setelah makan · 30 hari</div>
+          </div>
+          <div class="rx-checks">
+            <div class="rc ok">✓ BPJS DPHO</div>
+            <div class="rc ok">✓ Tidak ada alergi</div>
+            <div class="rc ok">✓ Dosis normal</div>
+          </div>
+          <div class="rx-stamp approved">
+            <div class="rs-text approved">AUTO<br>✓<br>CLEAR</div>
+          </div>
+        </div>
+
+        <!-- Item 3: OK -->
+        <div class="rx-row ok">
+          <div class="rx-ic">🟡</div>
+          <div class="rx-info">
+            <div class="rx-drug">Rosuvastatin 20mg</div>
+            <div class="rx-meta">1×1 tab · malam setelah makan · 30 hari</div>
+          </div>
+          <div class="rx-checks">
+            <div class="rc ok">✓ BPJS DPHO</div>
+            <div class="rc ok">✓ Tidak ada alergi</div>
+            <div class="rc ok">✓ Dosis normal</div>
+          </div>
+          <div class="rx-stamp approved">
+            <div class="rs-text approved">AUTO<br>✓<br>CLEAR</div>
+          </div>
+        </div>
+
+        <!-- Item 4: FLAGGED — perlu konfirmasi -->
+        <div class="rx-row warn">
+          <div class="rx-ic">🆕</div>
+          <div class="rx-info">
+            <div class="rx-drug">ISDN (Isosorbide Dinitrate) 5mg</div>
+            <div class="rx-meta">PRN · 1 tab sublingual saat nyeri dada · 10 tab</div>
+          </div>
+          <div class="rx-checks">
+            <div class="rc ok">✓ BPJS DPHO</div>
+            <div class="rc ok">✓ Tidak ada alergi</div>
+            <div class="rc warn">⚠ Interaksi Bisoprolol</div>
+          </div>
+          <div class="rx-stamp flagged">
+            <div class="rs-text flagged">SYS<br>⚠<br>FLAG</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SYSTEM FLAG DETAIL -->
+    <div class="flag-section">
+      <div class="fs-title">🤖 System Auto-Check — 11:47:23</div>
+      <div class="flag-item">
+        <div class="fi-ic">✅</div>
+        <div>
+          <div class="fi-ok fi-text"><b>BPJS Formularium: 4/4 ditanggung</b>Semua obat masuk DPHO. Tidak ada item diluar tanggungan.</div>
+        </div>
+        <div class="fi-t">11:47:23</div>
+      </div>
+      <div class="flag-item">
+        <div class="fi-ic">✅</div>
+        <div>
+          <div class="fi-ok fi-text"><b>Alergi Check: Clear</b>Tidak ada item yang mengandung Penisilin atau golongan Beta-Lactam.</div>
+        </div>
+        <div class="fi-t">11:47:23</div>
+      </div>
+      <div class="flag-item">
+        <div class="fi-ic">⚠️</div>
+        <div>
+          <div class="fi-warn fi-text"><b>Interaksi Obat: Bisoprolol + ISDN</b>Kombinasi Beta-blocker dengan nitrat dapat menyebabkan hipotensi ortostatik. Tidak kontraindikasi absolut — perlu konfirmasi dokter dan monitoring tekanan darah.</div>
+        </div>
+        <div class="fi-t">11:47:23</div>
+      </div>
+      <div class="flag-item">
+        <div class="fi-ic">✅</div>
+        <div>
+          <div class="fi-ok fi-text"><b>Dosis Range: Semua dalam batas normal</b>ISDN 5mg PRN sublingual sesuai standar terapi angina.</div>
+        </div>
+        <div class="fi-t">11:47:23</div>
+      </div>
+      <div style="margin-top:8px;padding-top:8px;border-top:.5px solid var(--border);font-size:10px;color:var(--text3);font-family:var(--mono)">
+        System check ID: CHK-20260601-1147-0492 · MediCore Rule Engine v1.0
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ RIGHT PANEL: NURSE VERIFICATION + STAMP ═══ -->
+  <div class="panel panel-right">
+    <div class="panel-title">
+      Verifikasi Suster — Wajib Sebelum Resep Dikirim
+      <span id="verify-status" style="color:var(--amber)">Menunggu verifikasi</span>
+    </div>
+
+    <!-- NURSE IDENTITY -->
+    <div class="verify-section">
+      <div class="vs-title">👩‍⚕️ Identitas Verifikator</div>
+      <div class="nurse-id">
+        <div class="ni-av">AN</div>
+        <div>
+          <div class="ni-name">Suster Ani Rahayu, A.Md.Kep</div>
+          <div class="ni-nip">NIP: 198803152010012001 · Poli Penyakit Dalam</div>
+        </div>
+        <div class="ni-time" id="verify-time">Senin 1 Jun · 12:03</div>
+      </div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.55;background:var(--surface);border-radius:8px;padding:9px 12px;border:1px solid var(--border)">
+        Dengan melakukan verifikasi ini, Suster Ani menyatakan telah memeriksa semua item resep secara fisik dan konfirmasi dengan dokter penulis jika ada flag sistem. Verifikasi ini dicatat dengan nama, NIP, dan timestamp yang tidak dapat diubah.
+      </div>
+    </div>
+
+    <!-- CHECKLIST — semua harus dicentang -->
+    <div class="card">
+      <div class="card-h">
+        <div class="ch-t">📋 Checklist Verifikasi</div>
+        <span class="badge bga" id="check-count">0 / 5 dicentang</span>
+      </div>
+      <div class="card-b">
+        <div class="item-checks">
+
+          <div class="ic-item" id="chk1" onclick="togCheck('chk1',false)">
+            <div class="ic-box"><span class="ic-check">✓</span></div>
+            <div class="ic-text">
+              <div class="ic-label">Identitas pasien sudah diverifikasi</div>
+              <div class="ic-sub">Nama, NIK, dan nomor BPJS sesuai dengan fisik kartu yang ditunjukkan pasien</div>
+            </div>
+          </div>
+
+          <div class="ic-item" id="chk2" onclick="togCheck('chk2',false)">
+            <div class="ic-box"><span class="ic-check">✓</span></div>
+            <div class="ic-text">
+              <div class="ic-label">3 obat lanjutan sudah diperiksa</div>
+              <div class="ic-sub">Bisoprolol 10mg · Amlodipine 10mg · Rosuvastatin 20mg — sistem clear, tidak ada perubahan dosis</div>
+            </div>
+          </div>
+
+          <div class="ic-item" id="chk3" onclick="togCheck('chk3',true)">
+            <div class="ic-box"><span class="ic-check">✓</span></div>
+            <div class="ic-text">
+              <div class="ic-label">⚠ ISDN 5mg — sudah konfirmasi ke dr. Arman</div>
+              <div class="ic-sub">Interaksi Bisoprolol + ISDN sudah dikonfirmasi langsung ke dokter · dr. Arman: "Berikan, monitoring tensi setelah dosis pertama"</div>
+            </div>
+          </div>
+
+          <div class="ic-item" id="chk4" onclick="togCheck('chk4',false)">
+            <div class="ic-box"><span class="ic-check">✓</span></div>
+            <div class="ic-text">
+              <div class="ic-label">Instruksi penggunaan sudah disampaikan ke pasien</div>
+              <div class="ic-sub">Pasien memahami cara pakai ISDN sublingual dan kapan harus diminum</div>
+            </div>
+          </div>
+
+          <div class="ic-item" id="chk5" onclick="togCheck('chk5',false)">
+            <div class="ic-box"><span class="ic-check">✓</span></div>
+            <div class="ic-text">
+              <div class="ic-label">Tidak ada item yang meragukan atau tidak terbaca</div>
+              <div class="ic-sub">Semua item resep jelas, lengkap, dan tidak ada yang perlu dikembalikan ke dokter</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- FLAGGED ITEM CONFIRMATION -->
+    <div class="flag-note" id="flag-confirm">
+      <div class="fn-title">⚠️ Konfirmasi Item yang Di-flag Sistem</div>
+      <div style="font-size:12px;color:var(--amber);margin-bottom:8px">ISDN 5mg + Bisoprolol — Interaksi terdeteksi</div>
+      <div class="fn-input" id="confirm-note">Konfirmasi via interkom ke dr. Arman 12:01 — dokter menyetujui pemberian ISDN PRN dengan instruksi monitoring tensi setelah dosis pertama. Pasien diedukasi gejala hipotensi.</div>
+      <div style="font-size:10px;color:var(--amber);font-family:var(--mono);margin-top:5px">Catatan konfirmasi ini wajib diisi dan tercatat dalam audit log</div>
+      <div class="fn-action">
+        <button class="fa-btn primary">✓ Konfirmasi sudah dilakukan</button>
+        <button class="fa-btn">✕ Belum — perlu konfirmasi dulu</button>
+      </div>
+    </div>
+
+    <!-- DIGITAL STAMP -->
+    <div class="stamp-preview" id="stamp-area">
+      <div class="stamp-circle" id="stamp-circle">
+        <div class="sc-inner" id="stamp-text">MENUNGGU<br>VERIFIKASI</div>
+      </div>
+      <div class="stamp-detail" id="stamp-detail">Centang semua checklist di atas untuk mengaktifkan stamp verifikasi</div>
+      <div class="stamp-id" id="stamp-id">ID: —</div>
+    </div>
+
+    <!-- SEND BUTTON -->
+    <button class="send-btn" id="send-btn" onclick="sendRx()">
+      🔒 Resep Terkunci — Selesaikan Verifikasi
+    </button>
+
+    <!-- AUDIT TRAIL -->
+    <div class="card" style="margin-top:14px">
+      <div class="card-h">
+        <div class="ch-t">🔍 Audit Trail — Chain of Custody</div>
+        <span class="badge bgg" id="trail-count">2 dari 4 tahap</span>
+      </div>
+      <div class="card-b">
+
+        <div class="trail-item">
+          <div class="ti-ic doc">👨‍⚕️</div>
+          <div class="ti-body">
+            <div class="ti-who">dr. Arman Wijaya, Sp.PD</div>
+            <div class="ti-action">Menulis 4 item resep · Diagnosis I10 + E78.5 · Voice input + ICD-10 selection</div>
+            <div class="ti-time">Senin 1 Jun 2026 · 11:47:23 WIB</div>
+            <div class="ti-hash">SES-20260601-ARW-0847 · IP: 192.168.1.42</div>
+          </div>
+        </div>
+
+        <div class="trail-item">
+          <div class="ti-ic sys">🤖</div>
+          <div class="ti-body">
+            <div class="ti-who">MediCore System</div>
+            <div class="ti-action">Auto-check selesai · 4 item diperiksa · 1 flag (interaksi obat Bisoprolol+ISDN) · 3 item auto-clear</div>
+            <div class="ti-time">Senin 1 Jun 2026 · 11:47:23 WIB (0ms setelah tulis)</div>
+            <div class="ti-hash">CHK-20260601-1147-0492 · Rule Engine v1.0</div>
+          </div>
+        </div>
+
+        <div class="trail-item" id="trail-nurse" style="opacity:.35">
+          <div class="ti-ic nurse">👩‍⚕️</div>
+          <div class="ti-body">
+            <div class="ti-who">Suster Ani Rahayu, A.Md.Kep</div>
+            <div class="ti-action" id="trail-nurse-action">Menunggu verifikasi suster...</div>
+            <div class="ti-time" id="trail-nurse-time">—</div>
+            <div class="ti-hash" id="trail-nurse-hash">VRF-pending</div>
+          </div>
+        </div>
+
+        <div class="trail-item" id="trail-sent" style="opacity:.35">
+          <div class="ti-ic sent">✅</div>
+          <div class="ti-body">
+            <div class="ti-who">MediCore System</div>
+            <div class="ti-action" id="trail-sent-action">Menunggu verifikasi sebelum dikirim...</div>
+            <div class="ti-time" id="trail-sent-time">—</div>
+            <div class="ti-hash" id="trail-sent-hash">SEND-pending</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div id="success-modal" style="display:none;position:fixed;inset:0;background:rgba(7,7,15,.97);z-index:100;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:30px">
+  <div style="font-size:48px">✅</div>
+  <div style="font-family:var(--serif);font-size:26px;color:var(--green);font-style:italic">Resep Terkirim dengan Aman</div>
+  <div style="font-size:13px;color:var(--text2);max-width:460px;line-height:1.7">Semua verifikasi selesai. Resep dikirim ke apotek dan pasien. Audit trail tersimpan permanen — tidak dapat diubah oleh siapapun.</div>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:18px;width:100%;max-width:500px;text-align:left">
+    <div style="font-family:var(--serif);font-size:14px;color:var(--text);text-align:center;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)">Bukti Pengiriman Resep</div>
+    <div class="receipt-row"><span class="rk">No. Resep</span><span class="rv rv-ok">RX-20260601-0492-ARW</span></div>
+    <div class="receipt-row"><span class="rk">Pasien</span><span class="rv">Budi Santoso / NIK 3271051405780003</span></div>
+    <div class="receipt-row"><span class="rk">Dokter</span><span class="rv">dr. Arman Wijaya, Sp.PD / SIP 503/DU/XII/2024</span></div>
+    <div class="receipt-row"><span class="rk">Ditulis</span><span class="rv rv-ok">01/06/2026 · 11:47:23 WIB</span></div>
+    <div class="receipt-row"><span class="rk">Verifikasi</span><span class="rv rv-ok">Suster Ani Rahayu / 01/06/2026 · 12:03:41 WIB</span></div>
+    <div class="receipt-row"><span class="rk">Item</span><span class="rv">4 obat · 1 flag dikonfirmasi manual</span></div>
+    <div class="receipt-row"><span class="rk">Terkirim ke</span><span class="rv">Apotek + Pasien · 12:03:42 WIB</span></div>
+    <div class="stamp-final" style="margin-top:12px">
+      <div class="sf-ic">🔏</div>
+      <div>
+        <div class="sf-text">TERVERIFIKASI & TERKIRIM</div>
+        <div class="sf-sub">VRF-20260601-1203-ANI · Hash: 3a7f2e9d...</div>
+      </div>
+    </div>
+  </div>
+
+  <button style="padding:12px 28px;background:var(--tealb);border:1px solid var(--tealbd);border-radius:var(--r);cursor:pointer;font-family:var(--font);font-size:14px;font-weight:600;color:var(--teal)" onclick="document.getElementById('success-modal').style.display='none'">Kembali ke Dashboard</button>
+</div>
+
+<script>
+var checks={chk1:false,chk2:false,chk3:false,chk4:false,chk5:false};
+var checkCount=0;
+
+function togCheck(id,isWarn){
+  var el=document.getElementById(id);
+  var wasChecked=checks[id];
+  checks[id]=!wasChecked;
+
+  if(checks[id]){
+    el.classList.add(isWarn?'checked-warn':'checked');
+  } else {
+    el.classList.remove('checked','checked-warn');
+  }
+
+  checkCount=Object.values(checks).filter(Boolean).length;
+  var badge=document.getElementById('check-count');
+  badge.textContent=checkCount+' / 5 dicentang';
+
+  if(checkCount===5){
+    badge.style.background='var(--tealb)';
+    badge.style.color='var(--teal)';
+    badge.style.borderColor='var(--tealbd)';
+    activateStamp();
+  } else if(checkCount>=3){
+    badge.style.background='var(--amberb)';
+    badge.style.color='var(--amber)';
+    badge.style.borderColor='var(--amberbd)';
+    resetStamp();
+  } else {
+    badge.style.background='var(--surface2)';
+    badge.style.color='var(--text2)';
+    badge.style.borderColor='var(--border2)';
+    resetStamp();
+  }
+}
+
+function resetStamp(){
+  var area=document.getElementById('stamp-area');
+  var circle=document.getElementById('stamp-circle');
+  var text=document.getElementById('stamp-text');
+  var detail=document.getElementById('stamp-detail');
+  var sid=document.getElementById('stamp-id');
+  var btn=document.getElementById('send-btn');
+  area.className='stamp-preview';
+  text.textContent='MENUNGGU\nVERIFIKASI';
+  detail.textContent='Centang semua checklist di atas untuk mengaktifkan stamp verifikasi';
+  sid.textContent='ID: —';
+  btn.className='send-btn';
+  btn.textContent='🔒 Resep Terkunci — Selesaikan Verifikasi';
+  document.getElementById('verify-status').style.color='var(--amber)';
+  document.getElementById('verify-status').textContent='Menunggu verifikasi';
+}
+
+function activateStamp(){
+  var area=document.getElementById('stamp-area');
+  var circle=document.getElementById('stamp-circle');
+  var text=document.getElementById('stamp-text');
+  var detail=document.getElementById('stamp-detail');
+  var sid=document.getElementById('stamp-id');
+  var btn=document.getElementById('send-btn');
+
+  area.className='stamp-preview stamping';
+  text.textContent='MEMPROSES\nVERIFIKASI';
+  detail.textContent='Menyimpan verifikasi...';
+
+  setTimeout(function(){
+    area.className='stamp-preview stamped';
+    text.textContent='✓\nDISTUJUI';
+
+    var now=new Date();
+    var ts=('0'+now.getHours()).slice(-2)+':'+('0'+now.getMinutes()).slice(-2)+':'+('0'+now.getSeconds()).slice(-2);
+    var vid='VRF-20260601-'+ts.replace(/:/g,'')+'-ANI';
+
+    detail.textContent='Suster Ani Rahayu · Senin 1 Jun 2026 · '+ts+' WIB\nNIP: 198803152010012001';
+    sid.textContent='ID: '+vid;
+
+    btn.className='send-btn ready';
+    btn.textContent='✓ Kirim Resep ke Pasien & Apotek';
+
+    document.getElementById('verify-status').style.color='var(--green)';
+    document.getElementById('verify-status').textContent='✓ Terverifikasi '+ts;
+    document.getElementById('verify-time').textContent='Senin 1 Jun · '+ts;
+
+    // update step
+    document.getElementById('step2').className='step done';
+    document.getElementById('step3').className='step done';
+
+    // update trail
+    var trailNurse=document.getElementById('trail-nurse');
+    trailNurse.style.opacity='1';
+    document.getElementById('trail-nurse-action').textContent='Verifikasi selesai · 5/5 checklist · Flag ISDN dikonfirmasi ke dr. Arman · Catatan konfirmasi tersimpan';
+    document.getElementById('trail-nurse-time').textContent='Senin 1 Jun 2026 · '+ts+' WIB';
+    document.getElementById('trail-nurse-hash').textContent=vid+' · NIP 198803152010012001';
+    document.getElementById('trail-count').textContent='3 dari 4 tahap';
+
+  },1800);
+}
+
+function sendRx(){
+  if(!document.getElementById('send-btn').classList.contains('ready'))return;
+
+  var now=new Date();
+  var ts=('0'+now.getHours()).slice(-2)+':'+('0'+now.getMinutes()).slice(-2)+':'+('0'+now.getSeconds()).slice(-2);
+
+  document.getElementById('step4').className='step done';
+  document.getElementById('trail-count').textContent='4 dari 4 tahap — Selesai';
+
+  var trailSent=document.getElementById('trail-sent');
+  trailSent.style.opacity='1';
+  document.getElementById('trail-sent-action').textContent='Resep dikirim ke apotek RS dan aplikasi pasien · Notifikasi terkirim · Rekam medis tersimpan final';
+  document.getElementById('trail-sent-time').textContent='Senin 1 Jun 2026 · '+ts+' WIB';
+  document.getElementById('trail-sent-hash').textContent='SEND-20260601-'+ts.replace(/:/g,'')+' · RX-20260601-0492-ARW';
+
+  setTimeout(function(){
+    document.getElementById('success-modal').style.display='flex';
+  },600);
+}
+</script>
+</body>
+</html>

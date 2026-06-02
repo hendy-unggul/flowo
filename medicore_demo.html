@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="MediCore HMS — Sistem Rekam Medis Digital untuk Rumah Sakit Modern Indonesia">
+<title>MediCore — Demo Interaktif</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&family=Lora:ital,wght@0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07070F;--bg2:#09091A;--surface:#0D0D1E;--surface2:#111128;--surface3:#161635;
+  --border:#1C1C35;--border2:#252548;--border3:#2E2E5A;
+  --text:#F0EEFF;--text2:#7875B8;--text3:#3A3778;--text4:#252360;
+  --teal:#2DB89A;--tealb:rgba(45,184,154,.08);--tealbd:rgba(45,184,154,.22);
+  --blue:#5B8FE8;--blueb:rgba(91,143,232,.08);--bluebd:rgba(91,143,232,.22);
+  --violet:#8B7FFF;--violetb:rgba(139,127,255,.08);--violetbd:rgba(139,127,255,.22);
+  --gold:#C8A96E;--goldb:rgba(200,169,110,.08);--goldbd:rgba(200,169,110,.22);
+  --amber:#E8A030;--amberb:rgba(232,160,48,.08);--amberbd:rgba(232,160,48,.22);
+  --red:#E24B4A;--redb:rgba(226,75,74,.08);--redbd:rgba(226,75,74,.22);
+  --green:#2DA865;--greenb:rgba(45,168,101,.08);--greenbd:rgba(45,168,101,.22);
+  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;--serif:'Lora',serif;
+}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+
+/* ── NOISE OVERLAY ── */
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.4}
+
+/* ── NAVBAR ── */
+nav{position:fixed;top:0;width:100%;z-index:100;background:rgba(7,7,15,.9);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 max(20px,calc(50vw - 580px));height:58px;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:10px}
+.nav-logo{font-family:var(--serif);font-size:18px;font-weight:500;font-style:italic;color:var(--text);letter-spacing:-.2px}
+.nav-logo span{font-style:normal;color:var(--teal)}
+.nav-tagline{font-size:10px;font-family:var(--mono);color:var(--text3);letter-spacing:.08em;text-transform:uppercase;padding:2px 9px;border:1px solid var(--border2);border-radius:4px}
+.nav-links{display:flex;gap:24px;list-style:none}
+.nav-links a{font-size:13px;color:var(--text2);transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:500;color:var(--teal);background:var(--tealb);border:1px solid var(--tealbd);padding:7px 16px;border-radius:8px;cursor:pointer;transition:all .2s}
+.nav-cta:hover{background:rgba(45,184,154,.14)}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px max(20px,calc(50vw - 540px)) 60px;position:relative}
+.hero-orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(100px)}
+.o1{width:600px;height:600px;background:rgba(91,143,232,.06);top:-200px;left:50%;transform:translateX(-50%)}
+.o2{width:400px;height:400px;background:rgba(45,184,154,.05);bottom:-100px;right:-100px}
+.o3{width:300px;height:300px;background:rgba(139,127,255,.05);bottom:-50px;left:-50px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:500;color:var(--teal);background:var(--tealb);border:1px solid var(--tealbd);padding:5px 14px;border-radius:100px;margin-bottom:28px;letter-spacing:.05em;text-transform:uppercase}
+.pulse{width:6px;height:6px;background:var(--teal);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.hero-h1{font-family:var(--serif);font-size:clamp(2.6rem,5.5vw,4.8rem);font-weight:500;line-height:1.1;letter-spacing:-.02em;margin-bottom:20px;font-style:italic}
+.hero-h1 em{font-style:normal;background:linear-gradient(135deg,var(--teal),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(1rem,1.8vw,1.15rem);color:var(--text2);max-width:560px;line-height:1.75;margin-bottom:40px;font-weight:300}
+.hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:60px}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:var(--bg);background:var(--teal);padding:14px 28px;border-radius:100px;cursor:pointer;transition:all .2s;border:none}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(45,184,154,.35)}
+.btn-secondary{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:400;color:var(--text2);background:transparent;padding:14px 28px;border-radius:100px;cursor:pointer;border:1px solid var(--border2);transition:all .2s}
+.btn-secondary:hover{border-color:var(--border3);color:var(--text)}
+.hero-metrics{display:flex;gap:40px;justify-content:center;flex-wrap:wrap}
+.metric{text-align:center}
+.metric-n{font-size:2rem;font-weight:500;font-family:var(--mono);color:var(--text);line-height:1}
+.metric-n span{font-size:1.2rem;color:var(--teal)}
+.metric-l{font-size:11px;color:var(--text2);margin-top:5px}
+.metric-sep{width:1px;background:var(--border);height:40px;align-self:center}
+
+/* ── PROBLEM SECTION ── */
+.section{padding:80px max(20px,calc(50vw - 580px))}
+.sec-label{font-size:11px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:12px}
+.sec-h2{font-family:var(--serif);font-size:clamp(2rem,3.5vw,2.8rem);font-weight:500;line-height:1.15;letter-spacing:-.02em;margin-bottom:16px;font-style:italic}
+.sec-sub{font-size:1rem;color:var(--text2);max-width:500px;line-height:1.75;font-weight:300}
+.problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+.problem-card{background:var(--redb);border:1px solid var(--redbd);border-radius:16px;padding:20px}
+.pc-ic{font-size:28px;margin-bottom:12px}
+.pc-title{font-size:14px;font-weight:600;color:var(--red);margin-bottom:8px}
+.pc-text{font-size:12px;color:var(--red);opacity:.8;line-height:1.65}
+
+/* ── ROLE SELECTOR ── */
+.demo-section{padding:80px max(20px,calc(50vw - 580px));background:var(--bg2);border-top:1px solid var(--border)}
+.role-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:32px}
+.role-tab{display:flex;align-items:center;gap:9px;padding:12px 20px;border-radius:12px;border:1px solid var(--border2);cursor:pointer;transition:all .2s;background:var(--surface)}
+.role-tab:hover{border-color:var(--border3)}
+.role-tab.active-patient{border-color:var(--tealbd);background:var(--tealb)}
+.role-tab.active-nurse{border-color:var(--bluebd);background:var(--blueb)}
+.role-tab.active-doctor{border-color:var(--goldbd);background:var(--goldb)}
+.role-tab.active-audit{border-color:var(--amberbd);background:var(--amberb)}
+.rt-ic{font-size:20px}
+.rt-name{font-size:13px;font-weight:500;color:var(--text)}
+.rt-desc{font-size:11px;color:var(--text2);margin-top:1px}
+.role-tab.active-patient .rt-name{color:var(--teal)}
+.role-tab.active-nurse .rt-name{color:var(--blue)}
+.role-tab.active-doctor .rt-name{color:var(--gold)}
+.role-tab.active-audit .rt-name{color:var(--amber)}
+
+/* ── DEMO FRAMES ── */
+.demo-frame-wrap{position:relative}
+.demo-label{font-size:11px;font-family:var(--mono);color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.demo-label-right{color:var(--teal);cursor:pointer;display:flex;align-items:center;gap:5px}
+.frame-container{display:none;border-radius:16px;overflow:hidden;border:1px solid var(--border2);box-shadow:0 24px 80px rgba(0,0,0,.5)}
+.frame-container.active{display:block}
+.frame-container iframe{width:100%;height:680px;border:none;display:block}
+.frame-note{font-size:12px;color:var(--text2);margin-top:12px;line-height:1.6;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+
+/* ── FEATURES ── */
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+.feat-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;transition:border-color .2s}
+.feat-card:hover{border-color:var(--border2)}
+.fc-ic{font-size:24px;margin-bottom:12px}
+.fc-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:8px}
+.fc-text{font-size:12px;color:var(--text2);line-height:1.65}
+.fc-tag{display:inline-block;font-size:10px;font-family:var(--mono);padding:2px 8px;border-radius:4px;margin-top:8px}
+
+/* ── FLOW ── */
+.flow-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:40px;border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.flow-step{padding:20px;border-right:1px solid var(--border);position:relative}
+.flow-step:last-child{border-right:none}
+.fs-num{font-size:10px;font-family:var(--mono);color:var(--text3);letter-spacing:.06em;margin-bottom:10px}
+.fs-ic{font-size:24px;margin-bottom:10px}
+.fs-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:6px}
+.fs-text{font-size:11px;color:var(--text2);line-height:1.6}
+.fs-arrow{position:absolute;right:-12px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--text3);z-index:1}
+.flow-step:last-child .fs-arrow{display:none}
+
+/* ── BPJS HIGHLIGHT ── */
+.bpjs-section{background:var(--tealb);border:1px solid var(--tealbd);border-radius:20px;padding:40px;margin:0 max(20px,calc(50vw - 580px));display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.bs-left{}
+.bs-label{font-size:11px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:12px}
+.bs-title{font-family:var(--serif);font-size:clamp(1.6rem,3vw,2.4rem);font-weight:500;font-style:italic;color:var(--text);line-height:1.15;margin-bottom:14px}
+.bs-text{font-size:13px;color:var(--text2);line-height:1.75;font-weight:300}
+.bs-right{display:flex;flex-direction:column;gap:10px}
+.bpjs-item{background:var(--surface);border:1px solid var(--tealbd);border-radius:12px;padding:13px 15px;display:flex;align-items:center;gap:12px}
+.bi-ic{font-size:20px;flex-shrink:0}
+.bi-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px}
+.bi-text{font-size:11px;color:var(--text2);line-height:1.5}
+.bi-badge{font-size:10px;padding:2px 8px;border-radius:100px;background:var(--tealb);color:var(--teal);border:1px solid var(--tealbd);margin-left:auto;white-space:nowrap;align-self:flex-start;flex-shrink:0}
+
+/* ── TECH STACK ── */
+.stack-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:32px}
+.stack-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.si-ic{font-size:24px;margin-bottom:8px}
+.si-name{font-size:12px;font-weight:500;color:var(--text);margin-bottom:4px}
+.si-role{font-size:10px;color:var(--text2)}
+
+/* ── CTA SECTION ── */
+.cta-section{padding:100px max(20px,calc(50vw - 580px));text-align:center;background:var(--bg2);border-top:1px solid var(--border)}
+.cta-h2{font-family:var(--serif);font-size:clamp(2rem,4vw,3.2rem);font-weight:500;font-style:italic;letter-spacing:-.02em;margin-bottom:16px}
+.cta-h2 em{font-style:normal;color:var(--teal)}
+.cta-sub{font-size:1rem;color:var(--text2);max-width:480px;margin:0 auto 40px;line-height:1.75;font-weight:300}
+.contact-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.contact-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 24px;text-align:left;min-width:220px;cursor:pointer;transition:all .2s}
+.contact-card:hover{transform:translateY(-3px)}
+.contact-card.wa{border-color:var(--greenbd);background:var(--greenb)}
+.contact-card.email{border-color:var(--bluebd);background:var(--blueb)}
+.cc-ic{font-size:24px;margin-bottom:10px}
+.cc-label{font-size:10px;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;font-family:var(--mono)}
+.cc-value{font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px}
+.cc-sub{font-size:11px;color:var(--text2)}
+.contact-card.wa .cc-value{color:var(--green)}
+.contact-card.email .cc-value{color:var(--blue)}
+
+/* ── FOOTER ── */
+footer{padding:24px max(20px,calc(50vw - 580px));border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ft-brand{font-family:var(--serif);font-size:14px;font-style:italic;color:var(--text2)}
+.ft-brand span{font-style:normal;color:var(--teal)}
+.ft-copy{font-size:11px;color:var(--text3)}
+.ft-links{display:flex;gap:18px}
+.ft-links a{font-size:11px;color:var(--text3);transition:color .2s}
+.ft-links a:hover{color:var(--text2)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .problem-grid,.features-grid,.stack-grid{grid-template-columns:1fr}
+  .flow-grid{grid-template-columns:1fr 1fr}
+  .flow-step{border-right:none;border-bottom:1px solid var(--border)}
+  .bpjs-section{grid-template-columns:1fr;padding:28px}
+  .nav-links,.nav-tagline{display:none}
+  .role-tabs{gap:7px}
+  .role-tab{padding:9px 14px}
+  .metric-sep{display:none}
+  .hero-metrics{gap:24px}
+  .frame-container iframe{height:500px}
+}
+
+/* REVEAL ANIMATION */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s ease}
+.reveal.in{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <span class="nav-logo">Medi<span>Core</span></span>
+    <span class="nav-tagline">HMS 2.0</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#demo">Demo</a></li>
+    <li><a href="#fitur">Fitur</a></li>
+    <li><a href="#bpjs">BPJS</a></li>
+    <li><a href="#tech">Teknologi</a></li>
+  </ul>
+  <a href="https://wa.me/6208877775559?text=Halo%2C%20saya%20tertarik%20dengan%20demo%20MediCore%20untuk%20RS%20kami" class="nav-cta" target="_blank">
+    💬 Diskusi Demo
+  </a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-orb o1"></div>
+  <div class="hero-orb o2"></div>
+  <div class="hero-orb o3"></div>
+
+  <div class="hero-eyebrow"><div class="pulse"></div>Hospital Management System · Indonesia</div>
+
+  <h1 class="hero-h1 reveal">Dari loket ke dokter —<br><em>tanpa kertas, tanpa antre panjang,</em><br>tanpa salah informasi.</h1>
+
+  <p class="hero-sub reveal">MediCore adalah HMS berbasis PWA yang mengintegrasikan pasien, suster, dan dokter dalam satu platform — terintegrasi BPJS, real-time, dan bisa diakses dari tablet, PC, maupun HP Android.</p>
+
+  <div class="hero-actions reveal">
+    <a href="#demo" class="btn-primary">▶ Jelajahi Demo Interaktif</a>
+    <a href="https://wa.me/6208877775559?text=Saya%20ingin%20demo%20MediCore%20untuk%20RS%20kami" class="btn-secondary" target="_blank">💬 Hubungi Kami</a>
+  </div>
+
+  <div class="hero-metrics reveal">
+    <div class="metric"><div class="metric-n">3<span>x</span></div><div class="metric-l">Lebih cepat registrasi</div></div>
+    <div class="metric-sep"></div>
+    <div class="metric"><div class="metric-n">0</div><div class="metric-l">Surprise di kasir BPJS</div></div>
+    <div class="metric-sep"></div>
+    <div class="metric"><div class="metric-n">4</div><div class="metric-l">Role dalam 1 platform</div></div>
+    <div class="metric-sep"></div>
+    <div class="metric"><div class="metric-n">PWA</div><div class="metric-l">Tanpa install App Store</div></div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="section" id="masalah">
+  <div class="sec-label">Masalah yang diselesaikan</div>
+  <h2 class="sec-h2 reveal">RS Indonesia kehilangan<br>waktu dan kepercayaan setiap hari.</h2>
+  <p class="sec-sub reveal">Tiga masalah yang terjadi berulang, setiap hari, di hampir semua RS yang melayani BPJS.</p>
+  <div class="problem-grid">
+    <div class="problem-card reveal">
+      <div class="pc-ic">⏱️</div>
+      <div class="pc-title">Registrasi 8–12 Menit per Pasien</div>
+      <div class="pc-text">Suster input data manual dari nol. Pasien antri panjang. Jam operasional pagi tersita untuk administrasi — bukan pelayanan klinis.</div>
+    </div>
+    <div class="problem-card reveal">
+      <div class="pc-ic">💸</div>
+      <div class="pc-title">"Maaf, ini tidak ditanggung BPJS"</div>
+      <div class="pc-text">Pasien tahu setelah tindakan selesai. Dokter sudah menulis resep. Kasir yang menyampaikan kabar buruk. Kepercayaan pasien turun, RS menanggung reputasinya.</div>
+    </div>
+    <div class="problem-card reveal">
+      <div class="pc-ic">📋</div>
+      <div class="pc-title">Dokter Tanya Ulang dari Awal</div>
+      <div class="pc-text">Informasi pasien tersebar di kartu berobat, buku rekam medis, dan ingatan suster yang berbeda shift. Dokter memulai anamnesis dari nol setiap kunjungan.</div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section class="demo-section" id="demo">
+  <div class="sec-label">Demo Interaktif</div>
+  <h2 class="sec-h2 reveal">Pilih role dan jelajahi<br>semua fitur secara langsung.</h2>
+  <p class="sec-sub reveal" style="margin-bottom:32px">Semua data adalah dummy. Semua fitur aktif. Tidak perlu login.</p>
+
+  <div class="role-tabs">
+    <div class="role-tab active-patient" id="tab-patient" onclick="showDemo('patient')">
+      <div class="rt-ic">📱</div>
+      <div>
+        <div class="rt-name">Pasien</div>
+        <div class="rt-desc">HP Android</div>
+      </div>
+    </div>
+    <div class="role-tab" id="tab-nurse" onclick="showDemo('nurse')">
+      <div class="rt-ic">🖥️</div>
+      <div>
+        <div class="rt-name">Suster</div>
+        <div class="rt-desc">PC / Tablet</div>
+      </div>
+    </div>
+    <div class="role-tab" id="tab-doctor" onclick="showDemo('doctor')">
+      <div class="rt-ic">🩺</div>
+      <div>
+        <div class="rt-name">Dokter</div>
+        <div class="rt-desc">Tablet</div>
+      </div>
+    </div>
+    <div class="role-tab" id="tab-audit" onclick="showDemo('audit')">
+      <div class="rt-ic">🔏</div>
+      <div>
+        <div class="rt-name">Audit Resep</div>
+        <div class="rt-desc">Chain of Custody</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PATIENT FRAME -->
+  <div class="demo-frame-wrap">
+    <div class="demo-label">
+      <span id="frame-label">📱 Pasien App — HP Android · Semua fitur aktif · Dummy data</span>
+      <span class="demo-label-right" onclick="openFull()">⛶ Buka fullscreen →</span>
+    </div>
+
+    <div class="frame-container active" id="frame-patient">
+      <iframe src="medicore_patient_demo.html" id="iframe-patient" title="Patient App Demo"></iframe>
+    </div>
+    <div class="frame-container" id="frame-nurse">
+      <iframe src="medicore_nurse_app.html" id="iframe-nurse" title="Nurse App Demo"></iframe>
+    </div>
+    <div class="frame-container" id="frame-doctor">
+      <iframe src="medicore_doctor_app.html" id="iframe-doctor" title="Doctor App Demo"></iframe>
+    </div>
+    <div class="frame-container" id="frame-audit">
+      <iframe src="medicore_prescription_audit.html" id="iframe-audit" title="Prescription Audit Demo"></iframe>
+    </div>
+
+    <div class="frame-note" id="frame-note">
+      <strong style="color:var(--teal)">Pasien App:</strong> Tap tab navigasi atas untuk pindah screen. Fitur aktif: identifikasi BPJS/Umum, booking dokter + keluhan, antrian real-time, hasil lab (tap untuk expand), rekam medis, medication reminder + tips kesehatan, profil.
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" id="fitur">
+  <div class="sec-label">Fitur Utama</div>
+  <h2 class="sec-h2 reveal">Dirancang untuk cara kerja<br>RS Indonesia yang nyata.</h2>
+  <div class="features-grid">
+    <div class="feat-card reveal">
+      <div class="fc-ic">📱</div>
+      <div class="fc-title">Self-Registration Pasien</div>
+      <div class="fc-text">Pasien upload foto KTP + BPJS dari HP. OCR auto-extract data. Suster hanya verifikasi wajah — 15 detik per pasien.</div>
+      <span class="fc-tag" style="background:var(--tealb);color:var(--teal)">Zero hardware tambahan</span>
+    </div>
+    <div class="feat-card reveal">
+      <div class="fc-ic">🤖</div>
+      <div class="fc-title">Pre-Anamnesis AI Ara</div>
+      <div class="fc-text">Ara menghubungi pasien malam sebelum konsultasi. Anamnesis selesai sebelum pasien tiba. Dokter sudah siap sebelum periksa.</div>
+      <span class="fc-tag" style="background:var(--blueb);color:var(--blue)">Claude API</span>
+    </div>
+    <div class="feat-card reveal">
+      <div class="fc-ic">⚡</div>
+      <div class="fc-title">Antrian Real-Time</div>
+      <div class="fc-text">Pasien lihat posisi antrian dari HP. Notif saat giliran mendekati. Dokter panggil pasien dengan satu tap — suster langsung dapat notif.</div>
+      <span class="fc-tag" style="background:var(--amberb);color:var(--amber)">Supabase Realtime</span>
+    </div>
+    <div class="feat-card reveal">
+      <div class="fc-ic">🔬</div>
+      <div class="fc-title">Professional Lab Review</div>
+      <div class="fc-text">Hasil lab melalui suster terlebih dahulu. Nilai kritis auto-flag. Suster tambah catatan profesional. Baru dikirim ke dokter dan pasien.</div>
+      <span class="fc-tag" style="background:var(--redb);color:var(--red)">Patient safety layer</span>
+    </div>
+    <div class="feat-card reveal">
+      <div class="fc-ic">🔏</div>
+      <div class="fc-title">Audit Trail Resep</div>
+      <div class="fc-text">Setiap resep punya chain of custody: dokter tulis → sistem cek → suster verifikasi → dikirim. Nama, waktu, dan alasan tercatat permanen.</div>
+      <span class="fc-tag" style="background:var(--goldb);color:var(--gold)">Medikolegal protection</span>
+    </div>
+    <div class="feat-card reveal">
+      <div class="fc-ic">💊</div>
+      <div class="fc-title">Medication Reminder + Tips</div>
+      <div class="fc-text">App jadi bagian rutinitas pasien 2-3x sehari. Tips kesehatan kontekstual — tidak predictable, tidak membosankan. Kepatuhan obat termonitor.</div>
+      <span class="fc-tag" style="background:var(--violetb);color:var(--violet)">Engagement engine</span>
+    </div>
+  </div>
+</section>
+
+<!-- FLOW -->
+<section class="section" style="padding-top:0">
+  <div class="sec-label">Alur Satu Kunjungan</div>
+  <h2 class="sec-h2 reveal">Dari booking sampai selesai —<br>semua terhubung otomatis.</h2>
+  <div class="flow-grid reveal">
+    <div class="flow-step" style="background:var(--tealb)">
+      <div class="fs-num">01</div>
+      <div class="fs-ic">📱</div>
+      <div class="fs-title">Pasien Booking</div>
+      <div class="fs-text">Pilih dokter, isi keluhan, BPJS auto-cek coverage. Ara anamnesis H-1.</div>
+      <div class="fs-arrow">→</div>
+    </div>
+    <div class="flow-step" style="background:var(--blueb)">
+      <div class="fs-num">02</div>
+      <div class="fs-ic">👩‍⚕️</div>
+      <div class="fs-title">Suster Check-in</div>
+      <div class="fs-text">Scan QR → data muncul. Verifikasi + vital signs + elaborasi. 60–90 detik selesai.</div>
+      <div class="fs-arrow">→</div>
+    </div>
+    <div class="flow-step" style="background:var(--goldb)">
+      <div class="fs-num">03</div>
+      <div class="fs-ic">🩺</div>
+      <div class="fs-title">Dokter Konsultasi</div>
+      <div class="fs-text">Brief sudah ada. Voice input diagnosis. Resep auto-check BPJS + alergi. One tap selesai.</div>
+      <div class="fs-arrow">→</div>
+    </div>
+    <div class="flow-step" style="background:var(--greenb)">
+      <div class="fs-num">04</div>
+      <div class="fs-ic">✅</div>
+      <div class="fs-title">Selesai & Terkirim</div>
+      <div class="fs-text">Rekam medis tersimpan. Resep ke apotek. Pasien terima notif. Reminder obat aktif.</div>
+    </div>
+  </div>
+</section>
+
+<!-- BPJS HIGHLIGHT -->
+<div class="bpjs-section reveal" id="bpjs">
+  <div class="bs-left">
+    <div class="bs-label">Game Changer</div>
+    <h2 class="bs-title">Coverage BPJS difilter<br>sebelum pasien antri.</h2>
+    <p class="bs-text">Satu-satunya HMS yang memberitahu pasien apa yang ditanggung BPJS mereka SEBELUM duduk di antrian — bukan setelah dokter selesai memeriksa. Zero surprise di kasir.</p>
+  </div>
+  <div class="bs-right">
+    <div class="bpjs-item">
+      <div class="bi-ic">✅</div>
+      <div>
+        <div class="bi-title">Eligibilitas real-time</div>
+        <div class="bi-text">Status aktif, kelas, faskes, dan sisa rujukan dicek saat registrasi</div>
+      </div>
+      <div class="bi-badge">API VClaim</div>
+    </div>
+    <div class="bpjs-item">
+      <div class="bi-ic">📋</div>
+      <div>
+        <div class="bi-title">Coverage per keluhan</div>
+        <div class="bi-text">Sistem cek INA-CBGs berdasarkan keluhan yang diisi pasien saat booking</div>
+      </div>
+      <div class="bi-badge">Auto-check</div>
+    </div>
+    <div class="bpjs-item">
+      <div class="bi-ic">💊</div>
+      <div>
+        <div class="bi-title">Formularium obat</div>
+        <div class="bi-text">Saat dokter input resep, sistem flag obat di luar DPHO secara otomatis</div>
+      </div>
+      <div class="bi-badge">DPHO check</div>
+    </div>
+    <div class="bpjs-item">
+      <div class="bi-ic">🤝</div>
+      <div>
+        <div class="bi-title">Pasien pilih layanan</div>
+        <div class="bi-text">Pasien konfirmasi pilihan sebelum antri — yang diluar BPJS bisa dilewati</div>
+      </div>
+      <div class="bi-badge">Informed consent</div>
+    </div>
+  </div>
+</div>
+
+<!-- TECH STACK -->
+<section class="section" id="tech">
+  <div class="sec-label">Teknologi</div>
+  <h2 class="sec-h2 reveal">Dibangun dengan stack modern —<br>zero server management.</h2>
+  <p class="sec-sub reveal">PWA — tidak perlu App Store. Satu codebase untuk semua device. Deploy ke Vercel dalam hitungan menit.</p>
+  <div class="stack-grid">
+    <div class="stack-item reveal"><div class="si-ic">⚡</div><div class="si-name">Next.js 14</div><div class="si-role">Frontend PWA</div></div>
+    <div class="stack-item reveal"><div class="si-ic">🗃️</div><div class="si-name">Supabase</div><div class="si-role">PostgreSQL + Realtime</div></div>
+    <div class="stack-item reveal"><div class="si-ic">🤖</div><div class="si-name">Claude API</div><div class="si-role">AI Ara (Anamnesis)</div></div>
+    <div class="stack-item reveal"><div class="si-ic">👁️</div><div class="si-name">Google Vision</div><div class="si-role">OCR KTP & Dokumen</div></div>
+    <div class="stack-item reveal"><div class="si-ic">🎙️</div><div class="si-name">Web Speech API</div><div class="si-role">Voice Input Dokter</div></div>
+    <div class="stack-item reveal"><div class="si-ic">💳</div><div class="si-name">BPJS VClaim</div><div class="si-role">Eligibilitas & Klaim</div></div>
+    <div class="stack-item reveal"><div class="si-ic">🚀</div><div class="si-name">Vercel</div><div class="si-role">Hosting & Deploy</div></div>
+    <div class="stack-item reveal"><div class="si-ic">📱</div><div class="si-name">PWA + IndexedDB</div><div class="si-role">Offline Backup</div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="sec-label" style="text-align:center;display:flex;justify-content:center">Mulai sekarang</div>
+  <h2 class="cta-h2 reveal">Siap demo untuk<br><em>RS Anda?</em></h2>
+  <p class="cta-sub reveal">MediCore tersedia untuk demo dan pilot. Kontak kami untuk diskusi kebutuhan spesifik RS Anda — penyesuaian fitur tersedia sebelum kontrak.</p>
+  <div class="contact-row reveal">
+    <a href="https://wa.me/6208877775559?text=Halo%20Hendy%2C%20saya%20tertarik%20demo%20MediCore%20untuk%20RS%20kami" class="contact-card wa" target="_blank">
+      <div class="cc-ic">💬</div>
+      <div class="cc-label">WhatsApp</div>
+      <div class="cc-value">0887 777 5559</div>
+      <div class="cc-sub">Respons cepat di jam kerja</div>
+    </a>
+    <a href="mailto:unggul@outlook.com?subject=Demo%20MediCore%20untuk%20RS%20Kami" class="contact-card email">
+      <div class="cc-ic">📧</div>
+      <div class="cc-label">Email</div>
+      <div class="cc-value">unggul@outlook.com</div>
+      <div class="cc-sub">Untuk proposal dan brief formal</div>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-brand">Medi<span>Core</span> — by Flowo Studio</div>
+  <div class="ft-links">
+    <a href="https://flowo-delta.vercel.app" target="_blank">Flowo Studio</a>
+    <a href="#demo">Demo</a>
+    <a href="#fitur">Fitur</a>
+  </div>
+  <div class="ft-copy">© 2026 Flowo Studio · Hendy Unggul · Jakarta 🇮🇩</div>
+</footer>
+
+<script>
+/* REVEAL ON SCROLL */
+var ro=new IntersectionObserver(function(es){
+  es.forEach(function(e){
+    if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target)}
+  })
+},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(function(el){ro.observe(el)});
+
+/* DEMO ROLE SWITCHER */
+var frameNotes={
+  patient:'<strong style="color:var(--teal)">Pasien App:</strong> Tap tab navigasi atas untuk pindah screen. Fitur aktif: identifikasi BPJS/Umum, booking dokter + keluhan, antrian real-time dengan tracker posisi, hasil lab + nilai kritis, rekam medis, medication reminder, profil.',
+  nurse:'<strong style="color:var(--blue)">Suster App — PC View:</strong> Klik menu sidebar kiri untuk navigasi 6 screen. Fitur aktif: dashboard antrian + alert dokter panggil, check-in smart review (tap vital signs untuk isi), upload dokumen, review lab dengan nilai kritis, handover shift, kelola jadwal dokter.',
+  doctor:'<strong style="color:var(--gold)">Dokter App:</strong> Klik nama pasien di panel kiri. 3 skenario tersedia: Pak Budi (nyeri dada + nilai lab kritis), Bu Dewi (asma + SpO2 rendah), Pak Ahmad (kontrol rutin — one tap lanjutkan). Tap "✓ Selesai" untuk lihat done overlay.',
+  audit:'<strong style="color:var(--amber)">Audit Resep — Chain of Custody:</strong> Centang 5 checklist satu per satu. Perhatikan item ISDN (⚠ flag interaksi obat). Setelah semua dicentang, stamp berputar → berubah hijau "DISETUJUI". Tap "Kirim" untuk lihat bukti pengiriman lengkap.'
+};
+var frameLabels={
+  patient:'📱 Pasien App — HP Android · 7 screens · Semua fitur aktif · Dummy data',
+  nurse:'🖥️ Suster App — PC View · 6 screens · Semua fitur aktif · Dummy data',
+  doctor:'🩺 Dokter App — Tablet View · 3 pasien demo · Semua fitur aktif · Dummy data',
+  audit:'🔏 Audit Resep — Chain of Custody · 4 tahap · Interaktif penuh · Dummy data'
+};
+var currentDemo='patient';
+var frameUrls={
+  patient:'medicore_patient_demo.html',
+  nurse:'medicore_nurse_app.html',
+  doctor:'medicore_doctor_app.html',
+  audit:'medicore_prescription_audit.html'
+};
+
+function showDemo(role){
+  currentDemo=role;
+  ['patient','nurse','doctor','audit'].forEach(function(r){
+    var tab=document.getElementById('tab-'+r);
+    var frame=document.getElementById('frame-'+r);
+    tab.className='role-tab';
+    frame.classList.remove('active');
+  });
+  document.getElementById('tab-'+role).className='role-tab active-'+role;
+  document.getElementById('frame-'+role).classList.add('active');
+  document.getElementById('frame-note').innerHTML=frameNotes[role];
+  document.getElementById('frame-label').textContent=frameLabels[role];
+}
+
+function openFull(){
+  window.open(frameUrls[currentDemo],'_blank');
+}
+
+/* SMOOTH SCROLL FOR NAV */
+document.querySelectorAll('a[href^="#"]').forEach(function(a){
+  a.addEventListener('click',function(e){
+    var t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'})}
+  })
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediCore — Nurse App Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0A14;--bg2:#0D0D1A;--surface:#111120;--surface2:#161628;
+  --border:#1E1E32;--border2:#252540;
+  --text:#F0EEFF;--text2:#7A77B0;--text3:#3A3768;--text4:#252348;
+  --teal:#2DB89A;--teal-bg:rgba(45,184,154,.08);--teal-border:rgba(45,184,154,.2);
+  --blue:#5B8FE8;--blue-bg:rgba(91,143,232,.08);--blue-border:rgba(91,143,232,.2);
+  --amber:#E8A030;--amber-bg:rgba(232,160,48,.08);--amber-border:rgba(232,160,48,.2);
+  --red:#E24B4A;--red-bg:rgba(226,75,74,.08);--red-border:rgba(226,75,74,.2);
+  --violet:#7B6FFF;
+  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+  --r:10px;--r2:14px;
+}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ── TOP BAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.tb-brand{display:flex;align-items:center;gap:10px}
+.tb-logo{font-size:15px;font-weight:600;color:var(--text);letter-spacing:-.3px}
+.tb-role{font-size:10px;font-family:var(--mono);color:var(--text3);background:var(--surface2);padding:2px 9px;border-radius:4px;border:1px solid var(--border)}
+.tb-right{display:flex;align-items:center;gap:12px}
+.notif{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);font-size:10px;padding:3px 10px;border-radius:100px;cursor:pointer;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.tb-time{font-family:var(--mono);font-size:13px;color:var(--text2)}
+
+/* ── LAYOUT ── */
+.layout{display:grid;grid-template-columns:54px 1fr;min-height:calc(100vh - 44px)}
+
+/* ── SIDEBAR ── */
+.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:4px;position:sticky;top:44px;height:calc(100vh - 44px)}
+.sni{width:40px;height:40px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;transition:all .15s;position:relative}
+.sni:hover{background:var(--surface2)}
+.sni.on{background:var(--blue-bg)}
+.sni-ic{font-size:18px}
+.sni-lbl{font-size:7px;color:var(--text3);letter-spacing:.02em}
+.sni.on .sni-lbl{color:var(--blue)}
+.sni-dot{position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:var(--red);border:1.5px solid var(--surface)}
+.sep{width:26px;height:.5px;background:var(--border);margin:5px 0}
+
+/* ── CONTENT ── */
+.content{overflow-y:auto;height:calc(100vh - 44px);background:var(--bg2)}
+.sc{display:none}.sc.on{display:block}
+
+/* headers */
+.ph{background:var(--surface);padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.ph-l .ph-title{font-size:16px;font-weight:500;color:var(--text);letter-spacing:-.3px}
+.ph-l .ph-sub{font-size:11px;color:var(--text2);margin-top:2px}
+.btn{border:none;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:500;padding:7px 15px;border-radius:8px;display:flex;align-items:center;gap:5px;transition:all .15s}
+.btn:active{transform:scale(.97)}
+.btn-teal{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-border)}
+.btn-blue{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)}
+.btn-amber{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.btn-red{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.btn-ghost{background:var(--surface2);color:var(--text2);border:1px solid var(--border2)}
+
+/* cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.card-h{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.ch-t{font-size:12px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:6px}
+.badge{font-size:10px;padding:2px 8px;border-radius:100px;font-family:var(--mono)}
+.bgt{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-border)}
+.bgb{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)}
+.bga{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.bgr{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.bgg{background:var(--surface2);color:var(--text2);border:1px solid var(--border2)}
+.card-b{padding:12px 14px}
+.row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:12px;border-bottom:.5px solid var(--border)}
+.row:last-child{border-bottom:none}
+.rk{color:var(--text2)}.rv{color:var(--text);font-weight:500}
+.rv-t{color:var(--teal)}.rv-a{color:var(--amber)}.rv-r{color:var(--red)}
+
+/* body padding */
+.bp{padding:14px 20px;display:flex;flex-direction:column;gap:12px}
+
+/* ── SCREEN 1: DASHBOARD ── */
+.calling-alert{background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:var(--r2);padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer}
+.ca-ring{width:40px;height:40px;border-radius:50%;border:2px solid var(--amber);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;animation:ring 1.5s infinite}
+@keyframes ring{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.ca-title{font-size:14px;font-weight:600;color:var(--amber);margin-bottom:3px}
+.ca-sub{font-size:11px;color:var(--amber);opacity:.7}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:14px;text-align:center}
+.stat-n{font-size:26px;font-weight:500;font-family:var(--mono);color:var(--text)}
+.stat-l{font-size:11px;color:var(--text2);margin-top:3px}
+.queue-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.q-col-h{font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;font-family:var(--mono)}
+.qi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;margin-bottom:7px;cursor:pointer;transition:all .15s}
+.qi:hover{border-color:var(--border2)}
+.qi.active{border-color:var(--teal-border);background:rgba(45,184,154,.03)}
+.qi.called{border-color:var(--amber-border);background:var(--amber-bg)}
+.qi-top{display:flex;align-items:center;gap:9px}
+.qi-num{font-size:12px;font-weight:500;font-family:var(--mono);color:var(--text2);width:42px;flex-shrink:0}
+.qi-name{font-size:13px;font-weight:500;color:var(--text);flex:1}
+.qi-s{font-size:10px;padding:2px 8px;border-radius:100px}
+.s-wait{background:var(--surface2);color:var(--text2)}
+.s-checkin{background:var(--blue-bg);color:var(--blue)}
+.s-ready{background:var(--teal-bg);color:var(--teal)}
+.s-with{background:var(--teal-bg);color:var(--teal)}
+.s-called{background:var(--amber-bg);color:var(--amber)}
+.s-done{background:var(--surface2);color:var(--text3)}
+.qi-sub{font-size:10px;color:var(--text2);margin-top:4px}
+.ho-reminder{background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:var(--r2);padding:13px 16px;display:flex;align-items:center;gap:12px;cursor:pointer}
+
+/* ── SCREEN 2: CHECKIN ── */
+.ci-layout{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 100px)}
+.ci-left{border-right:1px solid var(--border);padding:14px;background:var(--surface);display:flex;flex-direction:column;gap:10px;overflow-y:auto}
+.ci-right{padding:14px;background:var(--bg2);display:flex;flex-direction:column;gap:10px;overflow-y:auto}
+.patient-card{background:var(--surface2);border-radius:var(--r);padding:12px}
+.pct{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.pcav{width:40px;height:40px;border-radius:50%;background:var(--blue-bg);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--blue);flex-shrink:0}
+.pcname{font-size:13px;font-weight:500;color:var(--text)}
+.pcnick{font-size:11px;color:var(--blue);margin-top:2px}
+.alert-red{background:var(--red-bg);border:1px solid var(--red-border);border-radius:8px;padding:9px 12px;font-size:11px;color:var(--red);line-height:1.5}
+.last-v{background:var(--surface2);border-radius:8px;padding:10px 12px}
+.ara-card{background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:var(--r);padding:12px}
+.ara-lbl{font-size:9px;color:var(--blue);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;font-family:var(--mono);opacity:.8}
+.ara-text{font-size:12px;color:var(--blue);line-height:1.65}
+.ara-item{display:flex;align-items:flex-start;gap:6px;font-size:11px;color:var(--blue);padding:2px 0}
+.ara-dot{width:4px;height:4px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:5px;opacity:.7}
+.add-field{border:1px dashed var(--border2);border-radius:8px;padding:10px 12px;background:var(--surface2)}
+.add-lbl{font-size:9px;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;font-family:var(--mono)}
+.add-text{font-size:12px;color:var(--amber);line-height:1.6;min-height:30px}
+.vitals-g{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.vi{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:10px;cursor:pointer;transition:all .15s}
+.vi.filled{background:var(--teal-bg);border-color:var(--teal-border)}
+.vi:hover{border-color:var(--border2)}
+.vi-lbl{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;font-family:var(--mono)}
+.vi.filled .vi-lbl{color:var(--teal);opacity:.8}
+.vi-val{font-size:17px;font-weight:500;color:var(--text);font-family:var(--mono);margin-top:3px}
+.vi.filled .vi-val{color:var(--teal)}
+.vi-unit{font-size:9px;color:var(--text2)}
+.vi.filled .vi-unit{color:var(--teal);opacity:.7}
+.vi-ref{font-size:9px;margin-top:2px;color:var(--amber)}
+.bmi-row{background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:8px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;font-size:12px;display:none}
+.bmi-l{color:var(--blue)}.bmi-v{font-weight:500;color:var(--blue);font-family:var(--mono)}
+.preview-card{background:var(--surface);border:1px solid var(--teal-border);border-radius:var(--r);padding:13px}
+.preview-lbl{font-size:10px;color:var(--teal);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;font-family:var(--mono)}
+.preview-row{font-size:12px;color:var(--text2);margin-bottom:4px;line-height:1.5}
+.preview-row b{color:var(--text)}
+.enter-btn{width:100%;padding:14px;border-radius:var(--r);background:var(--teal-bg);border:1px solid var(--teal-border);cursor:pointer;font-family:var(--font);font-size:14px;font-weight:600;color:var(--teal);display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+.enter-btn:hover{background:rgba(45,184,154,.15);transform:translateY(-1px)}
+
+/* ── SCREEN 3: UPLOAD ── */
+.upload-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px}
+.uc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:16px;cursor:pointer;text-align:center;transition:all .2s}
+.uc:hover{border-color:var(--border2);transform:translateY(-2px)}
+.uc.warn{border-color:var(--amber-border);background:var(--amber-bg)}
+.uc-ic{font-size:28px;margin-bottom:8px}
+.uc-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px}
+.uc-desc{font-size:11px;color:var(--text2);line-height:1.4}
+.uc.warn .uc-title{color:var(--amber)}
+.uc.warn .uc-desc{color:var(--amber);opacity:.8}
+.inbox-split{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.inbox-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:11px 13px;cursor:pointer;transition:all .15s}
+.inbox-item:hover{border-color:var(--border2)}
+.inbox-item.warn{border-color:var(--amber-border);background:var(--amber-bg)}
+.ii-top{display:flex;align-items:center;gap:8px}
+.ii-ic{font-size:16px;flex-shrink:0}
+.ii-name{font-size:12px;font-weight:500;color:var(--text);flex:1}
+.ii-sub{font-size:10px;color:var(--text2);margin-top:3px}
+.rx-list{display:flex;flex-direction:column;gap:5px}
+.rx-item{display:flex;align-items:center;gap:10px;padding:8px 11px;background:var(--surface2);border-radius:8px;font-size:12px;border:1px solid var(--border)}
+.rx-item.warn{background:var(--amber-bg);border-color:var(--amber-border)}
+.rx-num{width:16px;color:var(--text2);font-size:10px;font-family:var(--mono);flex-shrink:0}
+.rx-drug{flex:1;color:var(--text);font-weight:500}
+.rx-item.warn .rx-drug{color:var(--amber)}
+.rx-dose{color:var(--text2)}
+.rx-b{font-size:9px;padding:2px 7px;border-radius:4px}
+.rx-ok{background:var(--teal-bg);color:var(--teal)}
+.rx-warn{background:var(--amber-bg);color:var(--amber)}
+.safety-note{background:var(--surface2);border-left:3px solid var(--red);border-radius:8px;padding:10px 13px;font-size:11px;color:var(--text2);line-height:1.6}
+.act-row{display:flex;gap:8px}
+.act{flex:1;padding:11px;border-radius:9px;border:none;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .15s}
+.act-rej{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.act-edit{background:var(--surface2);color:var(--text2);border:1px solid var(--border2)}
+.act-ok{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-border);opacity:.35;cursor:not-allowed}
+
+/* ── SCREEN 4: LAB ── */
+.lab-layout{display:grid;grid-template-columns:200px 1fr;min-height:calc(100vh - 100px)}
+.lab-left{border-right:1px solid var(--border);padding:12px;background:var(--surface);overflow-y:auto}
+.lab-right{padding:14px;background:var(--bg2);display:flex;flex-direction:column;gap:10px;overflow-y:auto}
+.li{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;margin-bottom:7px;cursor:pointer;transition:all .15s}
+.li:hover{border-color:var(--border2)}
+.li.active{border-color:var(--blue-border);background:var(--blue-bg)}
+.li.crit{border-color:var(--red-border);background:var(--red-bg)}
+.li-top{display:flex;align-items:center;gap:8px}
+.li-ic{font-size:14px;flex-shrink:0}
+.li-name{font-size:12px;font-weight:500;color:var(--text);flex:1}
+.li-sub{font-size:10px;color:var(--text2);margin-top:3px}
+.crit-banner{background:var(--red-bg);border:1px solid var(--red-border);border-radius:var(--r);padding:12px 14px;display:flex;gap:10px}
+.lr-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.lr-h{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.lr-body{padding:12px 14px}
+.lr-row{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:.5px solid var(--border)}
+.lr-row:last-child{border-bottom:none}
+.lr-ind{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ind-ok{background:var(--teal)}
+.ind-warn{background:var(--amber)}
+.ind-crit{background:var(--red);animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.lr-name{flex:1}
+.lr-n{font-size:12px;color:var(--text);font-weight:500}
+.lr-range{font-size:10px;color:var(--text2)}
+.lr-val{text-align:right}
+.lrv{font-size:15px;font-weight:500;font-family:var(--mono)}
+.lru{font-size:10px;color:var(--text2)}
+.v-ok{color:var(--teal)}.v-warn{color:var(--amber)}.v-crit{color:var(--red)}
+.note-box{border:1px dashed var(--border2);border-radius:9px;padding:11px 13px;background:var(--surface2)}
+.note-lbl{font-size:9px;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;font-family:var(--mono)}
+.note-text{font-size:12px;color:var(--amber);line-height:1.6}
+.send-card{background:var(--surface);border:1px solid var(--teal-border);border-radius:var(--r);padding:13px}
+.send-lbl{font-size:11px;font-weight:500;color:var(--text);margin-bottom:9px;display:flex;align-items:center;gap:6px}
+.so{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:.5px solid var(--border);cursor:pointer}
+.so:last-child{border-bottom:none}
+.so-r{width:16px;height:16px;border-radius:50%;border:2px solid var(--border2);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.so.sel .so-r{background:var(--blue-bg);border-color:var(--blue)}
+.so-r::after{content:'';width:7px;height:7px;border-radius:50%;background:var(--blue);display:none}
+.so.sel .so-r::after{display:block}
+.so-label{font-size:12px;font-weight:500;color:var(--text)}
+.so-desc{font-size:10px;color:var(--text2);margin-top:1px;line-height:1.4}
+.lab-acts{display:flex;gap:8px}
+.la{flex:1;padding:12px;border-radius:9px;border:none;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .15s}
+.la:active{transform:scale(.97)}
+.la-send{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-border)}
+.la-esc{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.la-hold{background:var(--surface2);color:var(--text2);border:1px solid var(--border2)}
+
+/* ── SCREEN 5: HANDOVER — NEW ── */
+.ho-layout{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ho-items{display:flex;flex-direction:column;gap:5px}
+.ho-item{display:flex;align-items:flex-start;gap:9px;padding:8px 10px;border-radius:9px;border:1px solid var(--border);background:var(--surface)}
+.ho-ic{font-size:14px;flex-shrink:0;margin-top:1px}
+.ho-tx{flex:1}
+.ho-name{font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px}
+.ho-sub{font-size:10px;color:var(--text2);line-height:1.4}
+.ho-tag{font-size:9px;padding:2px 7px;border-radius:5px;white-space:nowrap;flex-shrink:0}
+.ht-done{background:var(--teal-bg);color:var(--teal)}
+.ht-pend{background:var(--amber-bg);color:var(--amber)}
+.ht-urg{background:var(--red-bg);color:var(--red)}
+.receiver-card{background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:var(--r);padding:13px}
+.rc-lbl{font-size:9px;color:var(--blue);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;font-family:var(--mono)}
+.rc-nurse{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.rc-av{width:36px;height:36px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--blue)}
+.rc-name{font-size:13px;font-weight:500;color:var(--blue)}
+.rc-shift{font-size:11px;color:var(--blue);opacity:.7;margin-top:2px}
+.ho-send{width:100%;padding:13px;border-radius:var(--r);background:var(--teal-bg);border:1px solid var(--teal-border);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:600;color:var(--teal);display:flex;align-items:center;justify-content:center;gap:7px;margin-top:10px;transition:all .2s}
+.ho-send:hover{transform:translateY(-1px)}
+.manual-note{border:1px dashed var(--border2);border-radius:8px;padding:10px 12px;background:var(--surface2);font-size:12px;color:var(--amber);line-height:1.6;cursor:text;min-height:60px}
+.pending-items{display:flex;flex-direction:column;gap:6px}
+.pi{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border-radius:9px;background:var(--surface);border:1px solid var(--border)}
+
+/* ── SCREEN 6: JADWAL ── */
+.sched-layout{display:grid;grid-template-columns:180px 1fr;gap:12px}
+.doc-list{}
+.dl-item{display:flex;align-items:center;gap:9px;padding:10px 12px;border-radius:var(--r);border:1px solid var(--border);margin-bottom:7px;cursor:pointer;background:var(--surface);transition:all .15s}
+.dl-item:hover{border-color:var(--border2)}
+.dl-item.active{border-color:var(--blue-border);background:var(--blue-bg)}
+.dl-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+.dl-name{font-size:13px;font-weight:500;color:var(--text)}
+.dl-spec{font-size:10px;color:var(--text2);margin-top:1px}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-title{font-size:14px;font-weight:500;color:var(--text)}
+.slots-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
+.slot{border-radius:var(--r);padding:10px 7px;text-align:center;cursor:pointer;transition:all .15s;border:1px solid var(--border);background:var(--surface)}
+.slot.open{border-color:var(--teal-border);background:var(--teal-bg)}
+.slot.open:hover{background:rgba(45,184,154,.14)}
+.slot.closed{opacity:.45}
+.slot.cuti{background:var(--red-bg);border-color:var(--red-border);opacity:.7}
+.slot.full{opacity:.5}
+.slot-day{font-size:9px;color:var(--text2);margin-bottom:3px}
+.slot-date{font-size:16px;font-weight:500;color:var(--text);font-family:var(--mono)}
+.slot-status{font-size:9px;margin-top:3px}
+.slot.open .slot-status{color:var(--teal)}
+.slot.cuti .slot-status{color:var(--red)}
+.slot-cap{font-size:9px;color:var(--text2);margin-top:1px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)}
+.leg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-brand">
+    <span class="tb-logo">MediCore</span>
+    <span class="tb-role">SUSTER · Poli Penyakit Dalam</span>
+  </div>
+  <div class="tb-right">
+    <div class="notif" id="calling-notif" onclick="sw('dashboard')">🔔 dr. Arman memanggil A-047</div>
+    <span style="font-size:12px;color:var(--text2)">Suster Ani</span>
+    <span class="tb-time">11.45</span>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sni on" id="sni-dashboard" onclick="sw('dashboard')" title="Dashboard Antrian">
+      <span class="sni-ic">🟦</span>
+      <span class="sni-lbl">Antrian</span>
+      <div class="sni-dot"></div>
+    </div>
+    <div class="sni" id="sni-checkin" onclick="sw('checkin')" title="Check-in Pasien">
+      <span class="sni-ic">👤</span>
+      <span class="sni-lbl">Check-in</span>
+    </div>
+    <div class="sep"></div>
+    <div class="sni" id="sni-upload" onclick="sw('upload')" title="Upload Dokumen">
+      <span class="sni-ic">📤</span>
+      <span class="sni-lbl">Upload</span>
+      <div class="sni-dot"></div>
+    </div>
+    <div class="sni" id="sni-lab" onclick="sw('lab')" title="Review Hasil Lab">
+      <span class="sni-ic">🔬</span>
+      <span class="sni-lbl">Lab</span>
+      <div class="sni-dot"></div>
+    </div>
+    <div class="sep"></div>
+    <div class="sni" id="sni-handover" onclick="sw('handover')" title="Handover Shift">
+      <span class="sni-ic">🔄</span>
+      <span class="sni-lbl">Handover</span>
+    </div>
+    <div class="sni" id="sni-jadwal" onclick="sw('jadwal')" title="Kelola Jadwal">
+      <span class="sni-ic">📅</span>
+      <span class="sni-lbl">Jadwal</span>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ── SCREEN 1: DASHBOARD ── -->
+    <div class="sc on" id="sc-dashboard">
+      <div class="ph">
+        <div class="ph-l"><div class="ph-title">Dashboard Antrian</div><div class="ph-sub">Senin 1 Jun · Poli Penyakit Dalam · dr. Arman Wijaya</div></div>
+        <button class="btn btn-blue" onclick="sw('checkin')">+ Check-in Pasien</button>
+      </div>
+      <div class="bp">
+
+        <div class="calling-alert" onclick="dismissCalling()">
+          <div class="ca-ring">📣</div>
+          <div style="flex:1">
+            <div class="ca-title">dr. Arman memanggil — A-047 Pak Budi</div>
+            <div class="ca-sub">Pastikan pasien sudah diarahkan ke Ruang 3 · 30 detik lalu</div>
+          </div>
+          <button class="btn btn-amber" onclick="dismissCalling()">✓ Pasien diarahkan</button>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat"><div class="stat-n">8</div><div class="stat-l">Total hari ini</div></div>
+          <div class="stat"><div class="stat-n" style="color:var(--teal)">3</div><div class="stat-l">Selesai</div></div>
+          <div class="stat"><div class="stat-n" style="color:var(--amber)">4</div><div class="stat-l">Menunggu</div></div>
+          <div class="stat"><div class="stat-n" style="color:var(--blue)">1</div><div class="stat-l">Dengan dokter</div></div>
+        </div>
+
+        <div class="queue-grid">
+          <div>
+            <div class="q-col-h">Aktif & Dipanggil</div>
+            <div class="qi active"><div class="qi-top"><div class="qi-num">A-045</div><div class="qi-name">Bu Siti Rahayu</div><span class="qi-s s-with">Dengan Dokter</span></div><div class="qi-sub">Sp.PD · Follow-up EKG · masuk 08.14</div></div>
+            <div class="qi called"><div class="qi-top"><div class="qi-num">A-047</div><div class="qi-name">Pak Budi</div><span class="qi-s s-called">🔔 Dipanggil</span></div><div class="qi-sub">Sp.PD · Nyeri dada · vital ✓ · brief ✓</div></div>
+            <div class="qi"><div class="qi-top"><div class="qi-num">A-046</div><div class="qi-name">Pak Ahmad Fauzi</div><span class="qi-s s-ready">Brief siap ✓</span></div><div class="qi-sub">Sp.PD · HT Kontrol · vital ✓</div></div>
+          </div>
+          <div>
+            <div class="q-col-h">Menunggu Check-in</div>
+            <div class="qi"><div class="qi-top"><div class="qi-num">A-048</div><div class="qi-name">Bu Dewi Lestari</div><span class="qi-s s-checkin">Check-in ✓</span></div><div class="qi-sub">Sp.PD · Pasien baru · vital belum</div></div>
+            <div class="qi"><div class="qi-top"><div class="qi-num">A-049</div><div class="qi-name">Pak Suryono</div><span class="qi-s s-wait">Menunggu</span></div><div class="qi-sub">Sp.PD · Belum check-in</div></div>
+            <div class="qi"><div class="qi-top"><div class="qi-num">A-050</div><div class="qi-name">Bu Ratna Dewi</div><span class="qi-s s-wait">Menunggu</span></div><div class="qi-sub">Sp.PD · BPJS + Rujukan</div></div>
+            <div class="qi" style="opacity:.5"><div class="qi-top"><div class="qi-num">A-043</div><div class="qi-name">Pak Hendra</div><span class="qi-s s-done">Selesai</span></div><div class="qi-sub">Selesai 10.32 · 28 menit</div></div>
+          </div>
+        </div>
+
+        <!-- HANDOVER REMINDER — Blindspot #1 -->
+        <div class="ho-reminder" onclick="sw('handover')">
+          <span style="font-size:22px">⏰</span>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:600;color:var(--amber)">Shift selesai dalam 45 menit — mulai handover sekarang</div>
+            <div style="font-size:11px;color:var(--amber);opacity:.7;margin-top:2px">3 item urgent · 1 resep perlu konfirmasi ke dokter · Suster Budi menunggu</div>
+          </div>
+          <button class="btn btn-amber" onclick="sw('handover')">Mulai Handover →</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── SCREEN 2: CHECKIN ── -->
+    <div class="sc" id="sc-checkin">
+      <div class="ph">
+        <div class="ph-l"><div class="ph-title">Check-in Smart Review</div><div class="ph-sub">A-047 · Pak Budi · QR scan 11.43</div></div>
+        <button class="btn btn-ghost" onclick="sw('dashboard')">← Dashboard</button>
+      </div>
+      <div class="ci-layout">
+        <div class="ci-left">
+          <div class="patient-card">
+            <div class="pct">
+              <div class="pcav">BS</div>
+              <div><div class="pcname">Budi Santoso</div><div class="pcnick">💬 Panggil: Pak Budi</div></div>
+            </div>
+            <div class="row"><span class="rk">Usia</span><span class="rv">47th · L</span></div>
+            <div class="row"><span class="rk">NIK</span><span class="rv" style="font-size:10px;font-family:var(--mono)">3271-0514-0578-0003</span></div>
+            <div class="row"><span class="rk">BPJS</span><span class="rv rv-t">Kelas II Aktif ✓</span></div>
+            <div class="row"><span class="rk">Faskes</span><span class="rv rv-t">RS Ini ✓</span></div>
+            <div class="row"><span class="rk">Kunjungan</span><span class="rv">Ke-8 · Kontrol</span></div>
+            <div class="row"><span class="rk">Tel. Darurat</span><span class="rv" style="font-size:10px">0812-3456-7890</span></div>
+          </div>
+
+          <div class="alert-red">⚠️ <strong>Alergi: Penisilin (BERAT)</strong><br>Informasikan ke dr. Arman sebelum resep apapun.</div>
+
+          <div>
+            <div style="font-size:9px;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;font-family:var(--mono)">Kondisi aktif</div>
+            <div style="display:flex;gap:5px;flex-wrap:wrap">
+              <span class="badge bgb">Hipertensi</span>
+              <span class="badge bgb">Dislipidemia</span>
+              <span class="badge bgb">Suspek Angina</span>
+            </div>
+          </div>
+
+          <div class="last-v">
+            <div style="font-size:9px;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;font-family:var(--mono)">Kunjungan terakhir — 28 Mei</div>
+            <div class="row"><span class="rk">Tensi</span><span class="rv" style="font-family:var(--mono)">145/90</span></div>
+            <div class="row"><span class="rk">Diagnosis</span><span class="rv" style="font-size:11px">HT Grade 2</span></div>
+            <div class="row"><span class="rk">Follow-up</span><span class="rv" style="font-size:11px">Cek LDL + tensi</span></div>
+          </div>
+
+          <div style="background:var(--surface2);border-radius:8px;padding:10px 12px">
+            <div style="font-size:9px;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;font-family:var(--mono)">Obat aktif</div>
+            <div style="font-size:11px;color:var(--text);line-height:1.8">Bisoprolol 10mg · 1×1 pagi<br>Amlodipine 10mg · 1×1 malam<br>Rosuvastatin 20mg · 1×1 malam</div>
+          </div>
+        </div>
+
+        <div class="ci-right">
+          <div class="ara-card">
+            <div class="ara-lbl">Pre-anamnesis — Ara · kemarin 20.14</div>
+            <div class="ara-text" style="margin-bottom:7px">Pak Budi melaporkan nyeri dada saat naik tangga, 3 hari, skala 4/10 membaik dari 7/10 seminggu lalu.</div>
+            <div class="ara-item"><div class="ara-dot"></div><span>Tidak ada sesak napas yang menyertai</span></div>
+            <div class="ara-item"><div class="ara-dot"></div><span>Stres kerja — deadline akhir bulan</span></div>
+            <div class="ara-item"><div class="ara-dot"></div><span>Kepatuhan obat baik minggu ini</span></div>
+            <div class="ara-item"><div class="ara-dot"></div><span>Pertanyaan untuk dokter: kapan ISDN diminum?</span></div>
+          </div>
+
+          <div class="add-field">
+            <div class="add-lbl">Tambahan suster <span style="text-transform:none;letter-spacing:0;font-size:10px;color:var(--text2)">(elaborasi jika perlu — bukan dari nol)</span></div>
+            <div class="add-text">Pasien tampak sedikit tegang. Menyebut belum sempat sarapan pagi ini.</div>
+            <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+              <button class="btn btn-amber" style="font-size:10px;padding:4px 10px">✓ Pre-anamnesis cukup</button>
+              <button class="btn btn-ghost" style="font-size:10px;padding:4px 10px">+ Tambah catatan</button>
+              <button class="btn btn-ghost" style="font-size:10px;padding:4px 10px">✎ Koreksi</button>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:8px">📊 Vital Signs <span style="font-size:10px;color:var(--text2);font-weight:400">— tap untuk isi</span></div>
+            <div class="vitals-g">
+              <div class="vi filled" onclick="fvi(this,'148/92','mmHg','↑ dari 145/90')"><div class="vi-lbl">Tensi</div><div class="vi-val">148/92</div><div class="vi-unit">mmHg</div><div class="vi-ref">↑ dari 145/90</div></div>
+              <div class="vi filled" onclick="fvi(this,'84','/mnt','↑ dari 82')"><div class="vi-lbl">Nadi</div><div class="vi-val">84</div><div class="vi-unit">/mnt</div><div class="vi-ref">↑ dari 82</div></div>
+              <div class="vi filled" onclick="fvi(this,'97','%','= sama')"><div class="vi-lbl">SpO2</div><div class="vi-val">97</div><div class="vi-unit">%</div></div>
+              <div class="vi" onclick="fvi(this,'36.9','°C','')"><div class="vi-lbl">Suhu</div><div class="vi-val" style="font-size:12px;color:var(--text2)">tap isi</div><div class="vi-unit">°C</div></div>
+              <div class="vi" onclick="fvi(this,'72','kg','')"><div class="vi-lbl">Berat</div><div class="vi-val" style="font-size:12px;color:var(--text2)">tap isi</div><div class="vi-unit">kg</div></div>
+              <div class="vi" onclick="fvi(this,'168','cm','')"><div class="vi-lbl">Tinggi</div><div class="vi-val" style="font-size:12px;color:var(--text2)">tap isi</div><div class="vi-unit">cm</div></div>
+            </div>
+            <div class="bmi-row" id="bmi-row"><span class="bmi-l">BMI auto-hitung</span><span class="bmi-v">25.5 — Normal</span></div>
+          </div>
+
+          <div class="preview-card">
+            <div class="preview-lbl">Preview → dr. Arman</div>
+            <div class="preview-row"><b>Keluhan Ara:</b> Nyeri dada aktivitas 3 hari, skala 4/10 membaik. Tidak ada sesak. Stres kerja.</div>
+            <div class="preview-row"><b>Tambahan suster:</b> Tampak tegang. Belum sarapan pagi ini.</div>
+            <div class="preview-row"><b>Vital signs:</b> 148/92 · 84/mnt · SpO2 97%</div>
+            <div class="preview-row"><b>Flags:</b> <span style="color:var(--red)">⚠ Alergi Penisilin (berat)</span> · <span style="color:var(--amber)">↑ Tensi dari kunjungan lalu</span></div>
+          </div>
+
+          <button class="enter-btn" onclick="sw('dashboard')">✓ ENTER — Kirim ke Tab dr. Arman</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SCREEN 3: UPLOAD ── -->
+    <div class="sc" id="sc-upload">
+      <div class="ph">
+        <div class="ph-l"><div class="ph-title">Upload Dokumen</div><div class="ph-sub">PC review kiriman dari HP suster · 📡 HP Suster Ani terhubung ✓</div></div>
+      </div>
+      <div class="bp">
+        <div>
+          <div style="font-size:10px;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:9px;font-family:var(--mono)">Kirim dari HP ke PC</div>
+          <div class="upload-grid">
+            <div class="uc"><div class="uc-ic">🧪</div><div class="uc-title">Hasil Lab</div><div class="uc-desc">PDF atau foto kertas · OCR auto-extract</div></div>
+            <div class="uc"><div class="uc-ic">🫁</div><div class="uc-title">Rontgen / MRI</div><div class="uc-desc">Foto film fisik atau upload DICOM</div></div>
+            <div class="uc warn"><div class="uc-ic">📝</div><div class="uc-title">Resep Manual</div><div class="uc-desc">1 item perlu verifikasi dosis</div></div>
+            <div class="uc"><div class="uc-ic">📄</div><div class="uc-title">Dokumen Lain</div><div class="uc-desc">Rujukan, surat keterangan</div></div>
+          </div>
+        </div>
+
+        <div class="inbox-split">
+          <div>
+            <div style="font-size:10px;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:9px;font-family:var(--mono)">Inbox kiriman HP</div>
+            <div class="inbox-item warn">
+              <div class="ii-top"><div class="ii-ic">📝</div><div class="ii-name">Resep Manual dr. Arman</div><span class="badge bga">⚠ Verifikasi</span></div>
+              <div class="ii-sub">Pak Budi · 1 item dosis kurang jelas</div>
+            </div>
+            <div class="inbox-item" style="margin-top:6px">
+              <div class="ii-top"><div class="ii-ic">🧪</div><div class="ii-name">Hasil Lab Panel Darah</div><span class="badge bgb">Baru</span></div>
+              <div class="ii-sub">Pak Budi · OCR 95% confidence</div>
+            </div>
+            <div class="inbox-item" style="margin-top:6px;opacity:.6">
+              <div class="ii-top"><div class="ii-ic">🫁</div><div class="ii-name">Rontgen Thorax</div><span class="badge bgt">Approved</span></div>
+              <div class="ii-sub">Pak Ahmad · Sudah ke rekam medis</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:9px;font-family:var(--mono)">Review resep manual</div>
+            <div class="card">
+              <div class="card-h"><div class="ch-t">📝 OCR Tulisan Dokter</div><span class="badge bga">⚠ Perlu verifikasi dosis</span></div>
+              <div class="card-b">
+                <div class="rx-list">
+                  <div class="rx-item"><div class="rx-num">1</div><div class="rx-drug">Bisoprolol 10mg</div><div class="rx-dose">1×1 pagi</div><span class="rx-b rx-ok">✓ Jelas</span></div>
+                  <div class="rx-item warn"><div class="rx-num">2</div><div class="rx-drug">Amlodipine ?mg</div><div class="rx-dose">1×1 malam</div><span class="rx-b rx-warn">⚠ Dosis kurang jelas</span></div>
+                  <div class="rx-item"><div class="rx-num">3</div><div class="rx-drug">Rosuvastatin 20mg</div><div class="rx-dose">1×1 malam</div><span class="rx-b rx-ok">✓ Jelas</span></div>
+                </div>
+                <div class="safety-note" style="margin-top:10px">⚠️ Resep tidak bisa di-approve jika ada item yang tidak jelas. Konfirmasi dosis Amlodipine ke dr. Arman — safety rule tidak bisa di-bypass.</div>
+                <div class="act-row" style="margin-top:9px">
+                  <button class="act act-rej">✕ Kembalikan — konfirmasi dosis ke dokter</button>
+                  <button class="act act-edit">✎ Edit</button>
+                  <button class="act act-ok" disabled>✓ Approve</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SCREEN 4: LAB REVIEW ── -->
+    <div class="sc" id="sc-lab">
+      <div class="ph">
+        <div class="ph-l"><div class="ph-title">Review Hasil Lab</div><div class="ph-sub">Professional review sebelum dikirim ke dokter & pasien</div></div>
+        <span class="badge bgr">⚠ 1 nilai kritis</span>
+      </div>
+      <div class="lab-layout">
+        <div class="lab-left">
+          <div style="font-size:9px;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;font-family:var(--mono)">Pending review</div>
+          <div class="li crit">
+            <div class="li-top"><div class="li-ic">🩸</div><div class="li-name">Panel Darah</div><span class="badge bgr">🔴 Kritis</span></div>
+            <div class="li-sub">Pak Budi · LDL 156 mg/dL</div>
+          </div>
+          <div class="li active">
+            <div class="li-top"><div class="li-ic">💛</div><div class="li-name">Urinalisis</div><span class="badge bgb">Baru</span></div>
+            <div class="li-sub">Bu Siti · Normal semua</div>
+          </div>
+          <div style="font-size:9px;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-top:12px;margin-bottom:8px;font-family:var(--mono)">Sudah dikirim</div>
+          <div class="li" style="opacity:.55">
+            <div class="li-top"><div class="li-ic">❤️</div><div class="li-name">EKG</div><span class="badge bgt">Terkirim</span></div>
+            <div class="li-sub">Pak Budi · Normal</div>
+          </div>
+          <div class="li" style="opacity:.55">
+            <div class="li-top"><div class="li-ic">🩸</div><div class="li-name">HbA1c</div><span class="badge bgt">Terkirim</span></div>
+            <div class="li-sub">Pak Ahmad</div>
+          </div>
+        </div>
+        <div class="lab-right">
+          <div class="crit-banner">
+            <div style="font-size:20px;flex-shrink:0;margin-top:2px">🔴</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--red);margin-bottom:3px">Nilai Kritis — Pak Budi</div>
+              <div style="font-size:11px;color:var(--red);opacity:.8;line-height:1.5">LDL 156 mg/dL signifikan di atas normal. Review wajib sebelum dikirim. Pasien dalam Rosuvastatin aktif.</div>
+            </div>
+          </div>
+
+          <div class="lr-card">
+            <div class="lr-h"><div style="font-size:12px;font-weight:500;color:var(--text)">🩸 Panel Darah Lengkap</div><span class="badge bgr">⚠ Nilai kritis</span></div>
+            <div class="lr-body">
+              <div class="lr-row"><div class="lr-ind ind-warn"></div><div class="lr-name"><div class="lr-n">Kolesterol Total</div><div class="lr-range">Normal: &lt;200 mg/dL</div></div><div class="lr-val"><div class="lrv v-warn">218</div><div class="lru">mg/dL</div></div></div>
+              <div class="lr-row"><div class="lr-ind ind-crit"></div><div class="lr-name"><div class="lr-n">LDL Kolesterol</div><div class="lr-range">Normal: &lt;130 mg/dL</div></div><div class="lr-val"><div class="lrv v-crit">156 ⚠</div><div class="lru">mg/dL</div></div></div>
+              <div class="lr-row"><div class="lr-ind ind-ok"></div><div class="lr-name"><div class="lr-n">HDL</div><div class="lr-range">Normal: &gt;40 mg/dL</div></div><div class="lr-val"><div class="lrv v-ok">52</div><div class="lru">mg/dL</div></div></div>
+              <div class="lr-row"><div class="lr-ind ind-ok"></div><div class="lr-name"><div class="lr-n">Gula Darah Puasa</div><div class="lr-range">70–99 mg/dL</div></div><div class="lr-val"><div class="lrv v-ok">92</div><div class="lru">mg/dL</div></div></div>
+              <div class="lr-row"><div class="lr-ind ind-ok"></div><div class="lr-name"><div class="lr-n">Kreatinin</div><div class="lr-range">0.7–1.2 mg/dL</div></div><div class="lr-val"><div class="lrv v-ok">0.9</div><div class="lru">mg/dL</div></div></div>
+            </div>
+          </div>
+
+          <div class="note-box">
+            <div class="note-lbl">Catatan profesional suster</div>
+            <div class="note-text">LDL 156 perlu perhatian dr. Arman. Pasien dalam Rosuvastatin — mungkin perlu penyesuaian dosis. Pasien menyebut belum sarapan pagi ini.</div>
+            <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+              <button class="btn btn-red" style="font-size:11px;padding:5px 11px">🔴 Flag nilai kritis</button>
+              <button class="btn btn-ghost" style="font-size:11px;padding:5px 11px">⚡ Tindakan segera</button>
+              <button class="btn btn-ghost" style="font-size:11px;padding:5px 11px">✓ Rutin saja</button>
+            </div>
+          </div>
+
+          <div class="send-card">
+            <div class="send-lbl">📤 Kirim ke siapa?</div>
+            <div class="so sel" onclick="selSO(this)"><div class="so-r"></div><div><div class="so-label">Dokter dahulu — pasien setelah dokter konfirmasi</div><div class="so-desc">Untuk nilai kritis · dokter tambah catatan interpretasi terlebih dahulu</div></div></div>
+            <div class="so" onclick="selSO(this)"><div class="so-r"></div><div><div class="so-label">Dokter dan pasien bersamaan</div><div class="so-desc">Untuk hasil rutin yang sudah jelas</div></div></div>
+            <div class="so" onclick="selSO(this)"><div class="so-r"></div><div><div class="so-label">Dokter saja — pasien tidak terima notif</div><div class="so-desc">Perlu diskusi tatap muka lebih dulu</div></div></div>
+          </div>
+
+          <div class="lab-acts">
+            <button class="la la-hold">Tunda</button>
+            <button class="la la-esc">⚡ Eskalasi darurat ke dokter</button>
+            <button class="la la-send">✓ Kirim ke dr. Arman</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SCREEN 5: HANDOVER — BLINDSPOT #1 ── -->
+    <div class="sc" id="sc-handover">
+      <div class="ph">
+        <div class="ph-l"><div class="ph-title">Handover Shift</div><div class="ph-sub">Serah terima ke Suster Budi · Shift Siang mulai 13.00</div></div>
+        <button class="btn btn-teal">✓ Kirim Handover</button>
+      </div>
+      <div class="bp">
+        <div class="ho-layout">
+          <div>
+            <div class="card" style="margin-bottom:12px">
+              <div class="card-h"><div class="ch-t">📋 Auto-Summary Sistem</div><span class="badge bgb">6 item</span></div>
+              <div class="card-b">
+                <div class="ho-items">
+                  <div class="ho-item"><div class="ho-ic">✅</div><div class="ho-tx"><div class="ho-name">8 pasien dilayani hari ini</div><div class="ho-sub">Semua selesai sebelum 12.30 · tidak ada komplain</div></div><span class="ho-tag ht-done">Done</span></div>
+                  <div class="ho-item"><div class="ho-ic">🔬</div><div class="ho-tx"><div class="ho-name">Lab Pak Budi — LDL kritis</div><div class="ho-sub">Sudah dikirim ke dr. Arman · menunggu konfirmasi dokter</div></div><span class="ho-tag ht-pend">Pending</span></div>
+                  <div class="ho-item"><div class="ho-ic">📝</div><div class="ho-tx"><div class="ho-name">Resep Amlodipine dosis tidak jelas</div><div class="ho-sub">Perlu konfirmasi ke dr. Arman — belum bisa diproses</div></div><span class="ho-tag ht-urg">Urgent</span></div>
+                  <div class="ho-item"><div class="ho-ic">📅</div><div class="ho-tx"><div class="ho-name">Jadwal dr. Bambang besok</div><div class="ho-sub">Dikonfirmasi hadir · 10 slot tersedia Rabu 4 Jun</div></div><span class="ho-tag ht-done">Done</span></div>
+                  <div class="ho-item"><div class="ho-ic">📋</div><div class="ho-tx"><div class="ho-name">Rontgen Pak Ahmad sudah diproses</div><div class="ho-sub">Masuk rekam medis · dokter sudah review</div></div><span class="ho-tag ht-done">Done</span></div>
+                  <div class="ho-item"><div class="ho-ic">⏳</div><div class="ho-tx"><div class="ho-name">Follow-up HbA1c Bu Siti</div><div class="ho-sub">Dokter belum konfirmasi — perlu diingatkan shift siang</div></div><span class="ho-tag ht-pend">Monitor</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-h"><div class="ch-t">✏️ Catatan Tambahan Suster</div></div>
+              <div class="card-b">
+                <div class="manual-note">Pak Budi perlu recall besok pagi untuk konfirmasi hasil lab dengan dr. Arman. Bu Siti minta nomor HP dokter — sudah diarahkan ke admin RS.</div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="receiver-card" style="margin-bottom:12px">
+              <div class="rc-lbl">Diterima oleh</div>
+              <div class="rc-nurse">
+                <div class="rc-av">BD</div>
+                <div><div class="rc-name">Suster Budi Santoso</div><div class="rc-shift">Shift Siang · 13.00 — 20.00</div></div>
+              </div>
+              <div style="font-size:11px;color:var(--blue);line-height:1.55;background:rgba(0,0,0,.15);border-radius:7px;padding:9px 11px">Suster Budi akan terima notifikasi handover dan harus konfirmasi sebelum shift dimulai. Semua item pending otomatis muncul di dashboard-nya.</div>
+            </div>
+
+            <div class="card">
+              <div class="card-h"><div class="ch-t">⚡ Yang harus ditindaklanjuti shift siang</div><span class="badge bga">3 item</span></div>
+              <div class="card-b">
+                <div class="pending-items">
+                  <div class="pi"><div class="ho-ic">📝</div><div class="ho-tx"><div class="ho-name">Konfirmasi dosis Amlodipine ke dr. Arman</div><div class="ho-sub">Resep tidak bisa selesai sampai ini dikonfirmasi dokter</div></div><span class="ho-tag ht-urg">Urgent</span></div>
+                  <div class="pi"><div class="ho-ic">🔬</div><div class="ho-tx"><div class="ho-name">Monitor konfirmasi lab Pak Budi</div><div class="ho-sub">Setelah dokter konfirmasi → kirim hasil ke pasien</div></div><span class="ho-tag ht-pend">Monitor</span></div>
+                  <div class="pi"><div class="ho-ic">📞</div><div class="ho-tx"><div class="ho-name">Recall Pak Budi untuk konfirmasi lab</div><div class="ho-sub">0812-3456-7890 · besok pagi sebelum jam 9</div></div><span class="ho-tag ht-pend">Besok pagi</span></div>
+                </div>
+              </div>
+            </div>
+
+            <button class="ho-send" onclick="null">✓ Kirim Handover ke Suster Budi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SCREEN 6: JADWAL ── -->
+    <div class="sc" id="sc-jadwal">
+      <div class="ph">
+        <div class="ph-l"><div class="ph-title">Kelola Jadwal Dokter</div><div class="ph-sub">Juni 2026 · 4 dokter aktif</div></div>
+        <button class="btn btn-blue">+ Block Jadwal</button>
+      </div>
+      <div class="bp">
+        <div class="sched-layout">
+          <div class="doc-list">
+            <div style="font-size:10px;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:9px;font-family:var(--mono)">Pilih dokter</div>
+            <div class="dl-item active" onclick="selDoc(this)"><div class="dl-av" style="background:rgba(200,169,110,.12);color:#C8A96E">AR</div><div><div class="dl-name">dr. Arman</div><div class="dl-spec">Sp. Penyakit Dalam</div></div></div>
+            <div class="dl-item" onclick="selDoc(this)"><div class="dl-av" style="background:rgba(45,184,154,.1);color:#2DB89A">BB</div><div><div class="dl-name">dr. Bambang</div><div class="dl-spec">Sp. Kulit & Kelamin</div></div></div>
+            <div class="dl-item" onclick="selDoc(this)"><div class="dl-av" style="background:rgba(226,75,74,.1);color:#E24B4A">YW</div><div><div class="dl-name">dr. Yoga</div><div class="dl-spec">Sp. Jantung</div></div></div>
+            <div class="dl-item" onclick="selDoc(this)"><div class="dl-av" style="background:rgba(91,79,232,.1);color:#7B6FFF">SR</div><div><div class="dl-name">dr. Sari</div><div class="dl-spec">Sp. Anak</div></div></div>
+          </div>
+          <div>
+            <div class="cal-header">
+              <div class="cal-title">dr. Arman Wijaya, Sp.PD — Juni 2026</div>
+              <div style="display:flex;gap:7px">
+                <button class="btn btn-ghost" style="padding:6px 13px">←</button>
+                <button class="btn btn-ghost" style="padding:6px 13px">→</button>
+              </div>
+            </div>
+            <div class="slots-grid">
+              <div class="slot open" onclick="togSlot(this)"><div class="slot-day">Sen</div><div class="slot-date">1</div><div class="slot-status">Buka</div><div class="slot-cap">8/20</div></div>
+              <div class="slot closed" onclick="togSlot(this)"><div class="slot-day">Sel</div><div class="slot-date">2</div><div class="slot-status">Tutup</div></div>
+              <div class="slot full"><div class="slot-day">Rab</div><div class="slot-date">3</div><div class="slot-status" style="color:var(--amber)">Penuh</div><div class="slot-cap">20/20</div></div>
+              <div class="slot open" onclick="togSlot(this)"><div class="slot-day">Kam</div><div class="slot-date">4</div><div class="slot-status">Buka</div><div class="slot-cap">5/20</div></div>
+              <div class="slot closed" onclick="togSlot(this)"><div class="slot-day">Jum</div><div class="slot-date">5</div><div class="slot-status">Tutup</div></div>
+              <div class="slot open" onclick="togSlot(this)"><div class="slot-day">Sab</div><div class="slot-date">6</div><div class="slot-status">Buka</div><div class="slot-cap">12/20</div></div>
+              <div class="slot closed" onclick="togSlot(this)"><div class="slot-day">Min</div><div class="slot-date">7</div><div class="slot-status">Libur</div></div>
+              <div class="slot open" onclick="togSlot(this)"><div class="slot-day">Sen</div><div class="slot-date">8</div><div class="slot-status">Buka</div><div class="slot-cap">0/20</div></div>
+              <div class="slot open" onclick="togSlot(this)"><div class="slot-day">Sel</div><div class="slot-date">9</div><div class="slot-status">Buka</div><div class="slot-cap">3/20</div></div>
+              <div class="slot cuti"><div class="slot-day">Rab</div><div class="slot-date">10</div><div class="slot-status">Cuti</div></div>
+              <div class="slot cuti"><div class="slot-day">Kam</div><div class="slot-date">11</div><div class="slot-status">Cuti</div></div>
+              <div class="slot cuti"><div class="slot-day">Jum</div><div class="slot-date">12</div><div class="slot-status">Cuti</div></div>
+            </div>
+            <div class="legend">
+              <div class="leg"><div class="leg-dot" style="background:var(--teal-bg);border:1px solid var(--teal-border)"></div>Buka</div>
+              <div class="leg"><div class="leg-dot" style="background:var(--surface2);border:1px solid var(--border)"></div>Tutup / Libur</div>
+              <div class="leg"><div class="leg-dot" style="background:var(--red-bg);border:1px solid var(--red-border)"></div>Cuti</div>
+              <div class="leg"><div class="leg-dot" style="background:var(--amber-bg);border:1px solid var(--amber-border)"></div>Penuh</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+var screens=['dashboard','checkin','upload','lab','handover','jadwal'];
+function sw(id){
+  screens.forEach(function(s){
+    var sc=document.getElementById('sc-'+s);
+    var sni=document.getElementById('sni-'+s);
+    if(sc)sc.classList.remove('on');
+    if(sni)sni.classList.remove('on');
+  });
+  document.getElementById('sc-'+id).classList.add('on');
+  document.getElementById('sni-'+id).classList.add('on');
+}
+function dismissCalling(){
+  var el=document.querySelector('.calling-alert');
+  if(el){
+    el.querySelector('.ca-title').textContent='✓ Pak Budi sudah diarahkan ke Ruang 3';
+    el.querySelector('.ca-sub').textContent='Dikonfirmasi 11.45 · Suster Ani';
+    var btn=el.querySelector('.btn-amber');
+    if(btn)btn.style.display='none';
+    el.style.background='var(--teal-bg)';
+    el.style.borderColor='var(--teal-border)';
+    el.querySelector('.ca-ring').style.animation='none';
+  }
+  var notif=document.getElementById('calling-notif');
+  if(notif){notif.textContent='✓ A-047 dikonfirmasi';notif.style.background='var(--teal-bg)';notif.style.color='var(--teal)';notif.style.borderColor='var(--teal-border)';notif.style.animation='none';}
+}
+var vf=3;
+function fvi(el,val,unit,ref){
+  if(el.classList.contains('filled'))return;
+  el.classList.add('filled');
+  el.querySelector('.vi-val').textContent=val;
+  el.querySelector('.vi-unit').textContent=unit;
+  var re=el.querySelector('.vi-ref');
+  if(re&&ref){re.textContent=ref;}
+  vf++;
+  if(vf>=6){document.getElementById('bmi-row').style.display='flex';}
+}
+function selSO(el){
+  document.querySelectorAll('.so').forEach(function(o){o.classList.remove('sel')});
+  el.classList.add('sel');
+}
+function selDoc(el){
+  document.querySelectorAll('.dl-item').forEach(function(d){d.classList.remove('active')});
+  el.classList.add('active');
+}
+function togSlot(el){
+  if(el.classList.contains('open')){el.classList.remove('open');el.classList.add('closed');el.querySelector('.slot-status').textContent='Tutup';}
+  else if(el.classList.contains('closed')){el.classList.remove('closed');el.classList.add('open');el.querySelector('.slot-status').textContent='Buka';}
+}
+</script>
+</body>
+</html>
